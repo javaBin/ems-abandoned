@@ -131,7 +131,7 @@ public class EventResource {
 
     F<EventV1 , EventV1> eventIdV1 = new F<EventV1, EventV1>() {
         public EventV1 f(EventV1 eventV1) {
-            eventV1.setUrl(uriInfo.getBaseUriBuilder().path("/1/events/{eventId}").build(eventV1.getUuid()).toString());
+            eventV1.setUri(uriInfo.getBaseUriBuilder().path("/1/events/{eventId}").build(eventV1.getUuid()).toString());
             return eventV1;
         }
     };
@@ -140,7 +140,7 @@ public class EventResource {
         public EventV1 f(EventV1 eventV1) {
             if (eventV1.getRooms() != null) {
                 for (RoomV1 roomV1 : eventV1.getRooms().getRoom()) {
-                    roomV1.setUrl(uriInfo.getBaseUriBuilder().path("/1/rooms/{roomId}").build(roomV1.getUuid()).toString());
+                    roomV1.setUri(uriInfo.getBaseUriBuilder().path("/1/rooms/{roomId}").build(roomV1.getUuid()).toString());
                 }
             }
             return eventV1;
@@ -152,7 +152,7 @@ public class EventResource {
             if (eventV1.getRooms() != null) {
                 for (RoomV1 roomV1 : eventV1.getRooms().getRoom()) {
                     URI personURI = uriInfo.getBaseUriBuilder().path("/1/people/").build();
-                    URI uri = personURI.relativize(URI.create(roomV1.getUrl()));
+                    URI uri = personURI.relativize(URI.create(roomV1.getUri()));
                     roomV1.setUuid(uri.toString());
                 }
             }

@@ -146,7 +146,7 @@ public class PersonResource {
 
     F<PersonV1, PersonV1> personURIsV1 = new F<PersonV1, PersonV1>() {
         public PersonV1 f(PersonV1 personV1) {
-            personV1.setUrl(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(personV1.getUuid()).toString());
+            personV1.setUri(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(personV1.getUuid()).toString());
             URIBinaryV1 photo = personV1.getPhoto();
             if (photo != null) {
                 photo.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(photo.getUri()).toString());

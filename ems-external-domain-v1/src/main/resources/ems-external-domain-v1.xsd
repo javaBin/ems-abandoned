@@ -113,14 +113,15 @@
    |-->
   <xsd:complexType name="Event">
     <xsd:sequence>
+      <xsd:element name="uri" type="xsd:anyURI"/>
       <xsd:element name="uuid" type="xsd:string"/>
-      <xsd:element name="url" type="xsd:anyURI"/>
       <xsd:element name="name" type="xsd:string"/>
       <xsd:element name="notes" type="xsd:string"/>
       <xsd:element name="date" type="xsd:date"/>
       <xsd:element name="tags" type="Tags"/>
       <xsd:element name="rooms" type="RoomList"/>
       <xsd:element name="timeslots" type="TimeslotList"/>
+      <xsd:element name="sessions-uri" type="xsd:anyURI"/>
       <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -132,8 +133,8 @@
    |-->
   <xsd:complexType name="Room">
     <xsd:sequence>
+      <xsd:element name="uri" type="xsd:anyURI"/>
       <xsd:element name="uuid" type="xsd:string"/>
-      <xsd:element name="url" type="xsd:anyURI"/>
       <xsd:element name="name" type="xsd:string"/>
       <xsd:element name="description" type="xsd:string"/>
       <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
@@ -164,8 +165,8 @@
   <xsd:complexType name="Session">
     <xsd:sequence>
       <xsd:element name="uuid" type="xsd:string"/>
-      <xsd:element name="url" type="xsd:anyURI"/>
-      <xsd:element name="event-url" type="xsd:anyURI"/>
+      <xsd:element name="uri" type="xsd:anyURI"/>
+      <xsd:element name="event-uri" type="xsd:anyURI"/>
       <xsd:element name="event-uuid" type="xsd:string"/>
       <xsd:element name="title" type="xsd:string"/>
       <xsd:element name="state" type="SessionState"/>
@@ -198,9 +199,10 @@
 
   <xsd:complexType name="Speaker">
     <xsd:sequence>
-      <xsd:element name="person-url" type="xsd:anyURI"/>
-      <xsd:element name="name" type="xsd:string"/>
+      <xsd:element name="person-uri" type="xsd:anyURI"/>
       <xsd:element name="person-uuid" type="xsd:string"/>
+      <xsd:element name="photo-create-uri" type="xsd:anyURI"/>
+      <xsd:element name="name" type="xsd:string"/>
       <xsd:element name="description" type="xsd:string"/>
       <xsd:element name="photo" type="URIBinary"/>
       <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
@@ -216,7 +218,7 @@
   <xsd:complexType name="Person">
     <xsd:sequence>
       <xsd:element name="uuid" type="xsd:string"/>
-      <xsd:element name="url" type="xsd:anyURI"/>
+      <xsd:element name="uri" type="xsd:anyURI"/>
       <xsd:element name="name" type="xsd:string"/>
       <xsd:element name="description" type="xsd:string"/>
       <xsd:element name="language" type="xsd:language"/>

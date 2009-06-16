@@ -248,7 +248,7 @@ public class SessionResource {
             UriBuilder builder = uriInfo.getBaseUriBuilder().path("/1/events/{eventId}/sessions/{sessionId}");
             String uri = builder.build(eventId, sessionV1.getUuid()).toString();
             sessionV1.setEventUuid(eventId);
-            sessionV1.setUrl(uri);
+            sessionV1.setUri(uri);
             for (URIBinaryV1 binaryV1 : sessionV1.getAttachments().getBinary()) {
                 binaryV1.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(binaryV1.getUri()).toString());
             }
@@ -258,7 +258,7 @@ public class SessionResource {
 
     F<SessionV1, SessionV1> sessionEventIdV1 = new F<SessionV1, SessionV1>() {
         public SessionV1 f(SessionV1 session) {
-            session.setEventUrl(uriInfo.getBaseUriBuilder().path("/1/events/{eventId}").build(session.getEventUuid()).toString());
+            session.setEventUri(uriInfo.getBaseUriBuilder().path("/1/events/{eventId}").build(session.getEventUuid()).toString());
             return session;
         }
     };
@@ -267,7 +267,7 @@ public class SessionResource {
         public SessionV1 f(SessionV1 session) {
             if (session.getSpeakers() != null) {
                 for (SpeakerV1 speakerV1 : session.getSpeakers().getSpeaker()) {
-                    speakerV1.setPersonUrl(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(speakerV1.getPersonUuid()).toString());
+                    speakerV1.setPersonUri(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(speakerV1.getPersonUuid()).toString());
                     URIBinaryV1 photo = speakerV1.getPhoto();
                     if (photo != null) {
                         photo.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(photo.getUri()).toString());
@@ -283,7 +283,7 @@ public class SessionResource {
             if (session.getSpeakers() != null) {
                 for (SpeakerV1 speaker : session.getSpeakers().getSpeaker()) {
                     URI personURI = uriInfo.getBaseUriBuilder().path("/1/people/").build();
-                    URI uri = personURI.relativize(URI.create(speaker.getPersonUrl()));
+                    URI uri = personURI.relativize(URI.create(speaker.getPersonUri()));
                     speaker.setPersonUuid(uri.toString());
                 }
             }

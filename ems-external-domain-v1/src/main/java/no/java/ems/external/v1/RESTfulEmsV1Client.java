@@ -139,7 +139,7 @@ public class RESTfulEmsV1Client implements EmsV1Client2 {
     }
 
     public Unit updatePerson(PersonV1 personV1) {
-        return client.update(new ResourceHandle(URI.create(personV1.getUrl())), createJAXBPayload("person", PersonV1.class, personV1, PERSON));
+        return client.update(new ResourceHandle(URI.create(personV1.getUri())), createJAXBPayload("person", PersonV1.class, personV1, PERSON));
     }
 
     private static class JAXBHandler implements Handler {
