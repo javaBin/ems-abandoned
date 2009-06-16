@@ -1,11 +1,10 @@
 package no.java.ems.cli;
 
-import no.java.ems.domain.Event;
-import no.java.ems.client.EventsClient;
 import org.apache.commons.cli.Options;
+import no.java.ems.external.v1.EventV1;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class CreateEvent extends AbstractCli {
@@ -26,11 +25,9 @@ public class CreateEvent extends AbstractCli {
     }
 
     protected void work() throws Exception {
-        EventsClient eventsClient = getEms().getEventsClient();
-
-        Event event = new Event();
+        EventV1 event = new EventV1();
         event.setName(getCommandLine().getOptionValue(OPTION_EVENT_NAME));
-        eventsClient.createEvent(event);
-        System.err.println("event.getId() = " + event.getId());
+        getEms().addEvent(event);
+        System.err.println("event.getId() = " + event.getUuid());
     }
 }

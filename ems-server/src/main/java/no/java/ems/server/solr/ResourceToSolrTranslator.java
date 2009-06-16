@@ -1,21 +1,24 @@
 package no.java.ems.server.solr;
 
-import no.java.ems.domain.AbstractEntity;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Person;
-import no.java.ems.domain.Session;
-import no.java.ems.domain.ValueObject;
+import no.java.ems.server.domain.AbstractEntity;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Person;
+import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.ValueObject;
 import no.java.ems.server.search.SearchService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.solr.common.SolrInputDocument;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
 
-import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.TimeZone;
 
 /**
  *

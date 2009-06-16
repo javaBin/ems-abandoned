@@ -1,8 +1,7 @@
 package no.java.ems.client.swing;
 
-import no.java.ems.client.RestEmsService;
+import no.java.ems.client.RESTEmsService;
 import no.java.ems.domain.*;
-import no.java.ems.service.EmsService;
 import no.java.swing.ApplicationTask;
 import no.java.swing.BeanPropertyUndoableEdit;
 import no.java.swing.DefaultUndoManager;
@@ -14,6 +13,7 @@ import org.jdesktop.observablecollections.ObservableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
@@ -154,7 +154,7 @@ public class Entities extends HashSet<AbstractEntity> {
 
     public boolean hasModifications() {
         for (AbstractEntity entity : this) {
-            if (entity.getId() == null || entity.isModified()) {
+            if (entity.getURI() == null || entity.isModified()) {
                 return true;
             }
         }
@@ -164,36 +164,36 @@ public class Entities extends HashSet<AbstractEntity> {
     public void registerForDeletion(final List<? extends AbstractEntity> entities) {
         for (AbstractEntity entity : entities) {
             boolean wasRemoved = remove(entity);
-            if (wasRemoved && entity.getId() != null) {
+            if (wasRemoved && entity.getURI() != null) {
                 delete.add(entity);
             }
         }
     }
 
-    public Person getContact(final String personId) {
+    public Person getContact(final URI personId) {
         Validate.notNull(personId, "Person ID may not be null");
         for (Person contact : contacts) {
-            if (personId.equals(contact.getId())) {
+            if (personId.equals(contact.getURI())) {
                 return contact;
             }
         }
         return null;
     }
 
-    public Event getEvent(final String eventId) {
+    public Event getEvent(final URI eventId) {
         Validate.notNull(eventId, "Event ID may not be null");
         for (Event event : events) {
-            if (eventId.equals(event.getId())) {
+            if (eventId.equals(event.getURI())) {
                 return event;
             }
         }
         return null;
     }
 
-    public Session getSession(final String sessionId) {
+    public Session getSession(final URI sessionId) {
         Validate.notNull(sessionId, "Session ID may not be null");
         for (Session session : sessions) {
-            if (sessionId.equals(session.getId())) {
+            if (sessionId.equals(session.getURI())) {
                 return session;
             }
         }
@@ -201,7 +201,7 @@ public class Entities extends HashSet<AbstractEntity> {
     }
 
     public static boolean isLocalBinary(Binary binary) {
-        return binary != null && (binary instanceof ByteArrayBinary || (binary instanceof UriBinary && ((UriBinary)binary).getUri().getScheme().equals("file")));
+        return binary != null && (binary instanceof ByteArrayBinary || (binary instanceof URIBinary && ((URIBinary)binary).getURI().getScheme().equals("file")));
     }
 
     private class EntityListener implements PropertyChangeListener {
@@ -233,7 +233,7 @@ public class Entities extends HashSet<AbstractEntity> {
         }
 
         protected List<Person> doInBackground() throws Exception {
-            return EmsClient.getInstance().getEmsService().getContacts();
+            return EmsClient.getInstance().getClientService().getContacts();
         }
 
         @Override
@@ -241,7 +241,7 @@ public class Entities extends HashSet<AbstractEntity> {
             super.succeeded(newContacts);
             Set<Person> keep = new HashSet<Person>();
             for (Person newContact : newContacts) {
-                Person existingContact = getContact(newContact.getId());
+                Person existingContact = getContact(newContact.getURI());
                 if (existingContact == null) {
                     add(newContact);
                     keep.add(newContact);
@@ -275,7 +275,7 @@ public class Entities extends HashSet<AbstractEntity> {
         }
 
         protected List<Event> doInBackground() throws Exception {
-            return EmsClient.getInstance().getEmsService().getEvents();
+            return EmsClient.getInstance().getClientService().getEvents();
         }
 
         @Override
@@ -283,7 +283,7 @@ public class Entities extends HashSet<AbstractEntity> {
             super.succeeded(newEvents);
             Set<Event> keep = new HashSet<Event>();
             for (Event newEvent : newEvents) {
-                Event existingEvent = getEvent(newEvent.getId());
+                Event existingEvent = getEvent(newEvent.getURI());
                 if (existingEvent == null) {
                     add(newEvent);
                     keep.add(newEvent);
@@ -323,17 +323,17 @@ public class Entities extends HashSet<AbstractEntity> {
         public SaveChangesTask() {
             super("no.java.ems.client.swing.Entities.saveChangesTask");
             for (Person contact : contacts) {
-                if (contact.isModified() || contact.getId() == null) {
+                if (contact.isModified() || contact.getURI() == null) {
                     changedContacts.add(contact);
                 }
             }
             for (Event event : events) {
-                if (event.isModified() || event.getId() == null) {
+                if (event.isModified() || event.getURI() == null) {
                     changedEvents.add(event);
                 }
             }
             for (Session session : sessions) {
-                if (session.isModified() || session.getId() == null) {
+                if (session.isModified() || session.getURI() == null) {
                     changedSessions.add(session);
                 }
             }
@@ -358,7 +358,7 @@ public class Entities extends HashSet<AbstractEntity> {
         }
 
         protected Void doInBackground() throws Exception {
-            EmsService service = EmsClient.getInstance().getEmsService();
+            RESTEmsService service = EmsClient.getInstance().getClientService();
             int processed = 0;
             for (Person contact : changedContacts) {
                 setMessage(getString("contact", contact.getName()));
@@ -393,19 +393,19 @@ public class Entities extends HashSet<AbstractEntity> {
             }
             for (Session session : deletedSessions) {
                 setMessage(getString("session.delete", session.getTitle()));
-                service.deleteSession(session.getId());
+                service.deleteSession(session.getURI());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(session, null));
             }
             for (Event event : deletedEvents) {
                 setMessage(getString("event.delete", event.getName()));
-                service.deleteEvent(event.getId());
+                service.deleteEvent(event.getURI());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(event, null));
             }
             for (Person contact : deletedContacts) {
                 setMessage(getString("contact.delete", contact.getName()));
-                service.deleteContact(contact.getId());
+                service.deleteContact(contact.getURI());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(contact, null));
             }
@@ -430,7 +430,7 @@ public class Entities extends HashSet<AbstractEntity> {
 
         private void saveAttachments(final AbstractEntity entity) {
             List<Binary> savedAttachments = new ArrayList<Binary>();
-            EmsService service = EmsClient.getInstance().getEmsService();
+            RESTEmsService service = EmsClient.getInstance().getClientService();
             for (Binary attachement : entity.getAttachements()) {
                 if (!isLocalBinary(attachement)) {
                     savedAttachments.add(attachement);

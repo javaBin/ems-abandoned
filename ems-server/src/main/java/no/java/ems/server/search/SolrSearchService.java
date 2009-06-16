@@ -1,12 +1,12 @@
 package no.java.ems.server.search;
 
-import no.java.ems.domain.AbstractEntity;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Person;
-import no.java.ems.domain.Session;
+import no.java.ems.server.domain.AbstractEntity;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Person;
+import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.EmsServerConfiguration;
 import no.java.ems.server.solr.ResourceToSolrTranslator;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.Term;
@@ -21,12 +21,14 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrConfig;
 import org.apache.solr.core.SolrCore;
-import org.apache.solr.core.CoreDescriptor;
-import org.apache.solr.core.CoreContainer;
 import org.apache.solr.schema.IndexSchema;
 import org.xml.sax.SAXException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -38,6 +40,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  */
+@Component
 public class SolrSearchService implements SearchService {
 
     private static final String SOLR_BASE = "/solr";
@@ -47,20 +50,19 @@ public class SolrSearchService implements SearchService {
     private SolrServer solrServer;
     private Log log = LogFactory.getLog(getClass());
 
-    public SolrSearchService(File indexPath) throws Exception {
-        Validate.notNull(indexPath, "Index path may not be null");
-
-        solrServer = createSolrServer(indexPath);
+    @Autowired
+    public SolrSearchService(EmsServerConfiguration configuration) throws Exception {
+        solrServer = createSolrServer(configuration.getSolrHome());
     }
 
-    private SolrServer createSolrServer(File indexPath) throws ParserConfigurationException, IOException, SAXException {
+    private SolrServer createSolrServer(File solrHome) throws ParserConfigurationException, IOException, SAXException {
         SolrConfig config = new SolrConfig(null, null, getClass().getResourceAsStream(SOLR_CONFIG));
         IndexSchema schema = new IndexSchema(config, null, getClass().getResourceAsStream(SOLR_SCHEMA));
 
         CoreContainer coreContainer = new CoreContainer();
 
-        SolrCore core = new SolrCore("EMS", indexPath.getAbsolutePath(), config, schema, new CoreDescriptor(coreContainer, "EMS", SOLR_BASE));
-        coreContainer.register("EMS", core,  false);
+        SolrCore core = new SolrCore("EMS", solrHome.getAbsolutePath(), config, schema, new CoreDescriptor(coreContainer, "EMS", SOLR_BASE));
+        coreContainer.register("EMS", core, false);
         return new EmbeddedSolrServer(coreContainer, "EMS");
     }
 
@@ -119,7 +121,7 @@ public class SolrSearchService implements SearchService {
         if (!StringUtils.isBlank(request.getEventId())) {
             aggregate.add(new TermQuery(new Term("eventid", request.getEventId())), BooleanClause.Occur.MUST);
         }
-        query.setQuery(aggregate.toString());       
+        query.setQuery(aggregate.toString());
 
         log.info("QUERY IS: " + query.toString());
         try {

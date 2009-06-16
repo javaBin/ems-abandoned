@@ -1,7 +1,8 @@
 package no.java.ems.cli;
 
-import no.java.ems.client.RestEmsService;
-import no.java.ems.service.EmsService;
+import fj.P;
+import static fj.data.Option.some;
+import no.java.ems.external.v1.RestletEmsV1Client;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -12,12 +13,11 @@ import org.apache.commons.cli.PosixParser;
 
 import java.io.Closeable;
 import java.io.IOException;
-//import java.io.Console;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class AbstractCli {
@@ -34,7 +34,7 @@ public abstract class AbstractCli {
 
     private CommandLine commandLine;
 
-    private EmsService ems;
+    private RestletEmsV1Client ems;
 
     // Standard options
     private static final String OPTION_HELP = "help";
@@ -50,7 +50,7 @@ public abstract class AbstractCli {
     // Per-tool options
     protected static final String OPTION_EVENT_ID = "event-id";
     protected static final String OPTION_SESSION_ID = "session-id";
-    protected static final String OPTION_FILE = "file";
+    protected static final String OPTION_DIRECTORY = "directory";
     protected static final String OPTION_PARSABLE = "parsable";
 
     protected Option eventId;
@@ -90,7 +90,7 @@ public abstract class AbstractCli {
     // Services
     // -----------------------------------------------------------------------
 
-    public EmsService getEms() {
+    public RestletEmsV1Client getEms() {
         return ems;
     }
 
@@ -150,8 +150,8 @@ public abstract class AbstractCli {
             return eventId;
         }
 
-        eventId = getEms().getEvents().get(0).getId();
-        System.err.println("Event id: " + eventId);
+//        eventId = getEms().getEvents().right().value().getEvent().get(0).getId();
+//        System.err.println("Event id: " + eventId);
 
         return eventId;
     }
@@ -191,15 +191,11 @@ public abstract class AbstractCli {
         username = commandLine.getOptionValue(OPTION_USERNAME, username);
         password = commandLine.getOptionValue(OPTION_PASSWORD, password);
 
-        ems = new RestEmsService(baseUri);
-
         if (commandLine.hasOption(OPTION_USERNAME)) {
-//            Console cons = System.console();
-//            if (cons != null && !commandLine.hasOption(OPTION_PASSWORD)) {
-//                password = String.valueOf(cons.readPassword("[%s]", "Password:"));
-//            }
-
-            ems.setCredentials(username, password);
+            ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri, some(P.p(username, password)));
+        }
+        else {
+            ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri);
         }
 
         work();

@@ -6,11 +6,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import no.java.ems.domain.AbstractEntity;
 import no.java.ems.domain.Binary;
 import no.java.ems.domain.ByteArrayBinary;
-import no.java.ems.domain.UriBinary;
+import no.java.ems.domain.URIBinary;
 import no.java.swing.*;
 import org.apache.commons.io.FileUtils;
 import org.jdesktop.application.Application;
-import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.swingbinding.JListBinding;
@@ -62,7 +61,7 @@ public class AttachementsPanel extends DefaultPanel {
 
     public void initComponents() {
         attachementsList = new JList();
-        attachementsList.setPrototypeCellValue(new ByteArrayBinary(null, "pretty-long-attachement-file-name.extension", "image/jpeg", new byte[0]));
+        attachementsList.setPrototypeCellValue(new ByteArrayBinary("pretty-long-attachement-file-name.extension", "image/jpeg", new byte[0]));
         attachementsList.setVisibleRowCount(3);
         attachementsList.setCellRenderer(new BinaryCellRenderer());
         JPopupMenu popupMenu = new JPopupMenu();
@@ -302,8 +301,8 @@ public class AttachementsPanel extends DefaultPanel {
                     message(getFullResourceKey("progress.plural"), file.getName(), n + 1, allFiles.size());
                 }
                 publish(
-                        new UriBinary(
-                                null, file.getName(),
+                        new URIBinary(
+                                file.getName(),
                                 URLConnection.guessContentTypeFromName(file.getName()),
                                 file.length(),
                                 file.toURI()
@@ -375,7 +374,7 @@ public class AttachementsPanel extends DefaultPanel {
                                 binary.getFileName(),
                                 FileUtils.byteCountToDisplaySize(binary.getSize()),
                                 binary.getMimeType()
-                        ) + (binary instanceof UriBinary ? " URI: " + ((UriBinary)binary).getUri() : "")
+                        ) + (binary instanceof URIBinary ? " URI: " + ((URIBinary)binary).getURI() : "")
                 );
                 // todo: better icon lookup. preferred filename->mimetype->default
                 if (binary.getFileName() != null) {

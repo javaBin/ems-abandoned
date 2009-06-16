@@ -1,12 +1,26 @@
 package no.java.ems.server.it;
 
-import no.java.ems.domain.Room;
+import no.java.ems.dao.EventDao;
+import no.java.ems.dao.RoomDao;
+import no.java.ems.dao.SessionDao;
+import no.java.ems.server.domain.Room;
+import no.java.ems.server.DerbyService;
+import no.java.ems.server.EmsSrcEmbedder;
+import no.java.ems.external.v1.RestletEmsV1Client;
+import org.codehaus.plexus.PlexusTestCase;
+import static org.codehaus.plexus.PlexusTestCase.getTestFile;
+import org.codehaus.plexus.util.FileUtils;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
+import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+
+import java.io.File;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class AbstractIntegrationTest {
@@ -29,4 +43,47 @@ public abstract class AbstractIntegrationTest {
     protected final Interval jz06sep13slot5 = new Interval(jz06sep131415.toDateTime(), Minutes.minutes(60));
     protected final Interval jz06sep13slot6 = new Interval(jz06sep131545.toDateTime(), Minutes.minutes(60));
     protected final Interval jz06sep13slot7 = new Interval(jz06sep131700.toDateTime(), Minutes.minutes(60));
+
+    private static EmsSrcEmbedder embedder;
+    protected static String baseUri;
+    protected static RestletEmsV1Client ems;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        File emsHome = PlexusTestCase.getTestFile("target/ems-home-" + EventDatoIntegrationTest.class.getName());
+        FileUtils.deleteDirectory(emsHome);
+        assertTrue(emsHome.mkdirs());
+//        assertTrue(new File(emsHome, "database/ems").mkdirs());
+//        System.out.println("new File(emsHome, \"database/ems\").getAbsolutePath() = " + new File(emsHome, "database/ems").getAbsolutePath());
+
+        embedder = new EmsSrcEmbedder(getTestFile("../ems-server"), emsHome);
+        embedder.start();
+        embedder.getBean(DerbyService.class).maybeCreateTables(false);
+        baseUri = embedder.getBaseUri();
+
+        ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri);
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        if (embedder != null) {
+            embedder.stop();
+        }
+    }
+
+    public static EventDao getEventDao() {
+        return embedder.getBean(EventDao.class);
+    }
+
+    public static DerbyService getDerbyService() {
+        return embedder.getBean(DerbyService.class);
+    }
+
+    public static RoomDao getRoomDao() {
+        return embedder.getBean(RoomDao.class);
+    }
+
+    public static SessionDao getSessionDao() {
+        return embedder.getBean(SessionDao.class);
+    }
 }

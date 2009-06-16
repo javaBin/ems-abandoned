@@ -1,6 +1,6 @@
 package no.java.ems.dao;
 
-import no.java.ems.domain.Session;
+import no.java.ems.server.domain.Session;
 import org.joda.time.LocalDate;
 
 import java.util.List;
@@ -20,7 +20,12 @@ public interface SessionDao {
 
     List<String> findSessionsByDate(String eventId, LocalDate date);
 
+    /**
+     * @deprecated
+     */
     Session getSession(String id);
+    
+    Session getSession(String eventId, String id);
 
     void saveSession(Session session);
 

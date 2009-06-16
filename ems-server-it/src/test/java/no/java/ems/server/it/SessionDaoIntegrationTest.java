@@ -1,27 +1,26 @@
 package no.java.ems.server.it;
 
 import no.java.ems.dao.EventDao;
-import no.java.ems.dao.SessionDao;
 import no.java.ems.dao.RoomDao;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Session;
-import no.java.ems.server.EmsServices;
+import no.java.ems.dao.SessionDao;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Session;
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.Interval;
 import org.joda.time.Minutes;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
-import org.apache.commons.lang.builder.EqualsBuilder;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.io.File;
+
+import static fj.data.Option.some;
 
 /**
  * @author Trygve Laugstol
@@ -40,11 +39,10 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
         File emsHome = PlexusTestCase.getTestFile("target/ems-home");
         FileUtils.deleteDirectory(emsHome);
 
-        EmsServices emsServices = new EmsServices(emsHome, 0, true, false, 0, false);
-        emsServices.getDerbyService().maybeCreateTables(false);
-        EventDao eventDao = emsServices.getEventDao();
-        RoomDao roomDao = emsServices.getRoomDao();
-        sessionDao = emsServices.getSessionDao();
+        getDerbyService().maybeCreateTables(false);
+        EventDao eventDao = getEventDao();
+        RoomDao roomDao = getRoomDao();
+        sessionDao = getSessionDao();
 
         Event event = eventDao.getEventByName(eventName);
 
@@ -70,9 +68,9 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
         for (int i = 0; i < list.size(); i++) {
             String id = list.get(i);
 
-            Session session = sessionDao.getSession(id);
+            Session session = sessionDao.getSession(event.getId(), id);
 
-            assertEquals(12, session.getTimeslot().getStart().getDayOfMonth());
+            assertEquals(12, session.getTimeslot().some().getStart().getDayOfMonth());
             assertNotNull(session.getRoom());
             assertNotNull(session.getRoom().getId());
             if (i == 0) {
@@ -83,8 +81,6 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
                 assertTrue(EqualsBuilder.reflectionEquals(room3, session.getRoom()));
             }
         }
-
-        emsServices.stop();
     }
 
     public void insertSessions(String eventId, LocalDate date) {
@@ -95,7 +91,7 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
         Session session1 = new Session();
         session1.setEventId(eventId);
         session1.setTitle("Session 1");
-        session1.setTimeslot(new Interval(dateTime.toDateTime(), Minutes.minutes(60)));
+        session1.setTimeslot(some(new Interval(dateTime.toDateTime(), Minutes.minutes(60))));
         session1.setRoom(room1);
         sessionDao.saveSession(session1);
 
@@ -104,7 +100,7 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
         Session session2 = new Session();
         session2.setEventId(eventId);
         session2.setTitle("Session 2");
-        session2.setTimeslot(new Interval(dateTime.toDateTime(), Minutes.minutes(60)));
+        session2.setTimeslot(some(new Interval(dateTime.toDateTime(), Minutes.minutes(60))));
         session2.setRoom(room2);
         sessionDao.saveSession(session2);
 
@@ -113,7 +109,7 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
         Session session3 = new Session();
         session3.setEventId(eventId);
         session3.setTitle("Session 3");
-        session3.setTimeslot(new Interval(dateTime.toDateTime(), Minutes.minutes(60)));
+        session3.setTimeslot(some(new Interval(dateTime.toDateTime(), Minutes.minutes(60))));
         session3.setRoom(room3);
         sessionDao.saveSession(session3);
     }

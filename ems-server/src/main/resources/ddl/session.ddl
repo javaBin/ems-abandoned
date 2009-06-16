@@ -20,7 +20,7 @@ create table session (
   equipment       long varchar,
   feedback        long varchar,
   published       char(1),
-  primary key(id),
+  primary key(id, revision),
   foreign key(eventId) references event(id),
   foreign key(roomId) references room(id)
 )

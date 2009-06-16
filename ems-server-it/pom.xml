@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <parent>
-        <artifactId>ems</artifactId>
-        <groupId>no.java.ems</groupId>
-        <version>1.1.2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>ems-server-it</artifactId>
-
-    <name>Event Management Suite :: Server Integration Tests</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>no.java.ems</groupId>
-            <artifactId>ems-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.java.ems</groupId>
-            <artifactId>ems-cli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.java.ems</groupId>
-            <artifactId>ems-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.noelios.restlet</groupId>
-            <artifactId>com.noelios.restlet.ext.jetty</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-container-default</artifactId>
-            <version>1.0-alpha-9</version>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-        </dependency>
-    </dependencies>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>ems</artifactId>
+    <groupId>no.java.ems</groupId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>ems-server-it</artifactId>
+  <name>Event Management Suite :: Server Integration Tests</name>
+  <dependencies>
+    <dependency>
+      <groupId>no.java.ems</groupId>
+      <artifactId>ems-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>no.java.ems</groupId>
+      <artifactId>ems-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-9</version>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

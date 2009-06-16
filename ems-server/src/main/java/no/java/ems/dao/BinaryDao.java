@@ -1,7 +1,7 @@
 
 package no.java.ems.dao;
 
-import no.java.ems.domain.Binary;
+import no.java.ems.server.domain.Binary;
 
 import java.io.InputStream;
 import java.io.File;

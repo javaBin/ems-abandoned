@@ -1,8 +1,8 @@
 package no.java.ems.dao;
 
-import no.java.ems.domain.Event;
+import no.java.ems.server.domain.Event;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Erlend Hamnaberg<erlend@hamnaberg.net>
@@ -13,7 +13,7 @@ public interface EventDao {
 
     Event getEventByName(String simpleName);
 
-    List<Event> getEvents();
+    ArrayList<Event> getEvents();
 
     void saveEvent(Event event);
 

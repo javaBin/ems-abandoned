@@ -2,19 +2,13 @@ package no.java.ems.server.it;
 
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.RoomDao;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Room;
-import no.java.ems.server.EmsServices;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.util.FileUtils;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Room;
 import org.joda.time.Interval;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,27 +17,27 @@ import java.util.List;
  */
 public class EventDatoIntegrationTest extends AbstractIntegrationTest {
 
-    private static EmsServices emsServices;
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        File emsHome = PlexusTestCase.getTestFile("target/ems-home-" + EventDatoIntegrationTest.class.getName());
-        FileUtils.deleteDirectory(emsHome);
-
-        emsServices = new EmsServices(emsHome, 0, true, false, 0, false);
-        emsServices.getDerbyService().maybeCreateTables(false);
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if(emsServices != null){
-            emsServices.stop();
-        }
-    }
+//    private static EmsServices emsServices;
+//
+//    @BeforeClass
+//    public static void setup() throws Exception {
+//        File emsHome = PlexusTestCase.getTestFile("target/ems-home-" + EventDatoIntegrationTest.class.getName());
+//        FileUtils.deleteDirectory(emsHome);
+//
+//        emsServices = new EmsServices(emsHome, 0, true, false, 0, false);
+//        emsServices.getDerbyService().maybeCreateTables(false);
+//    }
+//
+//    @AfterClass
+//    public static void tearDown() throws Exception {
+//        if(emsServices != null){
+//            emsServices.stop();
+//        }
+//    }
 
     @Test
     public void testDao() {
-        RoomDao roomDao = emsServices.getRoomDao();
+        RoomDao roomDao = getRoomDao();
         Room room1 = new Room("Scandinavia scene");
         Room room2 = new Room("Stockholm");
         Room room3 = new Room("Oslo");
@@ -51,7 +45,7 @@ public class EventDatoIntegrationTest extends AbstractIntegrationTest {
         roomDao.save(room2);
         roomDao.save(room3);
 
-        EventDao eventDao = emsServices.getEventDao();
+        EventDao eventDao = getEventDao();
 
         Event jz06 = new Event();
         jz06.setName("JavaZone 2006");

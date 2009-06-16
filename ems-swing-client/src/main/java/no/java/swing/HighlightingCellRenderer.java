@@ -5,6 +5,7 @@ import com.jgoodies.forms.layout.Sizes;
 import org.apache.commons.lang.Validate;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
-public class HighlightingCellRenderer extends JTextField implements TableCellRenderer {
+public class HighlightingCellRenderer extends SelectableLabel implements TableCellRenderer {
 
     public static final String HIGHLIGHT_PATTERN_PROPERTY = HighlightingCellRenderer.class.getSimpleName() + ".pattern";
     private static final String DOTS = "...";
@@ -28,7 +29,7 @@ public class HighlightingCellRenderer extends JTextField implements TableCellRen
     private final DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
 
     public HighlightingCellRenderer(Color color) {
-        Validate.notNull(color);
+        Validate.notNull(color, "Color may not be null");
         setBorder(
                 Borders.createEmptyBorder(
                         Sizes.dluY(1),
@@ -37,8 +38,8 @@ public class HighlightingCellRenderer extends JTextField implements TableCellRen
                         Sizes.dluX(2)
                 )
         );
-        setEditable(false);
         highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(color);
+        setOpaque(true);
         setIgnoreRepaint(true);
     }
 
@@ -95,7 +96,8 @@ public class HighlightingCellRenderer extends JTextField implements TableCellRen
                 }
             }
         }
-        cellRenderer.getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
+        if(cellRenderer.getBorder() != null) {
+            cellRenderer.getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
+        }
     }
-
 }

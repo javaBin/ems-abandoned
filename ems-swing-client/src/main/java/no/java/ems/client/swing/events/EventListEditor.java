@@ -69,7 +69,7 @@ public class EventListEditor extends EntityListEditor<Event> {
             Application.getInstance().getContext().getTaskService().execute(
                     new DefaultTask<Event, Void>("createEventTask") {
                         protected Event doInBackground() throws Exception {
-                            return EmsClient.getInstance().getEmsService().saveEvent(new Event((String)name));
+                            return EmsClient.getInstance().getClientService().saveEvent(new Event((String)name));
                         }
 
                         @Override

@@ -14,27 +14,23 @@ import no.java.ems.domain.Session;
 import no.java.ems.domain.Speaker;
 import no.java.swing.AutoCompleter;
 import no.java.swing.SwingHelper;
+import no.java.swing.SelectableLabel;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.swingbinding.SwingBindings;
-import org.jdesktop.swingx.JXHyperlink;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import java.net.URI;
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
@@ -47,10 +43,11 @@ public class SessionEditor extends EntityEditor<Session> {
     private SpeakersPanel speakersPanel;
     private JTextField keywordsField;
     private JTextArea leadTextArea;
-    private JTextArea bodyTextArea;
     private JTextArea expectedAudienceTextArea;
     private JTextArea feedbackTextArea;
-    private JTextArea outlineTextArea;
+    private JTextArea outLineTextArea;
+    private JTextArea equipmentTextArea;
+    private JTextArea bodyTextArea;
     private JComboBox stateComboBox;
     private JComboBox formatComboBox;
     private JComboBox roomComboBox;
@@ -58,19 +55,18 @@ public class SessionEditor extends EntityEditor<Session> {
     private JComboBox levelComboBox;
     private JCheckBox englishCheckBox;
     private JCheckBox publishedCheckBox;
-    private JXHyperlink idField;
+    private SelectableLabel idField;
 
     private DateTimeFormatter dateFormatter = DateTimeFormat.shortDate();
     private DateTimeFormatter timeFormatter = DateTimeFormat.shortTime();
-    private URI submitItURI;
 
     public SessionEditor(final Session session) {
-        super(session, "title");        
+        super(session, "title");
         initialize();
     }
 
     public void initModels() {
-        Event event = getEmsService().getEvent(entity.getEventId());
+        Event event = getEmsService().getEvent(entity.getEventURI());
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Room room : event.getRooms()) {
             model.addElement(room);
@@ -95,8 +91,9 @@ public class SessionEditor extends EntityEditor<Session> {
         leadTextArea = createMediumTextArea();
         bodyTextArea = createBigTextArea();
         expectedAudienceTextArea = createBigTextArea();
-        outlineTextArea = createBigTextArea();
         feedbackTextArea = createMediumTextArea();
+        outLineTextArea = createBigTextArea();
+        equipmentTextArea = createMediumTextArea();
         stateComboBox = new JComboBox(Session.State.values());
         formatComboBox = new JComboBox(Session.Format.values());
         roomComboBox = new JComboBox(roomsModel);
@@ -106,24 +103,9 @@ public class SessionEditor extends EntityEditor<Session> {
         englishCheckBox.setName(getFullResourceKey("englishCheckBox"));
         publishedCheckBox = new JCheckBox("published");
         publishedCheckBox.setName(getFullResourceKey("publishedCheckBox"));
-        idField = new JXHyperlink(new DefaultAction("session.view") {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Desktop.getDesktop().browse(submitItURI);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-        idField.setRequestFocusEnabled(false);
-        JPopupMenu idFieldMenu = new JPopupMenu();
-        idFieldMenu.add(new CopyURIAction());
-        idField.setComponentPopupMenu(idFieldMenu);
+        idField = new SelectableLabel(false);
         SwingHelper.setTabFocusTraversalKeys(leadTextArea);
         SwingHelper.setTabFocusTraversalKeys(bodyTextArea);
-        SwingHelper.setTabFocusTraversalKeys(feedbackTextArea);
-        SwingHelper.setTabFocusTraversalKeys(outlineTextArea);
-        SwingHelper.setTabFocusTraversalKeys(expectedAudienceTextArea);
         new AutoCompleter<String>(tagsField, Entities.getInstance().getTags());
         new AutoCompleter<String>(keywordsField, Entities.getInstance().getKeywords());
         setTransferHandler(attachementsPanel.getTransferHandler());
@@ -206,18 +188,15 @@ public class SessionEditor extends EntityEditor<Session> {
     @Override
     public void initBindings() {
         super.initBindings();
-        addPropertyChangeListener("id", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                submitItURI = URI.create(System.getProperty("session.browse.uri") + evt.getNewValue());
-            }
-        });
-        //getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("id"), idField, null));
+        AutoBinding<Session, String, SelectableLabel, String> sessionIdBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, entity, BeanProperty.<Session, String>create("displayID"), idField, BeanProperty.<SelectableLabel, String>create("text"));
+        getBindingGroup().addBinding(sessionIdBinding);
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("lead"), leadTextArea, null));
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("body"), bodyTextArea, null));
-        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("expectedAudience"), expectedAudienceTextArea, null));
-        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("outline"), outlineTextArea, null));
-        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("feedback"), feedbackTextArea, null));
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("notes"), notesTextArea, null));
+        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("equipment"), equipmentTextArea, null));
+        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("outline"), outLineTextArea, null));
+        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("expectedAudience"), expectedAudienceTextArea, null));
+        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("feedback"), feedbackTextArea, null));
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, List<String>>create("keywords"), keywordsField, new ListConverter.StringListConverter()));
         getBindingGroup().addBinding(createComboBoxBinding("room", roomComboBox));
         getBindingGroup().addBinding(createComboBoxBinding("timeslot", timeslotComboBox));
@@ -269,10 +248,11 @@ public class SessionEditor extends EntityEditor<Session> {
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("level", levelComboBox), levelComboBox));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("lead", leadTextArea), new JScrollPane(leadTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("body", bodyTextArea), new JScrollPane(bodyTextArea)));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("expectedAudience", expectedAudienceTextArea), new JScrollPane(expectedAudienceTextArea)));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("outline", outlineTextArea), new JScrollPane(outlineTextArea)));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("feedback", feedbackTextArea), new JScrollPane(feedbackTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("notes", notesTextArea), new JScrollPane(notesTextArea)));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("outline", outLineTextArea), new JScrollPane(outLineTextArea)));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("expectedAudience", expectedAudienceTextArea), new JScrollPane(expectedAudienceTextArea)));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("equipment", equipmentTextArea), new JScrollPane(equipmentTextArea)));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("feedback", feedbackTextArea), new JScrollPane(feedbackTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachements", attachementsPanel), attachementsPanel));
         DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("r:p,3dlu,l:d"));
         for (Map.Entry<JLabel, JComponent> entry : content) {
@@ -292,13 +272,4 @@ public class SessionEditor extends EntityEditor<Session> {
         return dateFormatter.print(timeslot.getStart()) + " " + timeFormatter.print(timeslot.getStart()) + " - " + timeFormatter.print(timeslot.getEnd());
     }
 
-    private class CopyURIAction extends DefaultAction {
-        protected CopyURIAction() {
-            super("session.id.copy");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(getId()), null);
-        }
-    }
 }

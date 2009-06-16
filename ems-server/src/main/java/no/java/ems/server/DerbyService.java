@@ -4,36 +4,41 @@ import no.java.ems.dao.EventDao;
 import no.java.ems.dao.PersonDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.domain.EmailAddress;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Language;
-import no.java.ems.domain.Person;
-import no.java.ems.domain.Room;
-import no.java.ems.domain.Session;
+import no.java.ems.server.domain.EmailAddress;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Language;
+import no.java.ems.server.domain.Person;
+import no.java.ems.server.domain.Room;
+import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.EmsServerConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.derby.drda.NetworkServerControl;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.File;
+import java.io.Writer;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.net.InetAddress;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class DerbyService implements Stoppable {
+public class DerbyService implements InitializingBean, DisposableBean {
 
     private Log log = LogFactory.getLog(getClass());
+    private Log derbyLog = LogFactory.getLog("Derby");
 
     private String[] TABLES = new String[]{
         "person",
@@ -53,38 +58,71 @@ public class DerbyService implements Stoppable {
     private PersonDao personDao;
     private SessionDao sessionDao;
     private RoomDao roomDao;
-    private File dbHome;
-    private int port;
+    private EmsServerConfiguration configuration;
+//    private File dbHome;
+//    private int port;
 
     private NetworkServerControl derbyServer;
 
+    @Autowired
     public DerbyService(JdbcTemplate jdbcTemplate, EventDao eventDao, PersonDao personDao, SessionDao sessionDao,
-                        RoomDao roomDao, File dbHome, int port) {
+                        RoomDao roomDao, EmsServerConfiguration configuration) {
         this.jdbcTemplate = jdbcTemplate;
         this.eventDao = eventDao;
         this.personDao = personDao;
         this.sessionDao = sessionDao;
         this.roomDao = roomDao;
-        this.dbHome = dbHome;
-        this.port = port;
+        this.configuration = configuration;
     }
 
-    public void startNetworkServer() throws Exception {
-        InetAddress localhost = InetAddress.getByName("0.0.0.0");
+    // -----------------------------------------------------------------------
+    // Component Lifecycle
+    // -----------------------------------------------------------------------
 
-        System.setProperty("derby.system.home", dbHome.getAbsolutePath());
-        System.setProperty("derby.system.bootAll", "true");
+    public void afterPropertiesSet() throws Exception {
+        log.info("Starting Derby...");
 
-        derbyServer = new NetworkServerControl(localhost, port, "sa", "sa");
-        derbyServer.start(new PrintWriter(System.out));
+        if(configuration.getDerbyPort().isSome()) {
+            int port = configuration.getDerbyPort().some();
 
-        log.info("Startet network server on " + localhost.toString() + ":" + port);
-        log.info("Db home: " + dbHome.getAbsolutePath());
+            log.info("Starting network server on port " + port);
+            InetAddress localhost = InetAddress.getByName("0.0.0.0");
+
+            System.setProperty("derby.system.home", configuration.getDerbyHome().getAbsolutePath());
+            System.setProperty("derby.system.bootAll", "true");
+
+            derbyServer = new NetworkServerControl(localhost, port, "sa", "sa");
+            derbyServer.start(new PrintWriter(new Writer() {
+                @Override
+                public void write(char[] cbuf, int off, int len) throws IOException {
+                    derbyLog.info(new String(cbuf, off, len));
+                }
+
+                @Override
+                public void flush() throws IOException {
+                }
+
+                @Override
+                public void close() throws IOException {
+                }
+            }));
+
+            log.info("Startet network server on " + localhost.toString() + ":" + configuration.getDerbyPort());
+        }
+        else {
+            log.info("Not starting the Derby network connector...");
+        }
+
+        maybeCreateTables(false);
     }
 
-    public void stop() throws Exception {
+    public void destroy() throws Exception {
         derbyServer.shutdown();
     }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
 
     public boolean maybeCreateTables(boolean dropTables) {
         boolean createTables = false;
@@ -110,7 +148,7 @@ public class DerbyService implements Stoppable {
             for (String table : TABLES) {
                 System.err.print("--- creating table " + table + "...");
                 InputStream inputStream = getClass().getClassLoader().getResourceAsStream("ddl/" + table + ".ddl");
-                if(inputStream == null){
+                if (inputStream == null) {
                     System.err.println("Could not find DDL file for table " + table + "!");
                     return false;
                 }
@@ -130,7 +168,7 @@ public class DerbyService implements Stoppable {
             }
 
             Event event = new Event();
-            event.setName("JavaZone 2008");
+            event.setName("JavaZone 2009");
             ArrayList<Room> rooms = new ArrayList<Room>();
             rooms.add(saveRoom("Gate 1"));
             rooms.add(saveRoom("Gate 2"));

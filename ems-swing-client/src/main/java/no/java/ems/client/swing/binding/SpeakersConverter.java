@@ -14,8 +14,8 @@ public class SpeakersConverter extends ListConverter<Speaker> {
     }
 
     protected String toString(final Speaker speaker) {
-        Person person = Entities.getInstance().getContact(speaker.getPersonId());
-        return person == null ? speaker.getPersonId() + "???" : person.getName();
+        Person person = Entities.getInstance().getContact(speaker.getPersonURI());
+        return person == null ? speaker.getPersonURI() + "???" : person.getName();
     }
 
 }

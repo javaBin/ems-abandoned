@@ -104,7 +104,7 @@ public class LoginPanel extends JPanel implements InitSequence {
 
         public void actionPerformed(ActionEvent e) {
             emsClient.getStatusBar().setCurrentPrincipal(user.getUsername());
-            emsClient.getEmsService().setCredentials(user.getUsername(), user.getPassword() == null ? null : new String(user.getPassword()));
+            //emsClient.getClientService().setCredentials(user.getUsername(), user.getPassword() == null ? null : new String(user.getPassword()));
         }
     }
 
@@ -114,7 +114,7 @@ public class LoginPanel extends JPanel implements InitSequence {
         }
 
         public void actionPerformed(ActionEvent e) {
-            emsClient.getEmsService().setCredentials(null, null);
+            //emsClient.getClientService().setCredentials(null, null);
         }
 
         @Override

@@ -80,7 +80,7 @@ public class ContactEditor extends EntityEditor<Person> {
         foreignBinding.setSourceNullValue(Boolean.FALSE);
         foreignBinding.setConverter(new LanguageConverter());
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Person, String>create("description"), descriptionTextArea, null));
-        getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Person, String>create("notes"), notesTextArea, null));
+        //getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Person, String>create("notes"), notesTextArea, null));
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Person, List<EmailAddress>>create("emailAddresses"), emailField, new EmailConverter()));
         getBindingGroup().addBinding(createComboBoxBinding("gender", genderComboBox));
         getBindingGroup().addBinding(foreignBinding);
@@ -103,7 +103,7 @@ public class ContactEditor extends EntityEditor<Person> {
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("description", descriptionTextArea), new JScrollPane(descriptionTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("gender", genderComboBox), genderComboBox));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("language", englishCheckBox), englishCheckBox));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("notes", notesTextArea), new JScrollPane(notesTextArea)));
+        //content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("notes", notesTextArea), new JScrollPane(notesTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachements", attachementsPanel), attachementsPanel));
         DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("r:p,3dlu,l:d"));
         for (Map.Entry<JLabel, JComponent> entry : content) {

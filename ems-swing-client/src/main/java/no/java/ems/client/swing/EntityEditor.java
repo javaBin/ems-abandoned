@@ -55,15 +55,6 @@ public abstract class EntityEditor<T extends AbstractEntity> extends AbstractEdi
         getBindingGroup().addBinding(
                 Bindings.createAutoBinding(
                         AutoBinding.UpdateStrategy.READ,
-                        entity,
-                        BeanProperty.<T, String>create("id"),
-                        this,
-                        BeanProperty.<AbstractEditor, String>create("id")
-                )
-        );
-        getBindingGroup().addBinding(
-                Bindings.createAutoBinding(
-                        AutoBinding.UpdateStrategy.READ,
                         titleField,
                         BeanProperty.<JTextField, String>create("text"),
                         this,

@@ -19,8 +19,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -32,20 +30,16 @@ public class EntityTable extends JTable {
 
     public EntityTable() {
         TableCellRenderer cellRenderer;
-        if (SystemUtils.IS_OS_UNIX && !SystemUtils.IS_OS_MAC) {
-            cellRenderer = new DefaultTableCellRenderer();
-        } else {
-            cellRenderer = new HighlightingCellRenderer(new Color(0xfffff99));
-            ((HighlightingCellRenderer)cellRenderer).setBorder(
-                    Borders.createEmptyBorder(
-                            Sizes.dluY(3),
-                            Sizes.dluX(1),
-                            Sizes.dluY(3),
-                            Sizes.dluX(1)
-                    )
-            );
-            setRowHeight(((HighlightingCellRenderer)cellRenderer).getPreferredRowHeight(this));
-        }
+        cellRenderer = new HighlightingCellRenderer(new Color(0xfffff99));
+        ((HighlightingCellRenderer) cellRenderer).setBorder(
+                Borders.createEmptyBorder(
+                        Sizes.dluY(3),
+                        Sizes.dluX(1),
+                        Sizes.dluY(3),
+                        Sizes.dluX(1)
+                )
+        );
+        setRowHeight(((HighlightingCellRenderer) cellRenderer).getPreferredRowHeight(this));
         setDefaultRenderer(String.class, cellRenderer);
         setDefaultRenderer(Session.State.class, cellRenderer);
         setDefaultRenderer(Session.Format.class, cellRenderer);
@@ -98,25 +92,11 @@ public class EntityTable extends JTable {
     public void setFilter(final String filter) {
         if (filter == null || filter.isEmpty()) {
             putClientProperty(HighlightingCellRenderer.HIGHLIGHT_PATTERN_PROPERTY, null);
-            ((TableRowSorter<TableModel>)getRowSorter()).setRowFilter(null);
+            ((TableRowSorter<TableModel>) getRowSorter()).setRowFilter(null);
         } else {
-            if (filter.contains(",")) {
-                String[] filters = filter.split(",");
-                putClientProperty(HighlightingCellRenderer.HIGHLIGHT_PATTERN_PROPERTY, null);
-                List<RowFilter<TableModel, Integer>> rowFilters = new ArrayList<RowFilter<TableModel, Integer>>();
-                for (String s : filters) {
-                    if (!s.isEmpty()) {
-                        String regexp = "(?i)" + Pattern.quote(s);
-                        rowFilters.add(RowFilter.<TableModel, Integer>regexFilter(regexp));
-                    }
-                }
-                ((TableRowSorter<TableModel>)getRowSorter()).setRowFilter(RowFilter.<TableModel, Integer>orFilter(rowFilters));
-            }
-            else {
-                String regexp = "(?i)" + Pattern.quote(filter);
-                putClientProperty(HighlightingCellRenderer.HIGHLIGHT_PATTERN_PROPERTY, filter.length() > 0 ? Pattern.compile(regexp) : null);
-                ((TableRowSorter<TableModel>)getRowSorter()).setRowFilter(RowFilter.regexFilter(regexp));                
-            }
+            String regexp = "(?i)" + Pattern.quote(filter);
+            putClientProperty(HighlightingCellRenderer.HIGHLIGHT_PATTERN_PROPERTY, filter.length() > 0 ? Pattern.compile(regexp) : null);
+            ((TableRowSorter<TableModel>) getRowSorter()).setRowFilter(RowFilter.regexFilter(regexp));
         }
     }
 
@@ -124,7 +104,7 @@ public class EntityTable extends JTable {
     public boolean editCellAt(final int rowIndex, final int columnIndex, final EventObject event) {
         // prevent modifier key strokes from starting cell editing
         if (event instanceof KeyEvent) {
-            KeyEvent keyEvent = (KeyEvent)event;
+            KeyEvent keyEvent = (KeyEvent) event;
             if (keyEvent.isAltDown() || keyEvent.isControlDown() || keyEvent.isMetaDown() || keyEvent.isActionKey()) {
                 return false;
             }

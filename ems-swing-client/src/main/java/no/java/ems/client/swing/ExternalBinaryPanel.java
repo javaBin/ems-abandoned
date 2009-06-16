@@ -2,7 +2,7 @@ package no.java.ems.client.swing;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import no.java.ems.domain.UriBinary;
+import no.java.ems.domain.URIBinary;
 import no.java.swing.DefaultPanel;
 import no.java.swing.SwingHelper;
 import org.jdesktop.beansbinding.*;
@@ -63,7 +63,7 @@ public class ExternalBinaryPanel extends DefaultPanel {
         bindingGroup.bind();
     }
 
-    UriBinary write() {
+    URIBinary write() {
         for (Binding binding : bindingGroup.getBindings()) {
             Binding.SyncFailure failure = binding.save();
             if (failure != null) {
@@ -118,8 +118,8 @@ public class ExternalBinaryPanel extends DefaultPanel {
             this.filename = filename;
         }
 
-        public UriBinary toUriBinary() {
-            return new UriBinary(null, filename, mediaType, -1, uri);
+        public URIBinary toUriBinary() {
+            return new URIBinary(filename, mediaType, -1, uri);
         }
     }
 

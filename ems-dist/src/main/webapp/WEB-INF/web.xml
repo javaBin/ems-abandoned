@@ -20,22 +20,7 @@
         <servlet-name>JnlpDownloadServlet</servlet-name>
         <url-pattern>/webstart/*</url-pattern>
     </servlet-mapping>
-<!--
-    <context-param>
-        <param-name>org.restlet.application</param-name>
-        <param-value>no.java.ems.server.EmsApplication</param-value>
-    </context-param>
 
-    <servlet>
-        <servlet-name>ServerServlet</servlet-name>
-        <servlet-class>com.noelios.restlet.ext.servlet.ServerServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ServerServlet</servlet-name>
-        <url-pattern>/ems/*</url-pattern>
-    </servlet-mapping>
--->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

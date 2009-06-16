@@ -1,13 +1,13 @@
 package no.java.ems.dao.impl;
 
 import no.java.ems.dao.BinaryDao;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.UriBinary;
-import no.java.ems.server.EmsServices;
+import no.java.ems.server.domain.Binary;
+import no.java.ems.server.domain.UriBinary;
+import no.java.ems.server.domain.EmsServerConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,34 +18,32 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-
 @SuppressWarnings({"unchecked"})
+@Component
 public class FileBinaryDao implements BinaryDao {
-
-    private Log log = LogFactory.getLog(getClass());
 
     private File binaryStorageDirectory;
 
-    public FileBinaryDao(File binaryStorageDirectory) {
-        this.binaryStorageDirectory = binaryStorageDirectory;
+    @Autowired
+    public FileBinaryDao(EmsServerConfiguration configuration) {
+        this.binaryStorageDirectory = configuration.getBinaryStorageDirectory();
     }
 
     public Binary getBinary(final String id) {
         try {
             File infoFile = new File(binaryStorageDirectory, id + ".info");
-            if(!infoFile.canRead()){
+            if (!infoFile.canRead()) {
                 return null;
             }
 
             List<String> lines = FileUtils.readLines(infoFile, "UTF-8");
             String fileName = lines.get(0);
             String mimeType = lines.get(1);
-            URI binaryURI = URI.create(EmsServices.getBinaryUri().toString() + id);
             File file = new File(binaryStorageDirectory, id);
             if (!file.exists()) {
                 return null;
             }
-            return new UriBinary(id, fileName, mimeType, file.length(), binaryURI);
+            return new UriBinary(id, fileName, mimeType, file.length(), file.toURI());
 
         } catch (IOException e) {
             //todo: binary failed to be read... ?? What should happen?
@@ -82,7 +80,6 @@ public class FileBinaryDao implements BinaryDao {
             IOUtils.closeQuietly(inputStream);
             IOUtils.closeQuietly(out);
         }
-        URI uri = URI.create(EmsServices.getBinaryUri().toString() + id);
-        return new UriBinary(id, filename, mimeType, file.length(), uri);
+        return new UriBinary(id, filename, mimeType, file.length(), file.toURI());
     }
 }

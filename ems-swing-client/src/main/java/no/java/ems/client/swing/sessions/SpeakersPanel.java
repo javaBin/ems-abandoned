@@ -140,8 +140,8 @@ public class SpeakersPanel extends DefaultPanel implements ComponentList.Compone
             }
             Person person = contactSelector.showSelectDialog(SpeakersPanel.this);
             if (person != null) {
-                if (person.getId() != null) {
-                    Speaker speaker = new Speaker(person.getId(), person.getName());
+                if (person.getURI() != null) {
+                    Speaker speaker = new Speaker(person.getURI(), person.getName());
                     speaker.setDescription(person.getDescription());
                     speaker.setPhoto(person.getPhoto());
                     session.addSpeaker(speaker);
@@ -205,13 +205,13 @@ public class SpeakersPanel extends DefaultPanel implements ComponentList.Compone
         }
 
         protected Person doInBackground() throws Exception {
-            return EmsClient.getInstance().getEmsService().saveContact(person);
+            return EmsClient.getInstance().getClientService().saveContact(person);
         }
 
         @Override
         protected void succeeded(final Person person) {
             Entities.getInstance().add(person);
-            Speaker speaker = new Speaker(person.getId(), person.getName());
+            Speaker speaker = new Speaker(person.getURI(), person.getName());
             speaker.setDescription(person.getDescription());
             speaker.setPhoto(person.getPhoto());
             session.addSpeaker(speaker);

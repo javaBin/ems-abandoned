@@ -45,7 +45,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -100,7 +100,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -185,7 +185,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -254,7 +254,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -301,7 +301,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -348,7 +348,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -396,7 +396,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -440,7 +440,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -457,7 +457,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -518,7 +518,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -535,7 +535,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -637,7 +637,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -681,7 +681,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -764,7 +764,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -851,7 +851,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -947,7 +947,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -964,7 +964,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1094,7 +1094,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1254,7 +1254,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1301,7 +1301,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1394,7 +1394,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1474,7 +1474,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1607,7 +1607,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1721,7 +1721,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1781,7 +1781,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1825,7 +1825,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1842,7 +1842,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1889,7 +1889,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -1936,7 +1936,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2028,7 +2028,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2107,7 +2107,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2124,7 +2124,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2183,7 +2183,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2231,7 +2231,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2311,7 +2311,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2356,7 +2356,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2373,7 +2373,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2417,7 +2417,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2463,7 +2463,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2508,7 +2508,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2573,7 +2573,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2621,7 +2621,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2690,7 +2690,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>
@@ -2738,7 +2738,7 @@
             <java.beans.PropertyChangeSupport>
               <default>
                 <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
-                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+                <source class="no.java.ems.server.domain.Speaker" reference="../../../.."/>
               </default>
               <null/>
             </java.beans.PropertyChangeSupport>

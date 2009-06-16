@@ -2,35 +2,36 @@ package no.java.ems.dao.impl;
 
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.dao.PersonDao;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.EmailAddress;
-import no.java.ems.domain.Language;
-import no.java.ems.domain.Nationality;
-import no.java.ems.domain.Person;
+import no.java.ems.server.domain.Binary;
+import no.java.ems.server.domain.EmailAddress;
+import no.java.ems.server.domain.Language;
+import no.java.ems.server.domain.Nationality;
+import no.java.ems.server.domain.Person;
 import org.joda.time.LocalDate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @author <a href="mailto:partha.guha.roy@gmail.com">Partha Roy</a>
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
+@Repository
 public class JdbcTemplatePersonDao implements PersonDao {
 
     private static final String DELIMITER = ",";
     private final JdbcTemplate jdbcTemplate;
     private BinaryDao binaryDao;
 
+    @Autowired
     public JdbcTemplatePersonDao(final JdbcTemplate jdbcTemplate, BinaryDao binaryDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.binaryDao = binaryDao;
@@ -96,7 +97,7 @@ public class JdbcTemplatePersonDao implements PersonDao {
         );
 
         jdbcTemplate.update("delete from person_attachement where personId = ?", new Object[]{person.getId()});
-        List<Binary> attachements = person.getAttachements();
+        List<Binary> attachements = person.getAttachments();
         for (int position = 0; position < attachements.size(); position++) {
             Binary attachement = attachements.get(position);
             jdbcTemplate.update(
@@ -143,7 +144,7 @@ public class JdbcTemplatePersonDao implements PersonDao {
             person.setLanguage(Language.valueOf(resultSet.getString("language")));
             person.setNationality(Nationality.valueOf(resultSet.getString("nationality")));
             String addresses = resultSet.getString("addresses");
-            List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
+            Collection<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
             if (addresses != null) {
                 for (String address : addresses.split(DELIMITER)) {
                     if (address.length() != 0) {
@@ -157,7 +158,7 @@ public class JdbcTemplatePersonDao implements PersonDao {
                 person.setPhoto(binaryDao.getBinary(photoId));
             }
             //noinspection unchecked
-            person.setAttachements(
+            person.setAttachments(
                     jdbcTemplate.query(
                             "select attachementId from person_attachement where personId = ? order by position",
                             new Object[]{person.getId()},

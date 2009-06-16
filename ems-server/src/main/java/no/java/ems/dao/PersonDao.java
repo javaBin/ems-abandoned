@@ -1,6 +1,6 @@
 package no.java.ems.dao;
 
-import no.java.ems.domain.Person;
+import no.java.ems.server.domain.Person;
 
 import java.util.List;
 

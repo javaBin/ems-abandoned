@@ -1,9 +1,11 @@
 package no.java.ems.dao.impl;
 
 import no.java.ems.dao.RoomDao;
-import no.java.ems.domain.Room;
+import no.java.ems.server.domain.Room;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,12 +14,14 @@ import java.util.UUID;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
+@Repository
 public class JdbcTemplateRoomDao extends AbstractDao implements RoomDao {
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public JdbcTemplateRoomDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

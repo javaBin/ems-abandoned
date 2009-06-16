@@ -1,7 +1,7 @@
 package no.java.ems.client.swing;
 
 import no.java.ems.domain.Binary;
-import no.java.ems.domain.UriBinary;
+import no.java.ems.domain.URIBinary;
 import no.java.swing.DefaultPanel;
 import no.java.swing.IconSizeDecorator;
 import no.java.swing.SessionFileChooser;
@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
-import org.restlet.data.MediaType;
+import org.codehaus.httpcache4j.MIMEType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -50,7 +50,7 @@ public class PhotoPanel extends DefaultPanel {
     }
 
     public void setBinary(final Binary binary) {
-        Validate.isTrue(binary == null || "image".equals(new MediaType(binary.getMimeType()).getMainType()), "Binary was null or not an image");
+        Validate.isTrue(binary == null || "image".equals(MIMEType.valueOf(binary.getMimeType()).getPrimaryType()), "Binary was null or not an image");
         firePropertyChange("binary", this.binary, this.binary = binary);
     }
 
@@ -114,8 +114,8 @@ public class PhotoPanel extends DefaultPanel {
 
     private Binary createBinaryFromFile(File file) {
         String type = URLConnection.guessContentTypeFromName(file.getName());
-        return new UriBinary(
-                null, file.getName(),
+        return new URIBinary(
+                file.getName(),
                 type,
                 file.length(),
                 file.toURI()

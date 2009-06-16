@@ -2,33 +2,45 @@ package no.java.ems.dao.impl;
 
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.dao.EventDao;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Room;
+import no.java.ems.server.domain.Binary;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Room;
+import static no.java.ems.server.f.ExternalV1F.intervalGetStart;
+import static no.java.ems.server.f.ExternalV1F.intervalToPeriod;
+import static no.java.ems.server.f.ExternalV1F.periodGetMinutes;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
+
+import fj.data.Option;
+import static fj.data.Option.some;
 
 /**
  * @author Erlend Hamnaberg<erlend@hamnaberg.net>
  */
+@Repository
 public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
 
     private static final String DELIMITER = ",";
     private final JdbcTemplate jdbcTemplate;
     private BinaryDao binaryDao;
 
+    @Autowired
     public JdbcTemplateEventDao(JdbcTemplate jdbcTemplate, BinaryDao binaryDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.binaryDao = binaryDao;
@@ -52,9 +64,9 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
         ));
     }
 
-    public List<Event> getEvents() {
+    public ArrayList<Event> getEvents() {
         //noinspection unchecked
-        return jdbcTemplate.query("select * from event order by name", new EventMapper());
+        return new ArrayList(jdbcTemplate.query("select * from event order by name", new EventMapper()));
     }
 
     public void saveEvent(Event event) {
@@ -87,7 +99,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
                 }
         );
         jdbcTemplate.update("delete from event_attachement where eventId = ?", new Object[]{event.getId()});
-        List<Binary> attachements = event.getAttachements();
+        List<Binary> attachements = event.getAttachments();
         for (int position = 0; position < attachements.size(); position++) {
             Binary attachement = attachements.get(position);
             jdbcTemplate.update(
@@ -127,14 +139,14 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
         jdbcTemplate.update("delete from event_timeslot where eventId = ?", new Object[]{event.getId()});
         List<Interval> timeslots = event.getTimeslots();
         for (int position = 0; position < timeslots.size(); position++) {
-            Interval interval = timeslots.get(position);
+            Option<Interval> interval = some(timeslots.get(position));
             jdbcTemplate.update(
                 "insert into event_timeslot values (?, ?, ?, ?)",
                 new Object[]{
                     event.getId(),
                     position,
-                    toSqlTimestamp(interval.getStart()),
-                    interval.toPeriod().getMinutes(),
+                    interval.map(intervalGetStart).map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
+                    interval.map(intervalToPeriod).map(periodGetMinutes).orSome(0),
                 },
                 new int[]{
                     Types.VARCHAR,
@@ -163,6 +175,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
         public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
             Event event = new Event();
             event.setId(rs.getString("id"));
+            event.setRevision(rs.getInt("revision"));
             event.setName(rs.getString("name"));
             final Date date = rs.getDate("eventdate");
             event.setDate(date == null ? null : LocalDate.fromDateFields(date));
@@ -173,7 +186,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
             event.setNotes(rs.getString("notes"));
 
             //noinspection unchecked
-            event.setAttachements(jdbcTemplate.query(
+            event.setAttachments(jdbcTemplate.query(
                             "select attachementId from event_attachement where eventId = ? order by position",
                             new Object[]{event.getId()},
                             new RowMapper() {
@@ -200,7 +213,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
                     new Object[]{event.getId()},
                     new RowMapper() {
                         public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return mapInterval(rs);
+                            return mapInterval(rs).some();
                         }
                     }
                 )

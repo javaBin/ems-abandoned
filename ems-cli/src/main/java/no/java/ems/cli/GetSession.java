@@ -1,10 +1,11 @@
 package no.java.ems.cli;
 
-import no.java.ems.domain.Session;
+import fj.data.Option;
+import no.java.ems.external.v1.SessionV1;
 import org.apache.commons.cli.Options;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class GetSession extends AbstractCli {
@@ -17,16 +18,21 @@ public class GetSession extends AbstractCli {
     }
 
     protected Options addOptions(Options options) {
+        options.addOption(eventId);
         options.addOption(null, OPTION_SESSION_ID, true, "The id of the session to show.");
         options.addOption(parseable);
 
         return options;
     }
 
-    public void work() {
+    public void work() throws Exception {
         String sessionId = getCommandLine().getOptionValue(OPTION_SESSION_ID);
-        Session session = getEms().getSession(sessionId);
+        Option<SessionV1> option = getEms().getSession(getDefaultEventId(), sessionId);
 
-        PrintUtil.print(getCommandLine(), session);
+        if (option.isNone()) {
+            System.err.println("No such session.");
+        }
+
+        PrintUtil.print(getCommandLine(), option.some());
     }
 }

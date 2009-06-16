@@ -67,7 +67,7 @@ public class SpeakerPanel extends DefaultPanel {
                                     new Runnable() {
                                         public void run() {
                                             // todo: consider the same behaviour when saving a changed description and no description exist for the contact
-                                            Person contact = Entities.getInstance().getContact(speaker.getPersonId());
+                                            Person contact = Entities.getInstance().getContact(speaker.getPersonURI());
                                             if (event.getNewValue() != null) {
                                                 if (contact.getPhoto() != null) {
                                                     int answer = JOptionPane.showConfirmDialog(
@@ -173,7 +173,7 @@ public class SpeakerPanel extends DefaultPanel {
         @Override
         public void mouseClicked(final MouseEvent event) {
             if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2 && event.getModifiersEx() == 0) {
-                EmsClient.getInstance().edit(Entities.getInstance().getContact(speaker.getPersonId()));
+                EmsClient.getInstance().edit(Entities.getInstance().getContact(speaker.getPersonURI()));
             }
         }
 

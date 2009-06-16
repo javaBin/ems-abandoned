@@ -2,13 +2,12 @@ package no.java.ems.server.cli;
 
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Session;
-import no.java.ems.server.EmsServices;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Session;
 import no.java.ems.server.search.SearchService;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Reindex {
@@ -26,9 +25,10 @@ public class Reindex {
             return;
         }
 
-        EmsServices emsServices = new EmsServices(commandLine.getEmsHome(), 0, true, false, 0, false);
-
-        new Reindex(emsServices.getEventDao(), emsServices.getSessionDao(), emsServices.getSearchService()).work();
+        System.err.println("TODO: Implement this");
+//        EmsServices emsServices = new EmsServices(commandLine.getEmsHome(), 0, true, false, 0, false);
+//
+//        new Reindex(emsServices.getEventDao(), emsServices.getSessionDao(), emsServices.getSearchService()).work();
 
         // Some stuff is keeping the JVM alive..
         System.exit(0);

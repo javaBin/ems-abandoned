@@ -1,15 +1,14 @@
 package no.java.ems.server.cli;
 
-import no.java.ems.server.Stoppable;
-
+import java.io.Closeable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class ShutdownUtil {
-    public static void waitForShutdown(final Stoppable stoppable) {
+    public static void waitForShutdown(final Closeable closeable) {
 
         final AtomicBoolean stop = new AtomicBoolean();
 
@@ -35,7 +34,7 @@ public class ShutdownUtil {
         }
 
         try {
-            stoppable.stop();
+            closeable.close();
         } catch (Exception e) {
             System.err.println("Error while shutting down server.");
             e.printStackTrace(System.err);

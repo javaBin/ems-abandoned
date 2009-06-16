@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.java.no/ems/external/1"
+            xmlns="http://xmlns.java.no/ems/external/1">
+  <!--
+   | Try to keep all element names in "lisp-style".
+   | That means dashes instead of CamelCase.
+  -->
+
+  <!--
+   |
+   | Elements
+   |
+   | -->
+  <xsd:element name="events" type="EventList"/>
+
+  <xsd:element name="event" type="Event"/>
+
+  <xsd:element name="sessions" type="SessionList"/>
+
+  <xsd:element name="session" type="Session"/>
+
+  <xsd:element name="people" type="PersonList"/>
+
+  <xsd:element name="person" type="Person"/>
+
+  <xsd:element name="room" type="Room"/>
+
+  <xsd:element name="rooms" type="RoomList"/>
+
+  <!--
+   |
+   | Shared
+   |
+   | -->
+  <xsd:complexType name="Interval">
+    <xsd:sequence>
+      <xsd:element name="start" type="xsd:dateTime"/>
+      <xsd:element name="duration" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Keywords">
+    <xsd:sequence>
+      <xsd:element name="keyword" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Tags">
+    <xsd:sequence>
+      <xsd:element name="tag" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+   |
+   | Lists
+   |
+   |-->
+
+  <xsd:complexType name="EventList">
+    <xsd:sequence>
+      <xsd:element name="event" type="Event" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PersonList">
+    <xsd:sequence>
+      <xsd:element name="person" type="Person" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SpeakerList">
+    <xsd:sequence>
+      <xsd:element name="speaker" type="Speaker" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SessionList">
+    <xsd:sequence>
+      <xsd:element name="session" type="Session" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RoomList">
+    <xsd:sequence>
+      <xsd:element name="room" type="Room" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TimeslotList">
+    <xsd:sequence>
+      <xsd:element name="timeslot" type="Interval" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EmailAddressList">
+    <xsd:sequence>
+      <xsd:element name="email-address" type="EmailAddress" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="BinaryList">
+    <xsd:sequence>
+      <xsd:element name="binary" type="URIBinary" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+
+  <!--
+   |
+   | Event
+   |
+   |-->
+  <xsd:complexType name="Event">
+    <xsd:sequence>
+      <xsd:element name="uuid" type="xsd:string"/>
+      <xsd:element name="url" type="xsd:anyURI"/>
+      <xsd:element name="name" type="xsd:string"/>
+      <xsd:element name="notes" type="xsd:string"/>
+      <xsd:element name="date" type="xsd:date"/>
+      <xsd:element name="tags" type="Tags"/>
+      <xsd:element name="rooms" type="RoomList"/>
+      <xsd:element name="timeslots" type="TimeslotList"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+   |
+   | Room
+   |
+   |-->
+  <xsd:complexType name="Room">
+    <xsd:sequence>
+      <xsd:element name="uuid" type="xsd:string"/>
+      <xsd:element name="url" type="xsd:anyURI"/>
+      <xsd:element name="name" type="xsd:string"/>
+      <xsd:element name="description" type="xsd:string"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+   |
+   | URIBinary
+   |
+   |-->
+  <xsd:complexType name="URIBinary">
+    <xsd:sequence>
+      <xsd:element name="uri" type="xsd:anyURI"/> <!--TODO: For some reason not converted to a java.net.URI ... (look into) ... -->
+      <xsd:element name="mime-type" type="xsd:string"/>
+      <xsd:element name="filename" type="xsd:string"/>
+      <xsd:element name="size" type="xsd:integer"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+   |
+   | Session
+   |
+   |-->
+
+  <xsd:complexType name="Session">
+    <xsd:sequence>
+      <xsd:element name="uuid" type="xsd:string"/>
+      <xsd:element name="url" type="xsd:anyURI"/>
+      <xsd:element name="event-url" type="xsd:anyURI"/>
+      <xsd:element name="event-uuid" type="xsd:string"/>
+      <xsd:element name="title" type="xsd:string"/>
+      <xsd:element name="state" type="SessionState"/>
+      <xsd:element name="format" type="SessionFormat"/>
+      <xsd:element name="language" type="xsd:language"/>
+      <xsd:element name="timeslot" type="Interval"/>
+      <xsd:element name="room" type="Room"/>
+      <xsd:element name="level" type="SessionLevel"/>
+      <xsd:element name="lead" type="xsd:string"/>
+      <xsd:element name="body" type="xsd:string"/>
+      <xsd:element name="notes" type="xsd:string"/>
+      <xsd:element name="tags" type="Tags"/>
+      <xsd:element name="keywords" type="Keywords"/>
+      <xsd:element name="speakers" type="SpeakerList"/>
+      <xsd:element name="published" type="xsd:boolean" default="false"/>
+      <xsd:element name="expected-audience" type="xsd:string"/>
+      <xsd:element name="outline" type="xsd:string"/>
+      <xsd:element name="equipment" type="xsd:string"/>
+      <xsd:element name="feedback" type="xsd:string"/>
+      <xsd:element name="attachments" type="BinaryList"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+  |
+  | Speaker
+  |
+  |-->
+
+  <xsd:complexType name="Speaker">
+    <xsd:sequence>
+      <xsd:element name="person-url" type="xsd:anyURI"/>
+      <xsd:element name="name" type="xsd:string"/>
+      <xsd:element name="person-uuid" type="xsd:string"/>
+      <xsd:element name="description" type="xsd:string"/>
+      <xsd:element name="photo" type="URIBinary"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+   |
+   | Person
+   |
+   |-->
+
+  <xsd:complexType name="Person">
+    <xsd:sequence>
+      <xsd:element name="uuid" type="xsd:string"/>
+      <xsd:element name="url" type="xsd:anyURI"/>
+      <xsd:element name="name" type="xsd:string"/>
+      <xsd:element name="description" type="xsd:string"/>
+      <xsd:element name="language" type="xsd:language"/>
+      <xsd:element name="nationality" type="xsd:language"/>
+      <xsd:element name="photo" type="URIBinary"/>
+      <xsd:element name="email-addresses" type="EmailAddressList"/>
+      <xsd:element name="tags" type="Tags"/>
+      <xsd:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="SessionState">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Pending"/>
+      <xsd:enumeration value="Approved"/>
+      <xsd:enumeration value="Rejected"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Gender">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Male"/>
+      <xsd:enumeration value="Female"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="SessionFormat">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Presentation"/>
+      <xsd:enumeration value="BoF"/>
+      <xsd:enumeration value="PanelDebate"/>
+      <xsd:enumeration value="Quickie"/>
+      <xsd:enumeration value="Course"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="SessionLevel">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Introductory"/>
+      <xsd:enumeration value="Introductory_Intermediate"/>
+      <xsd:enumeration value="Intermediate"/>
+      <xsd:enumeration value="Intermediate_Advanced"/>
+      <xsd:enumeration value="Advanced"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="EmailAddress">
+    <xsd:annotation>
+      <xsd:documentation>
+        Email address.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="([a-zA-Z0-9_\-])([a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

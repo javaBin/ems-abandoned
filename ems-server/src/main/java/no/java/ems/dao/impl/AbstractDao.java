@@ -1,5 +1,9 @@
 package no.java.ems.dao.impl;
 
+import fj.F;
+import fj.data.Option;
+import static fj.data.Option.some;
+import static fj.data.Option.none;
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
@@ -16,21 +20,17 @@ import java.sql.Timestamp;
  * @author Trygve Laugstol
  */
 public abstract class AbstractDao {
-    protected static Timestamp toSqlTimestamp(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
+    protected static F<LocalDateTime, Timestamp> LocalDateTimeToSqlTimestamp = new F<LocalDateTime, Timestamp>() {
+        public Timestamp f(LocalDateTime dateTime) {
+            return new Timestamp(dateTime.toDateTime().getMillis());
         }
+    };
 
-        return new Timestamp(dateTime.toDateTime().getMillis());
-    }
-
-    protected static Timestamp toSqlTimestamp(DateTime dateTime) {
-        if (dateTime == null) {
-            return null;
+    protected static F<DateTime, Timestamp> dateTimeToSqlTimestamp = new F<DateTime, Timestamp>() {
+        public Timestamp f(DateTime dateTime) {
+            return new Timestamp(dateTime.getMillis());
         }
-
-        return new Timestamp(dateTime.getMillis());
-    }
+    };
 
     protected static LocalDateTime toLocalDateTime(Timestamp timestamp) {
         if (timestamp == null) {
@@ -48,14 +48,14 @@ public abstract class AbstractDao {
         return new Date(date.toDateTime(LocalTime.MIDNIGHT).getMillis());
     }
 
-    protected static Interval mapInterval(ResultSet rs) throws SQLException {
+    protected static Option<Interval> mapInterval(ResultSet rs) throws SQLException {
         Timestamp timestamp = rs.getTimestamp("start");
         if(timestamp == null) {
-            return null;
+            return none();
         }
 
         LocalDateTime start = toLocalDateTime(timestamp);
         LocalDateTime end = start.withFieldAdded(DurationFieldType.minutes(), rs.getInt("durationMinutes"));
-        return new Interval(start.toDateTime(), end.toDateTime());
+        return some(new Interval(start.toDateTime(), end.toDateTime()));
     }
 }

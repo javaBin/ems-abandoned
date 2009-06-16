@@ -1,7 +1,7 @@
 package no.java.ems.client.swing;
 
 import no.java.swing.DefaultPanel;
-import no.java.ems.service.EmsService;
+import no.java.ems.client.RESTEmsService;
 import org.jdesktop.beansbinding.BindingGroup;
 
 import javax.swing.*;
@@ -68,7 +68,7 @@ public abstract class AbstractEditor extends DefaultPanel {
         getBindingGroup().bind();
     }
 
-    protected EmsService getEmsService() {
-        return EmsClient.getInstance().getEmsService();
+    protected RESTEmsService getEmsService() {
+        return EmsClient.getInstance().getClientService();
     }
 }

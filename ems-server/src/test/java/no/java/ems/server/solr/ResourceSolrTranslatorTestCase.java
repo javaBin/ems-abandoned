@@ -1,18 +1,23 @@
 package no.java.ems.server.solr;
 
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Nationality;
-import no.java.ems.domain.Person;
-import no.java.ems.domain.Session;
-import org.joda.time.LocalDate;
-import org.joda.time.Interval;
-import org.joda.time.DateTime;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static fj.data.Option.some;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Nationality;
+import no.java.ems.server.domain.Person;
+import no.java.ems.server.domain.Session;
 import org.apache.solr.common.SolrInputDocument;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
 
 /**
  *
@@ -26,23 +31,24 @@ public class ResourceSolrTranslatorTestCase {
         Event event = new Event("some event");
         event.setId(UUID.randomUUID().toString());
         event.setDate(new LocalDate());
-        Session session = new Session("Some session");        
+        Session session = new Session("Some session");
+        session.setEventId(event.getId());
         session.setId("id");
         String startDate = "2008-08-25T15:09:50Z";
         String endDate = "2008-08-25T15:10:50Z";
         SimpleDateFormat formatter = new SimpleDateFormat(ResourceToSolrTranslator.UTC_TIMEFORMAT);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        session.setTimeslot(new Interval(new DateTime(formatter.parse(startDate).getTime()), new DateTime(formatter.parse(endDate).getTime())));
+        session.setTimeslot(some(new Interval(new DateTime(formatter.parse(startDate).getTime()), new DateTime(formatter.parse(endDate).getTime()))));
         SolrInputDocument document = createIndexDocument(session);
-        assertEquals("Wrong number of fields", 9, document.getFieldNames().size());
+        System.out.println( "document.getFieldNames() = " + document.getFieldNames() );
+        assertEquals("Wrong number of fields", 10, document.getFieldNames().size());
         assertEquals("Wrong date format", startDate, document.getField("slot_start").getValue());
-
     }
 
     private SolrInputDocument createIndexDocument(Session resource) {
         Map<String, Object> additionalIndexedFields = new HashMap<String, Object>();
         additionalIndexedFields.put("eventid", resource.getEventId());
-        additionalIndexedFields.put("slot", resource.getTimeslot());
+        additionalIndexedFields.put("slot", resource.getTimeslot().some());
         additionalIndexedFields.put("state", resource.getState());
         additionalIndexedFields.put("format", resource.getFormat());
         additionalIndexedFields.put("room", resource.getRoom());
@@ -65,10 +71,10 @@ public class ResourceSolrTranslatorTestCase {
         person.setGender(Person.Gender.Male);
         person.setNationality(new Nationality("NO"));
         person.setTags(Arrays.asList("Super tag"));
-        ResourceToSolrTranslator translator = new ResourceToSolrTranslator();
-        //translator.add(person, Arrays.asList("id", "name", "description", "gender"));
+//        ResourceToSolrTranslator translator = new ResourceToSolrTranslator();
+//        translator.add(person, Arrays.asList("id", "name", "description", "gender"));
 
-      //  assertNotNull(translator.getXML());
+//        assertNotNull(translator.getXML());
 
         person = new Person("Kari Nordmann");
         person.setId(UUID.randomUUID().toString());
@@ -76,8 +82,8 @@ public class ResourceSolrTranslatorTestCase {
         person.setGender(Person.Gender.Female);
         person.setNationality(new Nationality("NO"));
 
-        //translator.add(person, Arrays.asList("id", "name", "description", "gender"));
-        //assertNotNull(translator.getXML());
-        //System.out.println("translator: " + translator.getXML());
+//        translator.add(person, Arrays.asList("id", "name", "description", "gender"));
+//        assertNotNull(translator.getXML());
+//        System.out.println("translator: " + translator.getXML());
     }
 }

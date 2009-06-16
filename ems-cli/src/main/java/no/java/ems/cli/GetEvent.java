@@ -1,10 +1,11 @@
 package no.java.ems.cli;
 
-import no.java.ems.domain.Event;
+import fj.data.Option;
+import no.java.ems.external.v1.EventV1;
 import org.apache.commons.cli.Options;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class GetEvent extends AbstractCli {
@@ -24,17 +25,22 @@ public class GetEvent extends AbstractCli {
         return options;
     }
 
-    public void work() {
-        Event event = getEms().getEvent(getCommandLine().getOptionValue(OPTION_ID));
+    public void work() throws Exception {
+        Option<EventV1> option = getEms().getEvent(getCommandLine().getOptionValue(OPTION_ID));
 
-        System.err.println("Id: " + event.getId());
+        if (option.isNone()) {
+            System.err.println("No such event.");
+            return;
+        }
+
+        EventV1 event = option.some();
+
+        System.err.println("Id: " + event.getUuid());
         System.err.println("Name: " + event.getName());
         System.err.println("Date: " + event.getDate());
-        System.err.println("Notes: " + event.getNotes());
-        System.err.println("Revision: " + event.getRevision());
 
         System.err.println("Tags");
-        for (String tag : event.getTags()) {
+        for (String tag : event.getTags().getTag()) {
             System.err.println(" " + tag);
         }
     }

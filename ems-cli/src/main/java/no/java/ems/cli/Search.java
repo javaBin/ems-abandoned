@@ -1,11 +1,12 @@
 package no.java.ems.cli;
 
+import no.java.ems.external.v1.SessionV1;
 import org.apache.commons.cli.Options;
 
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Search extends AbstractCli {
@@ -25,7 +26,7 @@ public class Search extends AbstractCli {
         return options;
     }
 
-    public void work() {
+    public void work() throws Exception {
         if (!assertIsPresent(OPTION_EVENT_ID)) {
             usage();
             return;
@@ -34,9 +35,9 @@ public class Search extends AbstractCli {
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
         String query = getCommandLine().getOptionValue(OPTION_QUERY);
 
-        List sessions = notNullList(getEms().search(eventId, query));
+        List<SessionV1> sessions = getEms().searchForSessions(eventId, query).getSession();
 
-        for (Object session : sessions) {
+        for (SessionV1 session : sessions) {
             System.out.println(session);
         }
     }

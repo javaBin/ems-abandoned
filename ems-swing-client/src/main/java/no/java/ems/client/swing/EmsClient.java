@@ -1,6 +1,8 @@
 package no.java.ems.client.swing;
 
-import no.java.ems.client.RestEmsService;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import no.java.ems.client.RESTEmsService;
 import no.java.ems.client.swing.contacts.ContactEditor;
 import no.java.ems.client.swing.contacts.ContactListEditor;
 import no.java.ems.client.swing.events.EventEditor;
@@ -10,10 +12,6 @@ import no.java.ems.domain.AbstractEntity;
 import no.java.ems.domain.Event;
 import no.java.ems.domain.Person;
 import no.java.ems.domain.Session;
-import no.java.ems.service.EmsService;
-import no.java.ems.service.ForbiddenException;
-import no.java.ems.service.RequestCallback;
-import no.java.ems.service.UnauthorizedException;
 import no.java.swing.ConfiguredAction;
 import no.java.swing.DebugGlassPane;
 import no.java.swing.DefaultUndoManager;
@@ -32,8 +30,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
@@ -73,7 +73,7 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
     private String connectionURI;
     private JTabbedPane tabs;
     private StatusBar statusBar;
-    private EmsService emsService;
+    private RESTEmsService emsClient;
     private ContactListEditor contactListEditor;
     private EventListEditor eventListEditor;
     private Action saveAction;
@@ -83,6 +83,7 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
     private Action logInAction;
     private Action logOutAction;
     private boolean authenticated;
+    private static final String EMS_DEFAULT_URI = "http://localhost:3000/ems";
 
     public static void main(final String[] args) {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -110,7 +111,7 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
             if (component instanceof TabComponent) {
                 TabComponent tabComponent = (TabComponent)component;
                 String id = tabComponent.getTab().getId();
-                if (id != null && id.equals(entity.getId())) {
+                if (id != null && id.equals(entity.getURI())) {
                     tabs.setSelectedIndex(index);
                     return;
                 }
@@ -230,21 +231,35 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
         return tabs;
     }
 
-    public EmsService getEmsService() {
-        return emsService;
+    public RESTEmsService getClientService() {
+        return emsClient;
     }
 
     @Override
     protected void initialize(final String[] args) {
+        // UI init
         new CustomUncaughtExceptionHandler(getMainFrame());
         UIManager.put("TextArea.font", UIManager.getFont("TextField.font"));
-        connectionURI = System.getProperty("ems-host", "http://localhost:3000/ems");
-        emsService = new RestEmsService(connectionURI);
-        emsService.setRequestCallback(new EmsClientRequestCallback());
+
+        // Login
+        String configuredURI = System.getProperty("ems-host");
+        connectionURI = configuredURI != null ? configuredURI : EMS_DEFAULT_URI;
+
         logger.info("Ems host address set to " + connectionURI);
 
-        AuthenticationDialog authenticationDialog = runAuthenticationDialog(null);
-        emsService.setCredentials(authenticationDialog.getUsername(), authenticationDialog.getPassword());
+        if (configuredURI == null) {
+            emsClient = new RESTEmsService(connectionURI);            
+        }
+        else {
+            AuthenticationDialog authenticationDialog = runAuthenticationDialog(null);
+
+            if (authenticationDialog == null) {
+                logger.info("User login cancelled.");
+                System.exit(0); // TODO: Handle login cancel better
+            }
+
+            emsClient = new RESTEmsService(connectionURI, authenticationDialog.getUsername(), authenticationDialog.getPassword());
+        }
     }
 
     protected void startup() {
@@ -345,7 +360,6 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
             setEnabled(false);
         }
 
-        @Override
         public void actionPerformed(final ActionEvent event) {
             if (tabs.getSelectedIndex() > 1) {
                 AbstractEditor editor = (AbstractEditor)tabs.getComponentAt(tabs.getSelectedIndex());
@@ -423,9 +437,13 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
     }
 
     public static AuthenticationDialog runAuthenticationDialog(Component component) {
-        AuthenticationDialog message = new AuthenticationDialog();
-        JOptionPane.showOptionDialog(component, message, "Authenticate", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-        return message;
+        AuthenticationDialog message = new AuthenticationDialog(getInstance());
+
+        if (JOptionPane.OK_OPTION == JOptionPane.showOptionDialog(component, message, "Authenticate", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null)) {
+            return message;
+        }
+
+        return null;
     }
 
     private class LogInAction extends ConfiguredAction {
@@ -435,9 +453,11 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
 
         public void actionPerformed(ActionEvent e) {
             AuthenticationDialog message = runAuthenticationDialog(getMainFrame());
-            getStatusBar().setCurrentPrincipal(message.getUsername());
-            emsService.setCredentials(message.getUsername(), message.getPassword());
-            authenticated = true;
+            if (message != null) {
+                getStatusBar().setCurrentPrincipal(message.getUsername());
+                //emsClient.setCredentials(message.getUsername(), message.getPassword());
+                authenticated = true;
+            }
         }
 
         public boolean isEnabled() {
@@ -451,7 +471,7 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
         }
 
         public void actionPerformed(ActionEvent e) {
-            emsService.setCredentials(null, null);
+            //emsClient.setCredentials(null, null);
             authenticated = false;
         }
 
@@ -462,15 +482,28 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
 
     private static class AuthenticationDialog extends JPanel {
 
-        private JTextField username = new JTextField();
-        private JTextField password = new JPasswordField();
+        private JTextField username = new JTextField(12);
+        private JTextField password = new JPasswordField(12);
 
-        public AuthenticationDialog() {
-            setLayout(new GridLayout(2, 2));
-            add(new JLabel("Username"));
-            add(username);
-            add(new JLabel("Password"));
-            add(password);
+        public AuthenticationDialog(final EmsClient client) {
+            FormLayout layout = new FormLayout("r:d, 2dlu, f:d:g", "p, 4dlu, p, 2dlu, p, 4dlu, p");
+            layout.setRowGroups(new int[][] {{1, 7}, {3, 5}});
+            CellConstraints cc = new CellConstraints();
+
+            setLayout(layout);
+
+            JLabel serverLabel = new JLabel(getText("no.java.ems.client.swing.LoginPanel.headerLabel.text", client.getHost()));
+            serverLabel.putClientProperty("JComponent.sizeVariant", "small");
+            add(serverLabel, cc.xyw(1, 1, 3));
+
+            add(new JLabel(getText("no.java.ems.client.swing.LoginPanel.usernameLabel.text")), cc.xy(1, 3));
+            add(username, cc.xy(3, 3));
+            add(new JLabel(getText("no.java.ems.client.swing.LoginPanel.passwordLabel.text")), cc.xy(1, 5));
+            add(password, cc.xy(3, 5));
+
+            add(new CapsLockLabel(getText("no.java.ems.client.swing.LoginPanel.capsLockLabel.text")), cc.xyw(1, 7, 3));
+
+            // TODO: Make username input focused
         }
 
         public String getUsername() {
@@ -480,9 +513,30 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
         public String getPassword() {
             return password.getText();
         }
+
+        private static class CapsLockLabel extends JLabel {
+            public CapsLockLabel(String pText) {
+                super(pText);
+                setVisible(false);
+                putClientProperty("JComponent.sizeVariant", "small");
+                try {
+                  Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+                  new Timer(
+                      100,
+                      new ActionListener() {
+                        public void actionPerformed(final ActionEvent pEvent) {
+                          setVisible(Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK));
+                        }
+                      }
+                  ).start();
+                } catch (UnsupportedOperationException ignore) {
+                  // getLockingKeyState() not supported for this platform
+                }
+            }
+        }
     }
 
-    private class EmsClientRequestCallback extends RequestCallback {
+    /*private class EmsClientRequestCallback extends RequestCallback {
 
         private EmsClientRequestCallback() {
             addCodeCallback(401, new Runnable() {
@@ -497,5 +551,5 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
                 }
             });
         }
-    }
+    } */
 }

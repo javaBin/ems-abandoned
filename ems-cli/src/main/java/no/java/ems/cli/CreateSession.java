@@ -1,13 +1,19 @@
 package no.java.ems.cli;
 
-import no.java.ems.client.SessionsClient;
-import no.java.ems.domain.Session;
 import org.apache.commons.cli.Options;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v1.SessionState;
+import no.java.ems.external.v1.SessionFormat;
+import no.java.ems.external.v1.SessionLevel;
+import no.java.ems.external.v1.EmsV1F;
+import static no.java.ems.external.v1.EmsV1F.throwException;
+
+import java.net.URI;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -42,7 +48,7 @@ public class CreateSession extends AbstractCli {
         return options;
     }
 
-    public void work() {
+    public void work() throws Exception {
         if(!assertIsPresent(OPTION_EVENT_ID) ||
             !assertIsPresent(OPTION_DATE) ||
             !assertIsPresent(OPTION_TITLE)) {
@@ -62,12 +68,12 @@ public class CreateSession extends AbstractCli {
 
         Interval timeslot = new Interval(date.toDateTime(), Minutes.minutes(60));
         
-        Session session = new Session();
-        session.setEventId(eventId);
-        session.setTimeslot(timeslot);
-        session.setState(Session.State.Pending);
-        session.setFormat(Session.Format.Presentation);
-        session.setLevel(Session.Level.Intermediate);
+        SessionV1 session = new SessionV1();
+        session.setEventUuid(eventId);
+        session.setTimeslot(EmsV1F.toIntervalV1.f(timeslot));
+        session.setState(SessionState.PENDING);
+        session.setFormat(SessionFormat.PRESENTATION);
+        session.setLevel(SessionLevel.INTERMEDIATE);
         session.setTitle(title);
         session.setLead(lead);
         session.setBody(body);
@@ -75,9 +81,8 @@ public class CreateSession extends AbstractCli {
 //        List<String> keywords = new ArrayList<String>();
 //        List<Speaker> speakers = new ArrayList<Speaker>();
 
-        SessionsClient sessionsClient = getEms().getSessionsClient();
-        sessionsClient.createSession(session);
+        URI uri = getEms().addSession(session);
 
-        System.err.println("Session created, id: " + session.getId());
+        System.err.println("Session created, id: " + uri.toURL().toExternalForm());
     }
 }

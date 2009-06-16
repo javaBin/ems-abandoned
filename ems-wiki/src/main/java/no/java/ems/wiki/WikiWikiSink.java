@@ -3,7 +3,7 @@ package no.java.ems.wiki;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class WikiWikiSink implements WikiSink {

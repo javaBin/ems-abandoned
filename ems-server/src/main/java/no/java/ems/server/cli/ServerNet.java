@@ -1,10 +1,8 @@
 package no.java.ems.server.cli;
 
-import no.java.ems.server.EmsServices;
-import org.apache.derby.drda.NetworkServerControl;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class ServerNet {
@@ -16,9 +14,10 @@ public class ServerNet {
             return;
         }
 
-        EmsServices emsServices = new EmsServices(commandLine.getEmsHome(), 0, true, false,
-            NetworkServerControl.DEFAULT_PORTNUMBER, false);
-
-        ShutdownUtil.waitForShutdown(emsServices);
+        throw new RuntimeException("Not implemented");
+//        EmsServices emsServices = new EmsServices(commandLine.getEmsHome(), 0, true, false,
+//            NetworkServerControl.DEFAULT_PORTNUMBER, false);
+//
+//        ShutdownUtil.waitForShutdown(emsServices);
     }
 }

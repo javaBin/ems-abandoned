@@ -3,22 +3,27 @@ package no.java.ems.dao.impl;
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.Language;
-import no.java.ems.domain.Session;
-import no.java.ems.domain.Speaker;
+import no.java.ems.server.domain.Binary;
+import no.java.ems.server.domain.Language;
+import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.Speaker;
+import static no.java.ems.server.f.ExternalV1F.*;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.Timestamp;
+import static java.sql.Types.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
 
     private static final String DELIMITER = ",";
@@ -26,6 +31,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     private BinaryDao binaryDao;
     private RoomDao roomDao;
 
+    @Autowired
     public JdbcTemplateSessionDao(JdbcTemplate jdbcTemplate, BinaryDao binaryDao, RoomDao roomDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.binaryDao = binaryDao;
@@ -33,12 +39,22 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     }
 
     public Session getSession(String id) {
-        return (Session)jdbcTemplate.queryForObject(
-                "select * from session where id = ?",
+        return (Session) jdbcTemplate.queryForObject(
+                "select * from session where id = ? and revision in (select max(revision) from session where id = ?)",
                 new Object[]{id},
-                new int[]{Types.VARCHAR},
+                new int[]{VARCHAR},
                 new SessionMapper()
         );
+    }
+
+    public Session getSession(String eventId, String id) {
+        return (Session) jdbcTemplate.queryForObject(
+                "select * from session where id = ? and eventId = ? and revision in (select max(revision) from session where id = ?)",
+                new Object[]{id, eventId},
+                new int[]{VARCHAR, VARCHAR},
+                new SessionMapper()
+        );
+
     }
 
     public List<Session> getSessions(String eventId) {
@@ -46,7 +62,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
         return jdbcTemplate.query(
                 "select * from session where eventId = ? order by title",
                 new Object[]{eventId},
-                new int[]{Types.VARCHAR},
+                new int[]{VARCHAR},
                 new SessionMapper()
         );
     }
@@ -56,7 +72,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
         return jdbcTemplate.query(
                 "select id from session where eventid = ? order by title",
                 new Object[]{eventId},
-                new int[]{Types.VARCHAR},
+                new int[]{VARCHAR},
                 new RowMapper() {
                     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return rs.getString("id");
@@ -74,8 +90,8 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                         toSqlDate(date)
                 },
                 new int[]{
-                        Types.VARCHAR,
-                        Types.DATE
+                        VARCHAR,
+                        DATE
                 },
                 new RowMapper() {
                     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -88,6 +104,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public List<String> findSessionsBySpeakerName(String eventId, String name) {
         // todo: implement
         System.err.println("JdbcTemplateSessionDao.findSessionsBySpeakerName: " + name);
+        // todo: when a method is unimplemented don't return a value, it makes the impression it's working. Throw exception
         return Collections.emptyList();
     }
 
@@ -100,8 +117,8 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                         title
                 },
                 new int[]{
-                        Types.VARCHAR,
-                        Types.VARCHAR
+                        VARCHAR,
+                        VARCHAR
                 },
                 new RowMapper() {
                     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -113,21 +130,21 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
 
     public void saveSession(Session session) {
         String sql;
+
+        sql = "insert into session(revision, title, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         if (session.getId() == null) {
-            sql = "insert into session(revision, title, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             session.setId(UUID.randomUUID().toString());
-            session.setRevision(1);
-        } else {
-            sql = "update session set revision = ?, title = ?, start = ?, durationMinutes = ?, state = ?, roomId = ?, level = ?, format = ?, tags = ?, keywords = ?, language = ?, eventId = ?, lead = ?, body = ?, notes = ?, feedback = ?, expected = ?, outline = ?, equipment = ?, published = ? where id = ?";
-            session.setRevision(session.getRevision() + 1);
         }
+
+        session.setRevision(session.getRevision() + 1);
+
         jdbcTemplate.update(
                 sql,
                 new Object[]{
                         session.getRevision(),
                         session.getTitle(),
-                        session.getTimeslot() != null ? toSqlTimestamp(session.getTimeslot().getStart()) : null,
-                        session.getTimeslot() != null ? session.getTimeslot().toPeriod().getMinutes() : null,
+                        session.getTimeslot().map(intervalGetStart).map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
+                        session.getTimeslot().map(intervalToPeriod).map(periodGetMinutes).orSome(0),
                         session.getState().name(),
                         session.getRoom() != null ? session.getRoom().getId() : null,
                         session.getLevel() != null ? session.getLevel().name() : null,
@@ -147,27 +164,27 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                         session.getId()
                 },
                 new int[]{
-                        Types.INTEGER,     // revision
-                        Types.VARCHAR,     // title
-                        Types.TIMESTAMP,   // start
-                        Types.INTEGER,     // durationMinutes
-                        Types.VARCHAR,     // state
-                        Types.VARCHAR,     // room id
-                        Types.VARCHAR,     // level
-                        Types.VARCHAR,     // format
-                        Types.LONGVARCHAR, // tags
-                        Types.LONGVARCHAR, // keywords
-                        Types.VARCHAR,     // language
-                        Types.VARCHAR,     // event id
-                        Types.LONGVARCHAR, // lead
-                        Types.LONGVARCHAR, // body
-                        Types.LONGVARCHAR, // notes
-                        Types.LONGVARCHAR, // feedback
-                        Types.LONGVARCHAR, // expected
-                        Types.LONGVARCHAR, // outline
-                        Types.LONGVARCHAR, // equipment
-                        Types.CHAR,        // published
-                        Types.VARCHAR      // id
+                        INTEGER,     // revision
+                        VARCHAR,     // title
+                        TIMESTAMP,   // start
+                        INTEGER,     // durationMinutes
+                        VARCHAR,     // state
+                        VARCHAR,     // room id
+                        VARCHAR,     // level
+                        VARCHAR,     // format
+                        LONGVARCHAR, // tags
+                        LONGVARCHAR, // keywords
+                        VARCHAR,     // language
+                        VARCHAR,     // event id
+                        LONGVARCHAR, // lead
+                        LONGVARCHAR, // body
+                        LONGVARCHAR, // notes
+                        LONGVARCHAR, // feedback
+                        LONGVARCHAR, // expected
+                        LONGVARCHAR, // outline
+                        LONGVARCHAR, // equipment
+                        CHAR,        // published
+                        VARCHAR      // id
                 }
         );
         jdbcTemplate.update("delete from session_speaker where sessionId = ?", new Object[]{session.getId()});
@@ -178,6 +195,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                     "insert into session_speaker values (?, ?, ?, ?, ?, ?)",
                     new Object[]{
                             session.getId(),
+                            session.getRevision(),
                             speaker.getPersonId(),
                             position,
                             speaker.getDescription(),
@@ -185,17 +203,18 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                             speaker.getPhoto() == null ? null : speaker.getPhoto().getId(),
                     },
                     new int[]{
-                            Types.VARCHAR,     // sessionId
-                            Types.VARCHAR,     // personId
-                            Types.INTEGER,     // position
-                            Types.LONGVARCHAR, // description
-                            Types.LONGVARCHAR, // tags
-                            Types.VARCHAR,     // photo
+                            VARCHAR,     // sessionId
+                            INTEGER,     // revision
+                            VARCHAR,     // personId
+                            INTEGER,     // position
+                            LONGVARCHAR, // description
+                            LONGVARCHAR, // tags
+                            VARCHAR,     // photo
                     }
             );
         }
         jdbcTemplate.update("delete from session_attachement where sessionId = ?", new Object[]{session.getId()});
-        List<Binary> attachements = session.getAttachements();
+        List<Binary> attachements = session.getAttachments();
         for (int position = 0; position < attachements.size(); position++) {
             Binary attachement = attachements.get(position);
             if (attachement == null) {
@@ -209,9 +228,9 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                             position,
                     },
                     new int[]{
-                            Types.VARCHAR,     // sessionId
-                            Types.VARCHAR,     // attachementId
-                            Types.INTEGER,     // position
+                            VARCHAR,     // sessionId
+                            VARCHAR,     // attachementId
+                            INTEGER,     // position
                     }
 
             );
@@ -221,7 +240,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public void deleteSession(String id) {
         jdbcTemplate.update("delete from session_speaker where sessionId = ?", new Object[]{id});
         jdbcTemplate.update("delete from session_attachement where sessionId = ?", new Object[]{id});
-        jdbcTemplate.update("delete from session where id = ?", new Object[]{id}, new int[]{Types.VARCHAR});
+        jdbcTemplate.update("delete from session where id = ?", new Object[]{id}, new int[]{VARCHAR});
     }
 
     private class SessionMapper implements RowMapper {
@@ -280,7 +299,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                     )
             );
             //noinspection unchecked
-            session.setAttachements(
+            session.setAttachments(
                     jdbcTemplate.query(
                             "select attachementId from session_attachement where sessionId = ? order by position",
                             new Object[]{session.getId()},

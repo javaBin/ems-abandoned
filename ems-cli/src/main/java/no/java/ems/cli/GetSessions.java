@@ -1,10 +1,10 @@
 package no.java.ems.cli;
 
-import no.java.ems.domain.Session;
+import no.java.ems.external.v1.SessionV1;
 import org.apache.commons.cli.Options;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class GetSessions extends AbstractCli {
@@ -23,10 +23,10 @@ public class GetSessions extends AbstractCli {
         return options;
     }
 
-    public void work() {
+    public void work() throws Exception {
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
 
-        for (Session session : getEms().getSessions(eventId)) {
+        for (SessionV1 session : getEms().getSessions(eventId).getSession()) {
             PrintUtil.print(getCommandLine(), session);
         }
     }

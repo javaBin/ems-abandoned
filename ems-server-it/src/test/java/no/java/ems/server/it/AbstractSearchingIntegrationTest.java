@@ -1,14 +1,11 @@
 package no.java.ems.server.it;
 
-import no.java.ems.domain.Session;
-import no.java.ems.server.EmsServices;
-import no.java.ems.server.search.LuceneSearchService;
+import no.java.ems.server.domain.Session;
 import no.java.ems.server.search.SearchRequest;
 import no.java.ems.server.search.SearchResponse;
 import no.java.ems.server.search.SearchService;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,11 +13,11 @@ import org.junit.Test;
 import java.io.File;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class AbstractSearchingIntegrationTest extends Assert {
-    private static EmsServices emsServices;
+//    private static EmsServices emsServices;
 
     protected abstract SearchService createSearchService() throws Exception;
 
@@ -65,14 +62,15 @@ public abstract class AbstractSearchingIntegrationTest extends Assert {
 
         FileUtils.deleteDirectory(setupDirectory);
 
-        emsServices = new EmsServices(setupDirectory, 0, true, false, 0, false);
-        emsServices.getDerbyService().maybeCreateTables(false);
+
+//        emsServices = new EmsServices(setupDirectory, 0, true, false, 0, false);
+//        emsServices.getDerbyService().maybeCreateTables(false);
     }
 
-    @AfterClass
-    public static void afterClass() {
-        if (emsServices != null) {
-            emsServices.stop();
-        }
-    }
+//    @AfterClass
+//    public static void afterClass() {
+//        if (emsServices != null) {
+//            emsServices.stop();
+//        }
+//    }
 }

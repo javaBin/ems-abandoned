@@ -204,7 +204,7 @@ public class EventEditor extends EntityListEditor<Session> {
 
     protected Session createEntity() {
         Session session = new Session();
-        session.setEventId(getEvent().getId());
+        session.setEventURI(getEvent().getURI());
         sessions.add(session);
         return session;
     }
@@ -254,7 +254,7 @@ public class EventEditor extends EntityListEditor<Session> {
         }
 
         protected List<Session> doInBackground() throws Exception {
-            return EmsClient.getInstance().getEmsService().getSessions(event.getId());
+            return EmsClient.getInstance().getClientService().getSessions(event);
         }
 
         @Override
@@ -266,7 +266,7 @@ public class EventEditor extends EntityListEditor<Session> {
             }
             Set<Session> keep = new HashSet<Session>();
             for (Session newSession : newSessions) {
-                Session existingSession = Entities.getInstance().getSession(newSession.getId());
+                Session existingSession = Entities.getInstance().getSession(newSession.getURI());
                 if (existingSession == null) {
                     sessions.add(newSession);
                     keep.add(newSession);

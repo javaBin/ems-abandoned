@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/context/spring-util-2.5.xsd"
+    default-lazy-init="true">
+
+  <description>EMS Server</description>
+
+  <!--
+  All beans are lazy as their initializtion order is important. The embedder will take care of starting the beans in
+  the right order (which basically means loading the derby service before everything else).
+  -->
+
+  <context:component-scan base-package="no.java.ems.dao.impl"/>
+  <context:component-scan base-package="no.java.ems.server.domain"/>
+  <context:component-scan base-package="no.java.ems.server.resources"/>
+  <context:component-scan base-package="no.java.ems.server.search"/>
+
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <bean id="dataSource" class="no.java.ems.server.domain.EmsServerConfiguration$DataSourceFactoryBean">
+    <property name="configuration" ref="emsServerConfiguration"/>
+  </bean>
+
+  <bean id="emsServerConfiguration" class="no.java.ems.server.domain.EmsServerConfiguration$ConfigurationFactoryBean">
+  </bean>
+
+  <bean id="derbyService" class="no.java.ems.server.DerbyService" autowire="constructor"/>
+
+</beans>
