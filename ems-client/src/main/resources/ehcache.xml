@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Configuration of ehCache.
+This could be used for all caching on the client side
+-->
+<ehcache>
+  <diskStore path="java.io.tmpdir"/>
+  <defaultCache
+      maxElementsInMemory="1000"
+      eternal="false"
+      overflowToDisk="true"
+      timeToIdleSeconds="0"
+      timeToLiveSeconds="600"
+      diskPersistent="false"
+      maxElementsOnDisk="10000000"
+      memoryStoreEvictionPolicy="LRU"
+      diskExpiryThreadIntervalSeconds="120"
+      />
+  <cache name="session"
+      maxElementsInMemory="1000"
+      eternal="false"
+      overflowToDisk="true"
+      timeToIdleSeconds="0"
+      timeToLiveSeconds="600"
+      diskPersistent="false"
+      maxElementsOnDisk="10000000"
+      memoryStoreEvictionPolicy="LRU"
+      diskExpiryThreadIntervalSeconds="120"
+      />
+</ehcache>

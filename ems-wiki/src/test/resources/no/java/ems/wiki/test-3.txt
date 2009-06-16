@@ -1,0 +1,14 @@
+Domain Specific Languages (DSLs) are mini languages designed for a specific problem domain. When used appropriately, DSLs can:
+
+ * Simplify the overall application logic by expressing parts of it in a DSL (Rule engines is one example, but there are more)
+ * Simplify deployment routines by modifying files written in the DSL (without change to application code)
+ * Speed up development by equipping domain-experts with a simple way to express new behaviour without lengthy developoment cycles.
+
+DSLs are often categorised as either "internal" or "external". An internal DSL is written in the host language, whereas external DSLs are
+usually implemented by parsing text, either using regular expressions or a parser generator.
+
+Internal DSLs are commonly used in dynamic languages, but statically typed languages are usually not suitable for internal DSLs.
+
+This presentation will give an introduction DSLs and when you should consider using them, and will show an example of how to
+implement one using one of the many parser generators for Java.
+

@@ -1,0 +1,24 @@
+= Server =
+ o Make Room a sub-entity under Event.
+ o LDAP authentication
+  - Look into CAS for SSO
+
+== Event ==
+ o Add a List<LocalDate> days to Event
+ o Add "day" to event which is an index into the "days" array
+ o Change timeslot to a "hour+minute" type interval
+ o Return from main() if startup fails.
+
+= =
+
+ o DAO skal være crud, solr brukes for søk
+ o Sessions må filtrere på approv med GET & unauthenticated
+  - I andre runde se på en tag
+
+== Drypp ==
+=== Alt A ===
+ o Legge til timestamp på Session
+ o Ny resource som serverer alle sessions som er published (se over)
+
+=== Alt B ===
+ o Sende mail til tips@java.no ved hver endring av Session

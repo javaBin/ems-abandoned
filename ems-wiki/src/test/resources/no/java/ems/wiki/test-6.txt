@@ -1,0 +1,49 @@
+h1. Outline
+
+ * Background
+ ** A trip down memory lane in Storebrand: How did we get started?
+ *** weee
+ **** wooo
+ ** How we learned to love web-testing, and
+ ** How we learned to hate it.
+ * Web-testing practices
+ ** Testing the web and nothing but the web
+ ** Black-box testing
+ ** Acceptance/system testing
+ ** Integration testing
+ ** How to fit web-tests into the rest of your test-model
+ ** How web-tests can give you good URLs and HTML design
+ ** Running web-tests on the Continous Integration server
+ ** Getting your users to help out: delivering bug reports with test-scripts
+ ** Test fixtures
+ * Advanced web-testing
+ ** Acceptence web-testing combining FitNesse and Selenium
+ ** Behaviour-Driven Development with web tests (Selenium combined with the RPsec Story Framework)
+ ** Web tests from a test strategy perspective
+ ** How to scale (with Selenium Grid)
+ * Pitfalls
+ ** Too many tests
+ ** Too slow tests
+ ** The tests break all the time!
+ ** Some refactoring breaks all the tests
+ ** Using web-tests for everything
+ ** How to combine system testing with manual testing
+ ** Capturing system requirements in web tests
+ * QA
+
+h1. Required experience:
+
+No particular experience is strictly required, but having tried out some web- testing tool could be an advantage.
+
+h1. Expected audience:
+
+ * Web developers
+ * QA/testers
+ * People interested in testing in general
+
+h1. By attending this presentation, participants will learn...
+
+ * How to get started with web-testing
+ * How to keep doing it successfully
+ * How to use web-tests as part of an agile project
+

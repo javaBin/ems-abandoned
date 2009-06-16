@@ -1,0 +1,37 @@
+Trelagsarkitektur forbindes gjerne med webapplikasjoner, og det kan derfor kanskje virke rart ? snakke
+om denne typen arkitektur sammen med rike desktop-applikasjoner utviklet i Swing. Velger man Swing
+som frontend, er det som regel fordi man ?nsker fleksible brukergrensesnitt med stor interaktivitet.
+Interaktiviteten man oppn?r med Swing skyldes f?rst og fremst den tette koblingen mellom tilstanden
+til domeneobjektene og tilstanden til GUI-elementene. For ? f? til en tilsynelatende sterk binding
+mellom domene objektene og Swing-grensesnittet i en trelagsarkitektur, var vi avhengige av ? tenke
+nytt. Det f?rste vi gjorde var ? lete etter rammeverk som kunne st?tte oss i denne prosessen, men vi fant
+fort ut at det ikke fantes noe rammeverk som kunne st?tte oss slik vi ?nsket. Vi har derfor laget et eget
+rammeverk for ? binde domeneobjekter og brukergrensesnitt i en trelagsarkitektur.
+
+Underveis i prosjektet har det, uavhengig v?rt prosjekt, blitt opprettet flere Java Community Processes
+? JSR 295: Beans Binding og JSR 296: Swing Application Framework, som jobber med ? lage
+rammeverk for mange av funksjonene i v?rt eget rammeverk. Det er derfor ogs? interessant ?
+sammenlikne disse l?sningene med v?re egne l?sninger.
+
+h1. Outline
+
+ * Introduksjon
+ * Case
+ * Kompleks forretningslogikk mellom relaterte entiteter
+ * Trelagsarkitektur
+ * JEE/EJB-persistering
+ * Session Facade pattern
+ * DTO pattern
+ * Tynnest mulig klient
+ * Generelle swing-modeller uten forretningslogikk
+ * Tunge jobber ?nskes gjort p? serveren
+ * Muligheter for senere utvikling av webgrensesnitt mot deler av systemet
+ * Problemet
+ * Swingmodeller forholder seg til objekter
+ * Livssyklusen til DTOer
+ * Lever frem til ny henting/lagring
+ * Livssyklusen til modeller i swing
+ * Lever s? lenge GUI-elementet eksisterer
+ * L?sningen
+ * Bindingslag
+

@@ -1,0 +1,41 @@
+<div class="wiki">
+<div class="paragraph">
+Trelagsarkitektur forbindes gjerne med webapplikasjoner, og det kan derfor kanskje virke rart ? snakke
+om denne typen arkitektur sammen med rike desktop-applikasjoner utviklet i Swing. Velger man Swing
+som frontend, er det som regel fordi man ?nsker fleksible brukergrensesnitt med stor interaktivitet.
+Interaktiviteten man oppn?r med Swing skyldes f?rst og fremst den tette koblingen mellom tilstanden
+til domeneobjektene og tilstanden til GUI-elementene. For ? f? til en tilsynelatende sterk binding
+mellom domene objektene og Swing-grensesnittet i en trelagsarkitektur, var vi avhengige av ? tenke
+nytt. Det f?rste vi gjorde var ? lete etter rammeverk som kunne st?tte oss i denne prosessen, men vi fant
+fort ut at det ikke fantes noe rammeverk som kunne st?tte oss slik vi ?nsket. Vi har derfor laget et eget
+rammeverk for ? binde domeneobjekter og brukergrensesnitt i en trelagsarkitektur.
+</div>
+<div class="paragraph">
+Underveis i prosjektet har det, uavhengig v?rt prosjekt, blitt opprettet flere Java Community Processes
+? JSR 295: Beans Binding og JSR 296: Swing Application Framework, som jobber med ? lage
+rammeverk for mange av funksjonene i v?rt eget rammeverk. Det er derfor ogs? interessant ?
+sammenlikne disse l?sningene med v?re egne l?sninger.
+</div>
+<div class="heading-1">Outline</div>
+<ul>
+<li>Introduksjon</li>
+<li>Case</li>
+<li>Kompleks forretningslogikk mellom relaterte entiteter</li>
+<li>Trelagsarkitektur</li>
+<li>JEE/EJB-persistering</li>
+<li>Session Facade pattern</li>
+<li>DTO pattern</li>
+<li>Tynnest mulig klient</li>
+<li>Generelle swing-modeller uten forretningslogikk</li>
+<li>Tunge jobber ?nskes gjort p? serveren</li>
+<li>Muligheter for senere utvikling av webgrensesnitt mot deler av systemet</li>
+<li>Problemet</li>
+<li>Swingmodeller forholder seg til objekter</li>
+<li>Livssyklusen til DTOer</li>
+<li>Lever frem til ny henting/lagring</li>
+<li>Livssyklusen til modeller i swing</li>
+<li>Lever s? lenge GUI-elementet eksisterer</li>
+<li>L?sningen</li>
+<li>Bindingslag</li>
+</ul>
+</div>

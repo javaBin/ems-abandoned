@@ -1,0 +1,2770 @@
+<?xml version='1.0' encoding='MacRoman'?>
+<event-data>
+  <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+  <sessions>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state>Rejected</state>
+      <format>Presentation</format>
+      <level>Intermediate</level>
+      <title>Implementing external DSLs in Java</title>
+      <lead>Domain Specific Languages (DSLs) are mini languages designed for a specific problem domain. When used
+        appropriately, DSLs can:
+      </lead>
+      <body>Domain Specific Languages (DSLs) are mini languages designed for a specific problem domain. When used
+        appropriately, DSLs can:
+
+        * Simplify the overall application logic by expressing parts of it in a DSL (Rule engines is one example, but
+        there are more)
+        * Simplify deployment routines by modifying files written in the DSL (without change to application code)
+        * Speed up development by equipping domain-experts with a simple way to express new behaviour without lengthy
+        developoment cycles.
+
+        DSLs are often categorised as either "internal" or "external". An internal DSL is written in the host language,
+        whereas external DSLs are
+        usually implemented by parsing text, either using regular expressions or a parser generator.
+
+        Internal DSLs are commonly used in dynamic languages, but statically typed languages are usually not suitable
+        for internal DSLs.
+
+        This presentation will give an introduction DSLs and when you should consider using them, and will show an
+        example of how to
+        implement one using one of the many parser generators for Java.
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>c335983c-b84d-4855-bf0d-29c78029b019</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>ee385be6-c830-4a76-abd8-bc0eeb7a0bd6</id>
+      <revision>2</revision>
+      <tags>
+        <string>feedback_req</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state>Pending</state>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>"Hooking Stuff Together" &#x2013; Coupling, Messaging, and Conversations</title>
+      <body>As monolithic applications are quickly going the way of the mainframe dinosaur (no, not extinct, but
+        relegated to specialized niche applications), we can expect to spend more time connecting services and
+        components than developing new ones. Will this make developers obsolete because business analysts use the latest
+        drag-and-drop tools to wire up components? Is coupling really so bad? Why is REST popular? Do we need
+        distributed transactions? This talk describes the constraints of connected systems design and presents common
+        design patterns to address some of the challenges.
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>7024bb06-9dd6-4984-81db-32a5edabb272</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>f0ddf1cb-49be-4ee7-b462-cb157dc1710f</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>"Unlimited" scalability through cloud computing</title>
+      <lead>For years it has been possible for individuals and companies to hire some relatively cheap space at a
+        �Internet Service Provider near you� and host your applications there. The growth in use would
+        most likely be fairly easy to predict, without any huge spikes. If your service was good enough, any
+        huge spikes with their inevitable poor performance would not be too much of a hindrance since the
+        Internet users did not have that many other possibilities to choose from and would come back and
+        still be happy users once you had resolved your difficulties. The viral spread of successful
+        applications in todays community-driven internet world does in many cases not allow a slow
+        growth which may be handled by a regular ISP or your own 2U server. Facebook development is
+        one such area where your application is soon forgotten if you greet the users by �not responding�
+        errors. A successful Facebook application may experience (and should plan for) a thousandfold
+        increase in users in a single day. Another example of todays increased spread is &#x201c;/.&#x201d; (slashdot).
+        Most
+        sites that experience the slashdot effect (slashdotting) are inaccessible for a couple of days, until
+        everything passes over and most slashdot users still don't know what was on that site since all they
+        received was a &#x201c;not responding&#x201d; error. To be successful when you don't know your exact userbase
+        you have to plan ahead. Should you go for one humongous server and hope that it holds all the way,
+        or should you make your application clusterable and build &#x201c;your&#x201d; serverfarm as the application
+        grows?
+        Cloud Computing (depending on provider) provides &#x201c;unlimited&#x201d; computing power through virtual
+        servers. When the load increases you can start more servers as needed. To start X new servers only
+        takes minutes. The entire process may be fully automated to start new servers when load reaches
+        certain criterias or shut down existing servers when the load falls below other criterias, thus
+        maximizing the compute-power bought by each dollar.
+        To take full advantage of Cloud Computing you have to know your target architecture and plan for a
+        fully clusterable application right from the beginning. You must also understand virtualisation and
+        how this will affect how you should build and manage your application.
+        The goal of this presentation is to give the audience insights into what makes an application
+        clusterable and how we may use that clusterability to deploy the application to a grid or a cloud
+        computing environment like Amazon EC2/S3.
+      </lead>
+      <body>* Really fast intro to what Cloud Computing is (5 minutes)
+        * What is scalability (5 minutes)
+        * Important things to think of when writing scalable applications (30 min)
+        * What is Amazon EC2/S3 (5 min)
+        * A demo of running a small java-service in Amazon EC2/S3 and how easy it is to add more servers when things
+        start hurting. (10 minutes) This will most likely be a pre-recorded thing with speed-up when waiting for servers
+        to start etc. (And due to bad experience with internet-connections in such circumstances)
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>aed601b1-0313-484b-9d87-950065594b5c</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>e30c3bfc-447a-457f-bf7d-88749b96d8d0</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>(Hvordan lage) Sikre applikasjoner i Java ME</title>
+      <lead>Stadig flere applikasjoner finner veien til mobiltelefonen. Kundene forventer lik (eller bedre)
+        sikkerhet p� applikasjonen n�r den er p� en mobiltelefon som n�r den er p� en vanlig PC.
+        Java ME er kjent for ha en sv�rt strikt sikkerhetspolitikk med h�y grad av &#x201d;sandboxing&#x201d;, men
+        er dette nok for � lage en sikker applikasjon? Hva er det egentlig som skal til for � lage en
+        sikker applikasjon, og har Java ME det som trengs? Hva med "write once, run everywhere&#x201d;?
+        Foredraget vil gi en oversikt over hvordan man lager sikre applikasjoner i Java ME med innslag
+        av nyttige erfaringer og fallgruver.
+      </lead>
+      <body>&#x2022; Introduksjon: (5 min)
+        o Presentasjon av foredragsholderen
+        o Hva er en sikker applikasjon
+        o Trusler
+        &#x2022; Signering av MIDlet (10 min)
+        o Hva oppn�r man ved signering
+        o Hvordan signere
+        &#x2022; Sikker kommunikasjon i Java ME (15 min)
+        o Root-sertifikater
+        o MIDP 2.0 &#x2013; hva sier standarden
+        o HTTPS p� desktop vs. embedded
+        &#x2022; Sikker lagring (5 min)
+        o Hvordan oppn� sikker lagring p� en mobiltelefon
+        &#x2022; Oppsummering: (5 min)
+        o Nyheter i MIDP 3.0
+        &#x2022; Sp�rsm�l og svar (10 min)
+      </body>
+      <keywords>
+        <string>EMG</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>a767c081-4740-4f7a-91d6-1e613e5c648c</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>b8a6034f-573d-4321-9155-a5ed31885958</id>
+      <revision>3</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level>Introductory</level>
+      <title>A Closer Look At Java ME SDK</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string></string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>bf8005d5-6afe-4ea8-94e1-61e0cd1b535d</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>1a211007-0aba-41db-9eb5-551bcc801cf0</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>AJAX and JSF: Natural Synergy</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>d52515f2-94d4-4a17-80b1-6b1c61ada5d9</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>760cf28a-c61a-4a19-8a31-e0563162cd56</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state>Approved</state>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Achieving greater code reuse through decoupling of feature implementations from the domain</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>917e301d-33b5-44eb-8b5f-502d9cfebb1d</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>99bea350-c191-4f78-913f-ac855659df07</id>
+      <revision>3</revision>
+      <tags>
+        <string>tob_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Adapting to Agile Project Management in Large Scale Projects</title>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>e2b291ba-44e5-4117-8392-64466f29f58b</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>d2bdc54a-783c-4e3f-8710-22fe16b1a6c0</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>3892c525-e766-4e5d-a0ec-63ca472d8d02</id>
+      <revision>2</revision>
+      <notes>Forslag:
+        Delta sammen med to andre tilsvarende forslag i 3 x lightning talks + paneldebatt
+      </notes>
+      <tags>
+        <string>project management</string>
+      </tags>
+      <attachements>
+        <no.java.ems.domain.UriBinary>
+          <uri serialization="custom">
+            <java.net.URI>
+              <default>
+                <string>http://localhost:3000/ems/binaries/3c04360e-e3c0-48d3-a5f4-2fee660c0e15</string>
+              </default>
+            </java.net.URI>
+          </uri>
+          <id>3c04360e-e3c0-48d3-a5f4-2fee660c0e15</id>
+          <fileName>Adapting to Agile Project Management in Large Scale Projects.doc</fileName>
+          <mimeType>application/octet-stream</mimeType>
+          <size>31232</size>
+        </no.java.ems.domain.UriBinary>
+      </attachements>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Adapting to Agile Project Management in Large Scale Projects</title>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>bed7b61c-cfd3-44cf-9076-7844003ffcec</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>2e82ddf9-2d04-4ca4-b111-7c09488ec0d1</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>28e3905f-b81c-40c9-b0f9-af72e0c1709a</id>
+      <revision>2</revision>
+      <tags>
+        <string>metode</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Ajax push med Jetty og Dojo</title>
+      <lead>I HTTP-protokollen er det i utgangpunktet alltid klienten som initierer en foresp�rsel. Men hva gj�r du hvis
+        en hendelse oppst�r p� serveren og du �nsker � informere en eller mange klienter om dette s� fort som mulig?
+
+        Vanlig polling gir d�rlig responstid og f�rer til et un�dvendig h�yt antall forsp�rsler. Ved � trikse litt med
+        HTTP kan vi imidlertid holde en foresp�rsl �pen over lengre tid og la serveren sende data n�r det passer. En
+        tradisjonell J2EE-server vil ikke takle dette, siden hver forsp�rsel knyttes til �n unik tr�d. Jetty har
+        implementert en elegant l�sning p� dette som kalles Continuations.
+
+        Dette foredraget vil forklare utfordringene og teknologien bak Comet og implementasjonen i Jetty. Vi viser
+        hvordan Jetty sammen med Dojo ble brukt til � lage en distribuert, nettbasert Paint-klone i Javascript.
+      </lead>
+      <body>
+
+        Ajax:
+        Ajax push med Jetty og Dojo
+
+        Speaker:
+        Eirik Bj�rsn�s
+        Riddervolds gate 12
+        7052 Trondheim
+        eirbjo@gmail.org
+
+        Abtract:
+        I HTTP-protokollen er det i utgangpunktet alltid klienten som initierer en foresp�rsel. Men hva gj�r du hvis en
+        hendelse oppst�r p� serveren og du �nsker � informere en eller mange klienter om dette s� fort som mulig?
+
+        Vanlig polling gir d�rlig responstid og f�rer til et un�dvendig h�yt antall forsp�rsler. Ved � trikse litt med
+        HTTP kan vi imidlertid holde en foresp�rsl �pen over lengre tid og la serveren sende data n�r det passer. En
+        tradisjonell J2EE-server vil ikke takle dette, siden hver forsp�rsel knyttes til �n unik tr�d. Jetty har
+        implementert en elegant l�sning p� dette som kalles Continuations.
+
+        Dette foredraget vil forklare utfordringene og teknologien bak Comet og implementasjonen i Jetty. Vi viser
+        hvordan Jetty sammen med Dojo ble brukt til � lage en distribuert, nettbasert Paint-klone i Javascript.
+
+        Outline:
+        Introduction
+        Hva er problemet?
+        Tradisjonelle l�sninger, problemer med skalerbarhet
+        Beskrivelse av Comet
+        Ulike transportmekanismer
+        Problemet tr�dmodellen i J2EE
+        Jettys l�sning: Asynkron IO (nio) og Continuations
+        Bajeux-protokollen og Dojo
+        Eksempel-applikasjon: Distribuert Paint i Java
+        Oppummering
+        Sp�rsm�l
+
+        Language:
+        Norsk
+
+        Level:
+        Intermediate
+
+        Required experience:
+        Deltakere b�r ha god kjennskap til web-progammering i Java og ha grunnleggende kunnskap om HTTP. Kunnskap om
+        Javascript er en fordel
+
+      </body>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>399e3716-fc63-4903-a9d2-a5962538cadc</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>d42ab0e9-6c14-4863-909d-227261b880cd</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Ajax push med Jetty og Dojo</title>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>80fd1ada-76dc-4d96-a887-654fef23b845</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>c4bac6f6-373d-4257-8fb8-8c1c42462962</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Amazon EC2 &#x2013; Grid p� 1-2-3</title>
+      <body>Abstract:
+        Thomas J. Watson (sjef for IBM ) skal ha sagt: "I think there is a world market for maybe five computers&#x201d;.
+        I ti�r har folk ledd av dette utsagnet. Amazon lanserte i 2006 en l�sning for &#x201d;Elastic Compute Cloud
+        (EC2)&#x201d;, dvs. virtuelle maskiner til leie. Fortsetter utviklingen med stadig mer bruk av EC2 er det ikke
+        sikkert at Watson tok s� feil&#x2026;
+
+        Stadig flere har begynt � se p� Java-baserte GRID l�sninger. Felles for alle disse l�sningene er at de krever en
+        hardwareinfrastruktur basert p� et flertall servere. Slike infrastrukturer er b�de kostbare og kompliserte �
+        etablere. Amazon EC2 kan v�re et bra alternativ hvis man ikke �nsker eller har behov for � ha sin egen
+        infrastruktur.
+
+        Dette foredraget vil gi en introduksjon til hva EC2 er, hvordan det virker og hvordan man kan bruke det. I
+        tillegg vil det gi en praktisk demonstrasjon p� hvordan man setter opp og bruker en virtuell maskin p� EC2.
+
+        Outline:
+
+        Innledning om EC2(15 min)
+        Hvorfor benytte virtualisering?
+        Gjennomgang av infrastruktur for EC2
+        Hva er S3 og hvordan henger det sammen med EC2?
+        Kan jeg f� egen IP-adresse/DNS vha Elastic IP?
+        Hva er Xen virtualisering?
+        Demonstrasjon (30 min)
+        Oppsett av EC2-konto
+        1-2-3 deploy av ferdig image og deploy av servlet basert Java-applikasjon
+        Deploy av eget Xen Image
+        Verkt�y for Administrasjon av EC2 instanser
+        Oppsummering / QA
+        Hva kan bruke dette til?
+      </body>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>9d0dc05c-7cbd-4dbf-a21b-4e582764180e</personId>
+          <description>Morten har jobbet som utvikler og arkitekt i over 15 �r p� ulike plattformer (Java, Microsoft
+            .NET, MVS/Cobol). Han har tidligere hatt arkitektrollen i utviklingsprosjekter basert p� b�de
+            Java/JSP/Servlet og full J2EE stack. De tre siste �rene har han jobbet som arkitekt og utvikler i et
+            Java-prosjekt basert p� Java SE, Spring, Hibernate og Maven2.
+
+            Etter lang og tro tjeneste i amerikanske konsulentselskaper jobber han n� som selvstendig konsulent i Udn�s
+            Consulting. �verst p� listen over faglige interesser er Java og Ruby programmering, testdreven utvikling og
+            metodikk for systemfornyelse.
+          </description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>c126c757-a421-4f0e-b774-5cbea0e24318</id>
+      <revision>2</revision>
+      <notes>Duration:
+        60 minutter
+
+        Required experience
+        Tilh�rere b�r ha litt interesse for virtualisering og GRID l�sninger. Ingen spesielle forkunnskaper er
+        n�dvendig..
+
+        Expected audience
+        Java utviklere som �nsker f� vite mer om Amazon EC2 og som �nsker � se en praktisk demonstrasjon
+      </notes>
+      <tags>
+        <string>tob_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Annotation Processing</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers/>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>c22eb2f5-8efa-497e-9c0b-c8ce93698fb4</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>App Server shootout</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string></string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>e1d92bce-4865-4340-966f-013dc3899d88</personId>
+          <description>GlassFish Ambassador - Sun Microsystems - Paris, FRANCE</description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>ff2e3b57-66a2-40b7-a645-79954bab8b12</id>
+      <revision>2</revision>
+      <tags>
+        <string>Enterprise application development and integration</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format>BoF</format>
+      <level reference="../../session[5]/level"/>
+      <title>Applying agile methodologies successfully in enterprise organizations</title>
+      <lead>Agile methodologies have been hyped during the last few years. Everyone wants to introduce agile
+        methodologies to their projects. Compared to traditional approaches, agile is still rather new. Developers
+        claim to be experienced with agile projects and organizations want their projects to be agile. However,
+        in the real world, developers lack experience and although parts of the project organization are
+        experienced, most are not. Decision makers naturally have a focus on costs and estimates and would
+        like to know everything about a project up-front. They are used to see specifications and integration test
+        plans rather than user stories and story points.
+        This presentation will address challenges when applying agile methodologies in large-scale enterprise
+        development projects. We will describe challenges that are specific to larger projects and organizations,
+        look into specific issues and offer advice on how to solve them, based on our experience
+      </lead>
+      <body>&#x2022; Introduction (7 minutes)
+        �
+        Setting the context for what we define as a large agile project
+        �
+        The organization around the project
+        �
+        The internal project organization
+        &#x2022; Going agile with a project in a large multinational corporation - experience from the trenches
+        �
+        From management hype to state of nature
+        -
+        Project tools and corporate guidelines
+        -
+        Staffing - cross functionality vs functionally oriented organization
+        -
+        So - when does the test phase start? Non-agile vs continuous integration
+        -
+        Handling waterfall-based requirements and specifications
+        -
+        Do we really have to make user stories?
+        -
+        So - what are these story points anyway - questions from a steering-committee
+        &#x2022; Challenges with large agile projects
+        �
+        Release planning
+        �
+        Handling cross-team functionality in the project
+        �
+        Handling non-functional requirements - what happened to those user stories?
+        �
+        Estimating across teams - creating a common understanding of the value of a single story
+        point
+        �
+        What is the state of a user-story which is considered delivered?
+        &#x2022; Conclusion (10 minutes)
+        &#x2022; Q&amp;A (1o minutes)
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>d4fffe8a-45ac-430e-bd36-a53f7d1a9704</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>5a96689d-ce48-4d5c-a151-132246864de9</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>7879be50-b2e8-40ae-9b6b-41f2800d5eba</id>
+      <revision>4</revision>
+      <tags>
+        <string>project management</string>
+      </tags>
+      <attachements>
+        <no.java.ems.domain.UriBinary>
+          <uri serialization="custom">
+            <java.net.URI>
+              <default>
+                <string>http://localhost:3000/ems/binaries/3f0bada8-ae8e-45f2-9890-f031a6c1fcb7</string>
+              </default>
+            </java.net.URI>
+          </uri>
+          <id>3f0bada8-ae8e-45f2-9890-f031a6c1fcb7</id>
+          <fileName>Applying agile methodologies successfully in enterprise organizations.pdf</fileName>
+          <mimeType>application/pdf</mimeType>
+          <size>70469</size>
+        </no.java.ems.domain.UriBinary>
+      </attachements>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Architecting JBoss 5 with AOP in the core</title>
+      <lead>Replacing the JBoss Microkernel with the JBoss MicroContainer (MC)
+        This part will give a quick introduction to the JBoss MC. I will talk briefly about
+        how JBoss has historically had a pluggable architecture based on JMX (microkernel),
+        the shortcomings of this architecture. We will then look at the new MC, and how it forms
+        the core of JBoss 5 as well as being usable standalone and in other containers. JBoss
+        Services written for the MC can thus be used outside of the app server, e.g JBoss Web
+        Services support in Tomcat and Embedded JBoss.
+      </lead>
+      <body>ARCHITECTING JBOSS 5 WITH AOP IN THE CORE
+
+        1. Replacing the JBoss Microkernel with the JBoss MicroContainer (MC)
+        This part will give a quick introduction to the JBoss MC. I will talk briefly about
+        how JBoss has historically had a pluggable architecture based on JMX (microkernel),
+        the shortcomings of this architecture. We will then look at the new MC, and how it forms
+        the core of JBoss 5 as well as being usable standalone and in other containers. JBoss
+        Services written for the MC can thus be used outside of the app server, e.g JBoss Web
+        Services support in Tomcat and Embedded JBoss.
+
+        Bullet points:
+        * The JMX Microkernel
+        ** Shortcomings
+        * What is a Microcontainer?
+        ** Depency Injection
+        ** State Machine
+        ** Bean Lifecycles
+        ** Main functionality of the Microcontainer
+        *** Bean configuration, injection, bean factories etc.
+
+        2. JBoss AOP
+        I will talk about the main features of JBoss AOP, and have a look at loadtime vs compile-time weaving
+
+        Bullet points:
+        *Simple example showing a POJO, an aspect and the xml to configure aop for it
+        ** Some more pointcut examples
+        * Invocation object
+        ** get/set metadata + annotation overrides
+        * Aspects vs Interceptors
+        * Lightweight Aspects
+        ** Annotations for lightweight aspect parameters
+        * Annotations instead of XML
+        * Weaving
+        ** Compile-time (aopc)
+        ** Loadtime
+        * Dynamic API
+        ** Adding more aspects to whole jvm, a class or an instance
+
+        3. AOP/MC integration
+        In this part I will talk about applying aspects to the services installed in the MC. We will look at
+        how the AOPProxyFactory decides to proxy a bean or use a woven class if already woven (by default JBoss
+        5 is run without any weaving).
+
+        Bullet Points:
+        * Naive Way to Aspectize MC Beans
+        * Managed Aspects
+        ** Per-instance annotations
+        ** How installed as beans
+        ** Nicer -aop.xml style XML to install the beans
+        ** Introductions and mixins in proxies
+        * Managed Lifecycle callbacks
+        ** Microcontainer states
+        ** Example: JMXLifecycleCallback
+
+        4. Usage of JBoss AOP to configure the JBoss EJB 3 container
+        * This will be a quick recap of what Bill presented in 2005, 2-3 slides of configuring the
+        container and the client proxies
+
+        5. Spring integration
+        I am not sure if this should be included, since it is not strictly relating to AOP? But it would contain
+        how the MC can take on different "personalities" by including different XML Handlers. Thus Spring apps can
+        be supported natively by the MC, or in JBoss 5.
+
+      </body>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>111273de-07b6-4481-92c9-97b5a6c022c9</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>2b1cb3de-e8c7-425f-9547-6145487c73f8</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Architectural patterns for building large GUI applications with Java</title>
+      <lead>Suppose you were going to build a large GUI application, say with more than 20-30 screens.
+        Regardless of the choice of technology, say Swing or JSF, how would you do it?
+        Would you build it as one large application? Or would you break it into several modules? If so,
+        how would you manage the modules? What about dependencies among modules? How would
+        modules communicate with each other?
+      </lead>
+      <body>Suppose you were going to build a large GUI application, say with more than 20-30 screens.
+        Regardless of the choice of technology, say Swing or JSF, how would you do it?
+        Would you build it as one large application? Or would you break it into several modules? If so,
+        how would you manage the modules? What about dependencies among modules? How would
+        modules communicate with each other?
+        How would you handle multiple windows? Say, when a state changes, how would you update
+        multiple windows? What about context sensitive menus? How would various menus (say top
+        menu, left menu, status bar) reflect the situation in the panel on the right hand side?
+        What about exceptions or validation errors? How would consistently notify the end user about
+        errors regardless of the source of error?
+        As you may realize, there would be numerous questions to ask, and likewise numerous ways to
+        solve them.
+        Based on the experience from two large scale projects (one being Swing and another begin JSF),
+        this presentation is a humble attempt to equip you with a set of architectural patterns and building
+        blocks that you can hopefully use in your project. We are going to walk through the following
+        topics:
+        &#x25cf; Build your own GUI container: Kernel, Container, Module, Primary Services, Life Cycle,
+        Scoping, Stateful versus Stateless design
+        &#x25cf; Build your communication system: Messaging, Broadcast
+        &#x25cf; Build for extensibility: State propagation across multiple models and controllers, Context
+        Sensitive Menus, Validation and Error Discovery and User Notification
+        Outline
+        The following outline is a draft and is subject for change.
+        1. Introduction
+        Here, we will try to explain the complexity of large GUI applications. We will compare
+        images from thick clients like NetBeans and Eclipse with thin clients like a business
+        solution. We will shortly discuss that large applications, whether thick or thin, have similar
+        requirements.
+        3 minutes
+        2. Definitions
+        Introduce a set of definitions such that the audience can follow the rest of the presentation.
+        Component, Module, Primary Service, Plug-in and Application
+        3 minutes
+        3. Build your own GUI Container
+        Here, we will shortly show how one can build one's own container to serve a large GUI
+        application. Using diagrams, we will introduce to abstractions like Kernel, Container,
+        Module and Primary Service. Furthermore, we will explain how kernel can manage one or
+        more containers, and in turn containers can manage modules and primary services. We will
+        give few design examples for containers. For instance, one container per business domain
+        or per security domain, concurrent and multiuser containers and session-confined containers.
+        Give few hints about how to build a Kernel, for instance Bootstrap and various components
+        that may live within a Kernel. Furthermore, we will give examples of how modules and
+        primary services can be assigned Life Cycle (incarnation, life-time, termination) and Scope
+        (Singleton, Class Loader Singleton, per session, per thread and so on). We would discuss
+        the benefits and drawbacks of Stateless versus Stateful calls with respect to scalability and
+        thread-safety etc. We will shortly discuss modular design, dependencies and circular
+        dependencies among modules and so on.
+        This part will consist of several slides and will take 20 minutes
+        4. Build your communication system:
+        Here, we will briefly discuss Hub and Spoke architecture as the foundation for
+        communication among loosely coupled modules and primary services. We will shortly
+        discuss Publisher and Subscriber, Broadcast, Fire and Forget patterns. Furthermore, we will
+        shortly mention that it is possible to handle more complex scenarios using prioritized
+        messaging and simple work flows.
+        This part will consist of several slides and will take 10 minutes.
+        5. Build for extensibility:
+        We will shortly discuss that the above techniques can be used to manage a growing GUI
+        system. We will explain that complex GUI related issues, like state propagation across
+        multiple models and controllers, context sensitive menus, error discovery, user notification
+        and so on can all be handled using the architectural patterns. We will give few examples of
+        primary services like User Notification, Error Discovery, Validation banks, Request
+        Manager and Dispatcher. Furthermore, we will show how easy it is to add or remove
+        primary services.
+        This part will consist of several slides and will take 10 minutes.
+        6. QA
+        This part will be 5-10 minutes
+        Language
+        English
+        Level
+        Medium to advance level.
+        Expected audience
+        Expected audience is primarily architects and core-developers. However, average programmers
+        should be able to easily follow this presentation.
+        How will the participants benefit from attending?
+        The participants will learn about a set of architectural patterns that they can use in large GUI
+        applications. In my view, many of these patterns will be directly applicable to many medium to
+        large scale GUI projects. Note that these are patterns, i.e. the implementation will be varying from
+        project to project.
+        In my experience, not to so many developers are familiar with the above patterns. However, in my
+        personal experience, once the patterns are presented, developers quickly pickup and start using
+        them.
+        Speaker's profile
+        I work as chief architect at EDB Business Partner in Norway.
+        My formal background is Msc Physics. I have been programming since 1986. I have been working
+        with a variety of operating systems and programming languages.
+        When it comes to Java, I have been extensively reading and working with Java since 1996. I would
+        like to mention two projects that have been very interesting which are foundation for this
+        presentation. One of them is a telecom project with about 100 people. Here, I was one of the main
+        architects. In particular, I was the architect and the core developer of a framework for a large
+        Swing application. The second project, is an ongoing banking project which started two years ago.
+        Again, I work both as architect and core developer. Here, we have developed a framework to build
+        a suite of applications, meaning we are breaking large systems into several manageable smaller
+        systems. Because of non-disclosure issues, I cannot refer to these projects in public, so please do
+        not include this...
+        I have held several company-internal courses about Java and J2EE.
+        I am also a fan of Web, Open Source and Linux and have been working with them since 1996. I
+        have been following the source code of many Java projects. Just to mention a few, I have been
+        watching the source code of Jini, J2EE application servers, NetBeans and Eclipse. In the above two
+        frameworks, I have introduced many of the concepts and techniques that one finds in the above
+        mentioned technologies.
+        Few years ago, I held a presentation at JavaZone.
+        Besides software, I have also experience about operating systems and servers. I have designed and
+        put in production two relatively large server parks.
+        You may visit my home page at www.aeinehchi.com, although it is outdated.
+        For the purpose of presentation, I need a projector. I will bring my laptop
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>6af1c2b6-bb1b-42e3-a9a2-48bee14157ff</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>7deb3d75-2dba-4f35-b9fb-a092be627fd3</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Assessing health and performance of Java applications</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>4f780d8f-e8fe-4ccc-b21a-dd47ac1f029c</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>2f067d56-e9dc-483c-8030-682623dfab32</id>
+      <revision>2</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Automated testing and Content Management? Yes! Both!</title>
+      <body>Abstract:
+        We will present a toolkit that enables automated testing of information web
+        sites - ie most web sites driven by content management systems. In contrast
+        to most traditional web applications, information web sites have largely
+        non-functional requirements. The toolkit has been built during a year-long
+        content management project in Oslo and has delivered continuous quality
+        assurance during the whole project cycle.
+
+        The toolkit consists of various open-source libraries and provide
+        developers and project managers with automatically generated reports of
+        various kinds. We have used the toolkit to:
+
+        * ensure valid HTML on the pages
+        * detect regression errors
+        * verify the visual presentation of content
+        * verify performance and scalability
+        * simplify manual conversion of content
+        * discover and report structural errors
+        * detect incorrect usage of content management system APIs
+
+        The presentation will give a walkthrough of the toolkit and demonstrate how
+        it is useful for technical users, project managers and content editors. It
+        is platform- and language independent and not tied to any particular CMS
+        product. The toolkit is based on Java libraries, but the architecture is
+        pluggable so each component can be replaced with alternatives in various
+        other languages (Ruby, Python, C#, etc).
+
+        Outline:
+        * Introduction and problem statement (differences between CMS systems and
+        traditional web applications) - 5 minutes
+        * Real-life examples, problems and what can go wrong - 10 minutes
+        * Overview of our approach (components and process flow) - 5 minutes
+        * Demonstration run of the toolkit - 20 minutes
+        * Summary and conclusions - 10 minutes
+        * QA - 10 minutes
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>0e3263da-eb41-487a-8149-774c68137c2d</personId>
+          <description>Frank Wathne is a Senior Consultant in Bekk Consulting. He has gained broad
+            experience from Java development and content management projects the last 6
+            years. Frank is a firm believer in agile methodologies and various flavors
+            of test driven development.
+
+            Kristoffer Dyrkorn is a Manager in Bekk Consulting. He has been developing
+            Java-based solutions since 1997 and is experienced within systems
+            development, usability and project management. He enjoys using technology
+            to provide better user experiences.
+          </description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>a12190a8-3963-47d6-a424-2e4e962863ee</id>
+      <revision>3</revision>
+      <notes>Duration:
+        50 minutes (+ 10 minutes QA)
+
+        Language:
+        English (Norwegian if the audience is Norwegian only)
+
+        Required experience:
+        Basic technical and/or project management skills. Any kind of experience
+        from a content management system is a plus.
+
+        Expected audience:
+        Developers and project managers that want to deliver better content
+        management projects. Anyone interested in automated testing and quality
+        assurance.
+
+        Equipment:
+        * Power plugs for two computers (laptops)
+        * Video projector for one computer (we switch between the computers when
+        needed)
+        * Internet access (through cable or wireless)
+        * Table and chair (so the demonstrator can sit during the demonstration
+        run)
+      </notes>
+      <tags>
+        <string>testing</string>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Back to basic: Getting Good Software Quickly and at Low Cost</title>
+      <lead>Getting good software quickly at low cost is what we have been striving for to make this a better software
+        world. The approaches to achieve this goal change over time. Some ideas have become main-stream and pushing them
+        is like throwing in open doors. Use cases, architecture, components, iterations are great. We also like user
+        stories, features and sprints. We have become agile. We promote services, product lines, aspects and other
+        ideas. How do we integrate all these ideas into something useful that can help organizations to deliver good
+        software, quickly and at low cost?
+      </lead>
+      <body>outline...</body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>cd853fee-4a11-4d6b-a14d-c8f066447381</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>0cde7519-776c-4808-b963-d28c3ed5f634</id>
+      <revision>2</revision>
+      <notes>Dear Ivar,
+
+        we have evaluated your proposal for a talk at the JavaZone conference in September 2008, and have the following
+        comments:
+
+        "We feel that we need some more details in order to be able to review the proposal and give good feedback, and
+        reduce potential overlap with other presentations.
+
+        Could you please provide an outline of the talk and also specify how the talk differs from last year�s talk
+        (where you talked about a toolkit for practices and processes)"
+
+        Please feel free to update your abstract with any changes that you may have within two weeks. Should you have
+        any questions regarding our comments please contact us program@java.no.
+
+        The final selection of talks will be made in June 2008. All submitters will receive feedback.
+      </notes>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Better Domain Driven Design</title>
+      <lead>One of the core principles of domain driven design is that it should be focused on the domain and it&#x2019;s
+        logic,
+        rather than the technology used to implement the system. However, many projects using the domain driven
+        approach get tangled up in the technicalities of software development which increases complexity, reduces
+        velocity and hurts both maintainability and reusability.
+        In this talk I will demonstrate how to employ software engineering principles like &#x201c;Don&#x2019;t Repeat
+        Yourself&#x201d;
+        (DRY), the single responsibility principle, separation of concerns and many more to keep attention on the
+        model and at the same time cater for the concerns that clutter the designs of many domain driven solutions.
+        After attending this talk, you should have a better understanding of how to separate your infrastructural
+        concerns
+        from your domain logic, build adaptable domain models that fit into many usage scenarios and keep
+        those models maintainable throughout the entire project life-cycle.
+      </lead>
+      <body>&#x2022; Introduction. This section is just a brief introduction to the ensuing topics.
+        ~2 minutes.
+        &#x2022; &#x201c;When Patterns Become Anti-patterns&#x201d;. This section will show how we unconsciously
+        collapse our application
+        structures by using design patterns to increase flexibility and let rigidity creep in to our designs.
+        ~5 minutes.
+        &#x2022; The Strategy Pattern. The Strategy pattern enables us to select algorithms at runtime, but this
+        comes with at the cost of forcing classes to have knowledge about the contexts in which these algorithms
+        are used. Focusing on the implementation of a commonly used pattern drives attention towards
+        how we can implement the same pattern with different means, which will be one of the themes
+        for the rest of the talk.
+        &#x2022; The Collapse of Application Structure. Our implementations of common design patterns causes a
+        &#x201c;pattern lock-in&#x201d; that can fragment domain logic and blur out the distinction between domain and
+        infrastructure
+        logic. This can hurt the maintainability of our applications.
+        &#x2022; Making Roles Explicit. This section will focus on improving the design of a domain model&#x2019;s
+        internals to
+        achieve better separation of concerns and improved flexibility and maintainability.
+        ~15 minutes
+        &#x2022; Our Objects Play Too Many Roles. Our domain objects, especially Aggregates, often violate sound
+        software engineering principles. The upside of this is that it gives developers using these a better
+        experience, the downside is that it hurts maintainability.
+        In this section I will show how the common validation patterns we use in our models violates the single
+        responsibility principle and eschew domain concepts.
+        &#x2022; Refactoring to Explicit Roles. In this section I will show how to separate the concerns in the previous
+        section into domain objects and services that adhere to the single responsibility principle and
+        makes the solution more extensible.
+        &#x2022; Data Access is Infrastructure. This section will focus on improving the architecture of an application
+        by
+        clearly distinguishing between domain logic and infrastructure code. Towards the end we connect the dots
+        Sogstijordet 11
+        1440 Dr�bak
+        Norway
+        anders.noras@andersnoras.com
+        +47 90665828
+        andersnoras.com
+        JAVAZONE 2007
+        RESPONSE TO CFP
+        by combining the lessons from this section with the ones form the previous section.
+        ~20 minutes
+        &#x2022; Don&#x2019;t Repeat Yourself! In domain driven design we use Repositories to abstract the data access
+        layer. Different Repositories often share the same behavior and their implementations often violate
+        the DRY principle. In this section I will show how to refactor the repository concepts into an application&#x2019;s
+        supporting infrastructure to increase productivity, reusability and maintainability without sacrificing
+        the flexibility of hand-rolled repositories.
+        &#x2022; Lazy About Lazy Loading. Repositories are commonly used in conjunction with object/relational
+        mappers to increase separation of concerns. As the real-world concerns of software development
+        manifest themselves, these abstractions start to leak and soon our domain services get tainted with
+        fetching strategies and similar. In this section I will show how we can combine the concepts from previous
+        sections with Inversion of Control to keep our models clean.
+        &#x2022; Wrap up. In this section the emphasis is on separation of concerns, the DRY-principle and the
+        importance
+        of keeping roles explicit.
+        ~5 minutes
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>052c50c5-b4fb-4455-a0d3-a2c065864390</personId>
+          <description>Jobber n� i Storebrand</description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>338df93d-2830-4335-9079-b8fcf8bb26bc</id>
+      <revision>4</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements>
+        <no.java.ems.domain.UriBinary>
+          <uri serialization="custom">
+            <java.net.URI>
+              <default>
+                <string>http://localhost:3000/ems/binaries/ccd26c1c-5d45-448c-91ef-94b2ff2ce09e</string>
+              </default>
+            </java.net.URI>
+          </uri>
+          <id>ccd26c1c-5d45-448c-91ef-94b2ff2ce09e</id>
+          <fileName>Anders Nor�s - JavaZone08 - Better DDD.pdf</fileName>
+          <mimeType>application/pdf</mimeType>
+          <size>110831</size>
+        </no.java.ems.domain.UriBinary>
+      </attachements>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Beyond the hype: OSGi in practice</title>
+      <body>Abstract:
+
+        Modularity, versioning and dynamics make OSGi an ideal candidate for deploying and running Java applications,
+        whether small or large. However, nothing comes for free and resource and, like in any other environment, there
+        are "do"s and "don't"s.
+        In this session, we'll focus on some of the challenges that one might encounter when developing an enterprise
+        application (containing web and data tier) to OSGi and how they can be addressed, using the lessons learned in
+        Spring Dynamic Modules project.
+
+        Outline:
+
+        For this session, I'd like to have two main parts:
+
+        1. Class and Resource loading
+        - web tier
+        - data tier (including persistence and to some degree remoting)
+        2. Working with Services
+
+        The session will consist of:
+
+        - very quick (1-2 slides) OSGi overview - 3 mins
+        Part 1: OSGi class and resource loading (total of 20 minutes)
+        Intro: 1-2 minutes
+        a) Web tier = 10 mins
+        ~ working with servlets
+        ~ working with JSP
+        ~ taglibs/JSF
+        b) Persistence = 7 mins
+        ~ proxying/lazy loading
+        ~ serialization
+
+        Part 2: Working with OSGi services (total of 15 minutes)
+        - importing/exporting services
+        - dealing with dynamic services
+        - service vs object vs proxy identity
+        - Thread ContextClassLoader management
+
+        Summary: 1 minute
+
+        Q&amp;A - 10+ mins
+
+        I'd like at the beginning or end to show a quick demo on why OSGi is worth it by demoing an application with
+        versioning and class reloading.
+        However, since I don't have the material fleshed out yet, this demo might be opted out in favour of Q&amp;A.
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>33414ce6-1f92-419d-ac2f-eda2a6f3fa6e</personId>
+          <description>Costin Leau, a SpringSource Senior Software Engineer, has been working with Java EE since 2000.
+            Costin spends the majority of his time on product development for a number of Spring and Spring related
+            projects, including Spring Java Config, Spring's JPA support, Pitchfork and Spring Dynamic Modules which he
+            leads.
+
+            While a generalist, Costin has a strong interest in data access and aspect oriented programming. Costin is
+            one of the most active Spring Framework Forum contributors, with more than 3600 posts by early 2007.
+          </description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>07de21e6-8387-4527-9fc6-9f0eb6f36141</id>
+      <revision>1</revision>
+      <notes>Level: Intermediate -> Advanced
+
+        Required experience:
+
+        Basic OSGi, persistence and web knowledge
+        Good Spring knowledge
+        Good Java Class/Class Loading knowledge
+
+        Expected audience:
+
+        Anybody interested in using OSGi for enterprise applications
+
+        Equipment:
+
+        Just the regular setup: a simple project should be enough.
+      </notes>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Bruk av open-source rammeverk for generering av pdf dokumenter</title>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>be7aeff8-85b7-423b-85a6-1d902fb3f040</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>b99b54c9-4986-4e53-ac54-93dd85a5516c</id>
+      <revision>2</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level>Advanced</level>
+      <title>Building the Big Brother of the Java Virtual Machine</title>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>54d90520-a84d-42e5-9714-65c10336227a</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>b51a31d8-bff8-475d-aeea-c970f09d3ac6</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>d659be83-3c94-46a7-8bbe-a06c141da474</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Bytecode Manipulation in the Real World</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>1b90f1c5-ce56-4930-bf5f-1878a7f83e64</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>0ee5be41-2984-4b99-801e-cb3a2fbbdfb4</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>CSRFGuard and CSRF Testing Tool</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>c73767b8-c65f-4bbc-9068-4bc8258d1168</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>a5323e19-4bb6-4e5f-9eb0-95bf486e03fa</id>
+      <revision>2</revision>
+      <notes>Mnemonic AS har foresl�tt en rekke foredrag, blant annet dette. Speaker er et forslag og er IKKE bekreftet.
+      </notes>
+      <tags>
+        <string>testing</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session[15]/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Cannibalism, Classification and Representing Realities</title>
+      <lead>A Cree hunter came to Montreal to testify in court concerning the fate of his hunting
+        lands in the new James Bay hydroelectric scheme. He would describe his way of life. But
+        when administered to the oath he hesitated I'm not sure I can tell the truth.... I can only
+        tell what I know.
+        Representation of realities concerns ideas, conventions, imaginations and knowledge,
+        but also the authentic, and the relation between subjectivity and objectivity. As
+        meaning producers we need to have these issues in mind. Classification is to place
+        objects, persons, animals or other phenomenon by a certain category or type. A
+        classification system represents knowledge and knowledge always has an ideological
+        aspect.
+        This presentation argues for the need to include concepts as power of definition, choice,
+        concepts and naming. Early socialanthropological and ethnographic studies of different
+        tribes classification of food and totems gave later specialists as Mary Douglas
+        and Eleanor Rosch amongst others, a theoretical framework to expand, a framework
+        that is often referred to in relation with the semantic web nowadays. The presentation
+        will introduce typical characteristics within linguistics theories that we tend to apply
+        within technology. It will argue for the importance to use subjective narratives within
+        representations to meet the audience thirst for the authentic.
+      </lead>
+      <body>1) Short intro of myself and of early studies of cannibalism to exemplify binary
+        oppositions &#x2010; in Levi&#x2010;Strauss' spirit. 5 min
+        2) Presentation of main theories within the theoretical field of classification that we take
+        ideas from within nowadays technology. Semantics, semiotics or pragmatics? Clarify the
+        differences between theories that focus on &#x2018;language&#x2019; or systems as independent
+        wholes (semantics) and theories that emphasize experience and the user/reader
+        (semiotics) &#x2013; and further between differences within &#x2018;reception&#x2019; and &#x2018;perception&#x2019;.
+        15 min
+        3) Representation of realities &#x2010; examples of realities most of us take for granted as
+        'truth'. (Screenshots from news on television, thewhitehouse.com).
+        4) Power of definition, naming, concepts, content, narrative, presentation, choice &#x2010;
+        visual examples
+        10 min
+        5) Subjective narratives &#x2010; exemplified through 4 minute radio documentary and 3
+        minute video recordings
+        6) Seeking the authentic &#x2010; short presentation of my findings during fieldwork about
+        processes as identification, similarity and association, and further, findings about
+        objectivity is experienced as 'truth' through subjectivity &#x2010; Me, myself and I! Sound
+        recordings from own informants to exemplify &#x2010; placed in relation with subjective
+        narratives presented at www (twitter, facebook) and TV (reality, news) 15 min
+        7) Closing by presenting the amount of electronic information produced in the world
+        and the (im)possibility for joining the information society at the same time as www is
+        democratizing og opens for compassion throughout geographical borders 5 min
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>eb0ea481-99a3-4ba6-b923-cdd836deb544</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>6d25d835-15eb-4670-b9ef-365b5697f89c</id>
+      <revision>4</revision>
+      <notes>introductory-Intermediate</notes>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements>
+        <no.java.ems.domain.UriBinary>
+          <uri serialization="custom">
+            <java.net.URI>
+              <default>
+                <string>http://localhost:3000/ems/binaries/bec41b5d-6280-48c2-844f-4c29e74fde7f</string>
+              </default>
+            </java.net.URI>
+          </uri>
+          <id>bec41b5d-6280-48c2-844f-4c29e74fde7f</id>
+          <fileName>Cannibalism,classificationandrepresentations.pdf</fileName>
+          <mimeType>application/pdf</mimeType>
+          <size>185612</size>
+        </no.java.ems.domain.UriBinary>
+      </attachements>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Capturing, organizing, and using historical information for estimation in agile projects
+        - Overcoming myopic estimation, planning and monitoring
+      </title>
+      <lead>Many agile projects are estimated using story points (or other unitless measures), often using a fibonacci
+        scale or powers of 2 to group size. Estimation is done relative to other estimates for pieces of functionality
+        (stories). The resulting estimates are summed up and compared to earlier iterations' productivity (veolcity).
+        Within an iteration/release/project the progress as tracked as story points remaining (burn-down) or completed
+        (burn-up).
+
+        It is common that each project establishes a functional baseline and corresponding estimates. The estimates are
+        unitless and specific to the project team, and generally provides no learning to the organization, and no basis
+        on which to estimate future projects.
+
+        We want to show how to enhance agile estimation techniques to improve estimation accuracy for future iterations,
+        and other projects, without sacrificing simplicity
+      </lead>
+      <body>Practical examples of estimation and monitoring based on real-world experience (20 min)
+        Pros and cons of agile estimation (10 min)
+        How to augment agile estimation techniques for improved estimation within the team and for the organization (20
+        min)
+      </body>
+      <keywords>
+        <string>Method</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>162e1edc-63bd-487d-9e2d-e54556d77acd</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>dfd0a975-2701-4a10-a7d2-dc37cb160422</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>59263b2a-f637-4292-9af0-ccd7419a88bf</id>
+      <revision>2</revision>
+      <tags>
+        <string>estimation</string>
+      </tags>
+      <attachements>
+        <no.java.ems.domain.UriBinary>
+          <uri serialization="custom">
+            <java.net.URI>
+              <default>
+                <string>http://localhost:3000/ems/binaries/d03b69d9-bb71-4f0b-a6af-7a39df5dfc62</string>
+              </default>
+            </java.net.URI>
+          </uri>
+          <id>d03b69d9-bb71-4f0b-a6af-7a39df5dfc62</id>
+          <fileName>Capturing, organizing, and using historical information for estimation in agile projects.txt
+          </fileName>
+          <mimeType>text/plain</mimeType>
+          <size>1746</size>
+        </no.java.ems.domain.UriBinary>
+      </attachements>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Communications Service Creation: Frameworks and Components in Java andGroovy.</title>
+      <keywords>
+        <string>Emerging</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>7fb1ddb7-787a-4669-bdd5-54dd6171dcba</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>fcbe0aae-8f5d-4c62-a2e2-06f0ef752546</id>
+      <revision>2</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Complex Event Processing using OpenESB's Intelligent Event Processor</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>d7440e9f-6157-4d06-99fc-afa35d5d0461</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>171f74de-fb1c-4ad2-87ee-bd7916566933</id>
+      <revision>2</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Cost-effective Software Testing must be Model-Driven</title>
+      <lead>There is a great deal of discussion around test-driven development in the context of agile methods. However,
+        I will contend that we are loosing sight of the main issues regarding testing and the link between testing and
+        other development activities. The main issue in test automation is to devise intelligent, systematic, and
+        automatable strategies for software testing so as to be able to reach sufficient levels of confidence despite
+        limited resources. This is a particularly difficult issue for complex, distributed, and real-time systems.
+        Intelligent, systematic, and automatable testing strategies must be based on some representation of the system
+        under test, what I will call a model. There are, however, a number of questions that must be addressed. What
+        types of models? How can they be used for automation purposes? How cost-effective can we expect model-driven
+        testing to be?
+        The goal of this talk is to clarify the above problems, point to existing strategies and their application
+        context, with a particular focus on using the Unified Modeling Language for modeling purposes.
+      </lead>
+      <body>Introduction: Basic definitions, What are the main issues in software testing? 5 minutes
+        Current state of practice: test-driven development, test automation &#x2013; 10 minutes
+        Model-driven testing: definition, costs &amp; benefits &#x2013; 15 minutes
+        Examples in the context of the Unified Modeling Language &#x2013; 15 minutes
+        Final recommendations &#x2013; 5 minutes
+
+      </body>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>373fd7d4-179e-4d6d-9d74-339b0497d249</personId>
+          <description>I am the new head of the software testing &amp; quality group at Simula Research Laboratory in
+            Oslo and a professor at the University of Oslo.
+            I have been a department head at the Fraunhofer Institute for Experimental Software Engineering in Germany,
+            a Canada Research Chair in software quality engineering, and a research scientist at NASA.
+            I was the general chair of a recent IEEE conference (ICST) on software testing, verification, and
+            validation. I am moreover a member of the editorial board of the main testing, verification, and validation
+            journal (STVR, Wiley). I have also been a program committee member of many testing conferences.
+            I have more than 120 peer-reviewed publications, many of them in the area of software testing and
+            model-driven development.
+            I have more than 20 years of experience in terms of collaborative industrial projects. I currently
+            collaborate with companies like Siemens, ABB, Telenor, and Tandberg, and Visma
+
+            http://simula.no/portal_memberdata/briand
+          </description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>84c6f4a0-d64b-48a2-a544-79ffd3c4e316</id>
+      <revision>4</revision>
+      <tags>
+        <string>testing</string>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Creating an assisted music composition application using a Topic Map driven Java model</title>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>eaca8ca5-8ccb-48d5-9287-57cea293f3d9</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+        <no.java.ems.domain.Speaker>
+          <personId>88f0005a-b225-4952-8555-0110b3e8d3ed</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>424f8d25-fc53-479a-9280-9fd367955aef</id>
+      <revision>2</revision>
+      <tags>
+        <string>tob_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session[15]/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Creating attractive clients with NetBeans Rich Client Platform</title>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>cdb90e8e-af50-422d-9c99-fea6b9405fea</personId>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>bb168960-02ac-4b03-803a-005300000a94</id>
+      <revision>2</revision>
+      <notes>Introductory/Intermediate</notes>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[7]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Data grids for dummies, how datagrids can help improve performance, scalability and availability</title>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>76c5e19d-1958-4901-a879-034c0d8dbe7f</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>a6912237-c5e6-4a43-a984-116f08046f8c</id>
+      <revision>2</revision>
+      <tags>
+        <string>tob_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Dependency management to prevent software rot</title>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>c4eac2a1-5a18-4033-9e74-9d9381506d3c</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>bf92e459-b5fe-4cd3-b7bf-00088e63683d</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session[5]/level"/>
+      <title>Dependency management to prevent software rot</title>
+      <lead>Even though the basic premise of loose coupling and strong coherence is well known and accepted,
+        applications tend to grow constantly less maintainable as the code base increases and ages. Managing
+        dependencies among classes and packages is fundamental to avoid software rot. This session discusses dependency
+        management, why it is important. and provides an overview of the underlying principles and practices. Some
+        useful tools are demonstrated as well as usage and impact on the development environment. In order to
+        demonstrate the principles and tools we will analyze the dependency management of some popular open source
+        applications.
+      </lead>
+      <body>What is dependency management and why is it important? (5 min)
+        A couple of examples to demonstrate some issues (5 min)
+        Principles and practices of dependency management (10 min)
+        Demonstration of tools, metrics and the development environment (10 min)
+        Namespaces and scoping - modules, packages, classes, methods (5 min)
+        Guidelines and caveats (5 min)
+        Dependency analysis of some popular open source projects (10 min)
+        Questions (10 min)
+      </body>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>c4eac2a1-5a18-4033-9e74-9d9381506d3c</personId>
+          <description>Trond Arve Wasskog is a developer and CTO at Bekk Consulting. He has been working with Java and
+            Java EE application development for more than ten years, focusing on agile software development, testing and
+            maintainability.
+          </description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>32162827-6dfe-4af9-b8d6-a9e051675a82</id>
+      <revision>2</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session[2]/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Developing Software like a Band Plays Jazz</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Core</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>d5503464-a8c7-41c1-aade-7d256d34d59c</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>2f4024f7-23aa-4c0d-a89c-e23082d4d9b4</id>
+      <revision>1</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Die hard web tests</title>
+      <lead>Web tests are often brittle and make you waste time fixing and babysitting the tests. This talk will tell
+        you how to write robust tests using some of the state-of-the-art open source testing tools, and which
+        tests you should move outside of the GUI.
+      </lead>
+      <body>Topics covered:
+        &#x2022; What to test via the GUI
+        &#x2022; Common problems and pitfalls of web tests
+        &#x2022; How to solve the pitfalls in a robust fashion
+        There will be code examples and tool demos.
+        Outline
+        &#x2022; Why business requirements should be tested outside of the GUI (10 min)
+        &#x2022; What kind of tests should be tested through the GUI (10 min)
+        &#x2022; Web testing pitfalls and possible solutions (30 min)
+        � Change in test setup
+        � Change of setup workflow
+        � Hard to write declarative tests (given - when - then)
+        � Page interaction design changes
+        � Page layout or content changes
+        � Dependant external system changes
+        � Hard to debug failing tests
+        � Hard to see distinct failures
+        � Too verbose tests
+        � Problem testing certain UI features / elements
+      </body>
+      <keywords>
+        <string>Web</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>05d209d0-afec-4bf1-8683-cddfb6e867e5</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>ba2a41b2-84ce-4ac6-82b5-628ba0e24f11</id>
+      <revision>3</revision>
+      <tags>
+        <string></string>
+      </tags>
+      <attachements/>
+    </session>
+    <session>
+      <eventId>5e130372-285d-49cd-aedb-7f306d97b04d</eventId>
+      <state reference="../../session/state"/>
+      <format reference="../../session/format"/>
+      <level reference="../../session/level"/>
+      <title>Distributed Computing and MapReduce</title>
+      <language>
+        <isoCode>en</isoCode>
+      </language>
+      <keywords>
+        <string>Enterprise</string>
+      </keywords>
+      <speakers>
+        <no.java.ems.domain.Speaker>
+          <personId>82f1eb07-c678-4c22-9362-f22a5e698679</personId>
+          <description></description>
+          <propertyChangeSupport serialization="custom">
+            <java.beans.PropertyChangeSupport>
+              <default>
+                <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+                <source class="no.java.ems.domain.Speaker" reference="../../../.."/>
+              </default>
+              <null/>
+            </java.beans.PropertyChangeSupport>
+          </propertyChangeSupport>
+          <revision>0</revision>
+          <tags>
+            <string></string>
+          </tags>
+          <attachements/>
+        </no.java.ems.domain.Speaker>
+      </speakers>
+      <propertyChangeSupport serialization="custom">
+        <java.beans.PropertyChangeSupport>
+          <default>
+            <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            <source class="session" reference="../../../.."/>
+          </default>
+          <null/>
+        </java.beans.PropertyChangeSupport>
+      </propertyChangeSupport>
+      <id>200382a3-97a6-4ba6-9751-612a5cda98e4</id>
+      <revision>2</revision>
+      <tags>
+        <string>tto_ok</string>
+      </tags>
+      <attachements/>
+    </session>
+  </sessions>
+</event-data>

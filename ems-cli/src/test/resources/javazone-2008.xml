@@ -1,0 +1,16 @@
+<!--
+Date format: yyyy-MM-dd HH:mm:ss.S z
+-->
+<event-data>
+  <sessions>
+    <session>
+      <date>2008-08-12 09:00:00.0 CET</date>
+      <title>Messaging and Concurrency in a Spring Environment</title>
+      <body>Outline:
+Message-Oriented Architectures: messaging versus asynchronous task execution (10 min)
+Synchronous JMS Messaging in Spring: JMS setup examples, JmsTemplate usage (15 min)
+Asynchronous JMS Messaging in Spring: message listener container examples (20 min)
+Spring's TaskExecutor abstraction and other related Spring facilities (10 min)</body>
+    </session>
+  </sessions>
+</event-data>

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+system=ems
+instance=$1
+SMF_FMRI="svc:/javabin/ems:$instance"
+
+. /opt/jb/libexec/backup/common
+
+backupdir=`get_back_directory`/$hostname
+
+if [ ! -d $backupdir ]
+then
+  echo "No such directory: $backupdir"
+  exit 1
+fi
+
+backup_file=$backupdir/ems-$timestamp.tar.gz
+
+echo "Disabling EMS..."
+/usr/sbin/svcadm disable -st "$SMF_FMRI"
+
+echo "Backing up EMS to $backup_file"
+gtar zcf $backup_file -C /opt/jb/ems binaries database
+ls -l $backup_file
+
+echo "Enabling EMS..."
+/usr/sbin/svcadm enable -s "$SMF_FMRI"

@@ -1,0 +1,14 @@
+PKG=JBems
+NAME="ems - ${project.description}"
+VERSION=${project.version}
+CATEGORY=utility
+DESC="ems - ${project.description}"
+VENDOR="(C) 2007-2008 javaBin"
+HOTLINE="drift@java.no"
+EMAIL="drift@java.no"
+BASEDIR=/
+MAXINST=1
+INTONLY=1
+CLASSES=none jbconf
+ULIMIT=20
+ORDER=none

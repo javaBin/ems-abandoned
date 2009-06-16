@@ -1,0 +1,36 @@
+<assembly>
+  <id>pkg</id>
+  <formats>
+    <format>directory</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>no.java.ems:ems-server:tar.gz:standalone</include>
+      </includes>
+      <unpack>true</unpack>
+      <outputDirectory>opt/jb/ems/server</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpackOptions>
+        <excludes>
+          <exclude>bin/*.bat</exclude>
+        </excludes>
+      </unpackOptions>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>no.java.ems:ems-dist:war</include>
+      </includes>
+      <outputFileNameMapping>opt/jb/ems/swing-client.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/native</directory>
+      <outputDirectory>.</outputDirectory>
+      <lineEnding>unix</lineEnding>
+    </fileSet>
+  </fileSets>
+</assembly>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <artifactId>ems</artifactId>
+        <groupId>no.java.ems</groupId>
+        <version>1.1.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ems-cli</artifactId>
+
+    <name>Event Management Suite :: Command Line Interface</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>no.java.ems</groupId>
+            <artifactId>ems-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+                    <binPrefix>tips</binPrefix>
+                    <platforms>
+                        <platform>unix</platform>
+                        <platform>windows</platform>
+                    </platforms>
+                    <programs>
+                        <program>
+                            <name>create-event</name>
+                            <mainClass>no.java.ems.cli.CreateEvent</mainClass>
+                        </program>
+                        <program>
+                            <name>create-session</name>
+                            <mainClass>no.java.ems.cli.CreateSession</mainClass>
+                        </program>
+                        <program>
+                            <name>export-data</name>
+                            <mainClass>no.java.ems.cli.ExportData</mainClass>
+                        </program>
+                        <program>
+                            <name>get-event</name>
+                            <mainClass>no.java.ems.cli.GetEvent</mainClass>
+                        </program>
+                        <program>
+                            <name>get-session</name>
+                            <mainClass>no.java.ems.cli.GetSession</mainClass>
+                        </program>
+                        <program>
+                            <name>get-sessions</name>
+                            <mainClass>no.java.ems.cli.GetSessions</mainClass>
+                        </program>
+                        <program>
+                            <name>import-data</name>
+                            <mainClass>no.java.ems.cli.ImportData</mainClass>
+                        </program>
+                        <program>
+                            <name>list-events</name>
+                            <mainClass>no.java.ems.cli.ListEvents</mainClass>
+                        </program>
+                        <program>
+                            <name>list-sessions</name>
+                            <mainClass>no.java.ems.cli.ListSessions</mainClass>
+                        </program>
+                        <program>
+                            <name>search</name>
+                            <mainClass>no.java.ems.cli.Search</mainClass>
+                        </program>
+                    </programs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

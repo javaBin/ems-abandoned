@@ -1,0 +1,40 @@
+#!/bin/sh
+
+. /lib/svc/share/smf_include.sh
+
+set -x
+
+getproparg() {
+  val=`svcprop -p $1 $SMF_FMRI`
+  [ -n "$val" ] && echo $val
+}
+
+SMF_INSTANCE=`echo $SMF_FMRI | cut -f 3 -d :`
+
+EMS_HOME=`getproparg ems/home`
+BINARYURI=`getproparg ems/binaryuri`
+
+if [ ! -d "$EMS_HOME" ]
+then
+  echo "Invalid SMF property: ems/home="$EMS_HOME". Must be a directory." 1>&2
+  exit $SMF_EXIT_ERR_CONFIG
+fi
+
+if [ "$BINARYURI" = "" ]
+then
+  echo "Missing SMF property: ems/binaryuri. Must be set." 1>&2
+  exit $SMF_EXIT_ERR_CONFIG
+fi
+
+case "$1" in
+  start)
+    /opt/jb/ems/server/bin/ems-server -home $EMS_HOME -binaryuri $BINARYURI -jaas /opt/jb/ems/etc/login.conf &
+    break
+    ;;
+
+  *)
+    echo "Unknown method: $1"
+    break
+    ;;
+
+esac

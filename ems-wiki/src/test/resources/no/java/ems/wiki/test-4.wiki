@@ -1,0 +1,13 @@
+h1. Outline:
+* Introduction
+* Feature overview: Using examples, I’ll demonstrate the features of Unitils: assertion using reflection, test data management, test database maintenance, JPA / hibernate and spring integration, testing with mock objects.
+* Demo: demonstration of the database maintainer, JPA / hibernate entity-database mapping test
+* Architecture: Provide some insight into how Unitils works.
+* Summary and roadmap: What are our plans for the future
+* Q & A
+
+h1. Required experience:
+Basic experience with unit testing. Knowledge of hibernate and spring is useful but not required.
+
+h1. Expected audience:
+Developers, technical project leaders and architects, who are into unit testing and want to improve testing on their projects.
