@@ -148,7 +148,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
 
     public void deleteEvent(String id) {
         //noinspection unchecked
-        List<String> roomIds = jdbcTemplate.queryForList("select roomId from event_rootm where eventId= ? ",
+        List<String> roomIds = jdbcTemplate.queryForList("select roomId from event_room where eventId= ? ",
             new Object[]{id});
         for (String roomId : roomIds) {
             jdbcTemplate.update("delete from room where roomId = ?", new Object[]{roomId});
