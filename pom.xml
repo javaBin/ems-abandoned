@@ -10,7 +10,7 @@
     <groupId>no.java.ems</groupId>
     <artifactId>ems</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
     <name>Event Management Suite</name>
 
     <developers>
