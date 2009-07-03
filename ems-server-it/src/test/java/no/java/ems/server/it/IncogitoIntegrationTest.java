@@ -18,8 +18,6 @@ import org.joda.time.Minutes;
 
 import java.util.List;
 
-import com.noelios.restlet.Engine;
-
 /**
  * Test cases based on the use cases that Incogito has for EMS
  *
@@ -82,7 +80,7 @@ public class IncogitoIntegrationTest extends TestCase {
         ImportData.main(
                 new String[]{
                         "--base-uri", baseUri,
-                        "--file", PlexusTestCase.getTestPath("src/test/resources/data.xml"),
+                        "--file", getClass().getResource("/data.xml").toURI().getPath(),
                         "--event-id", eventId}
         );
 

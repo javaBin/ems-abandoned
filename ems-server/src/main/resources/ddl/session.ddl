@@ -20,7 +20,7 @@ create table session (
   equipment       long varchar,
   feedback        long varchar,
   published       char(1),
-  primary key(id),
-  foreign key(eventId) references event(id),
-  foreign key(roomId) references room(id)
+  constraint session_pk primary key(id),
+  constraint session_fk_event foreign key(eventId) references event(id),
+  constraint session_fk_room foreign key(roomId) references room(id)
 )
