@@ -19,6 +19,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
 
 /**
  * @author Erlend Hamnaberg<erlend@hamnaberg.net>
@@ -148,12 +149,12 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
 
     public void deleteEvent(String id) {
         //noinspection unchecked
-        List<String> roomIds = jdbcTemplate.queryForList("select roomId from event_room where eventId= ? ",
+        List<Map<String, String>> roomIds = jdbcTemplate.queryForList("select roomId from event_room where eventId= ? ",
             new Object[]{id});
-        for (String roomId : roomIds) {
-            jdbcTemplate.update("delete from room where roomId = ?", new Object[]{roomId});
-        }
         jdbcTemplate.update("delete from event_room where eventId = ?", new Object[]{id});
+        for (Map<String, String> map : roomIds) {
+            jdbcTemplate.update("delete from room where id = ?", new Object[]{map.get("roomId")});
+        }
         jdbcTemplate.update("delete from event_attachement where eventId = ?", new Object[]{id});
         jdbcTemplate.update("delete from event where id = ?", new Object[]{id}, new int[]{Types.VARCHAR});
     }
