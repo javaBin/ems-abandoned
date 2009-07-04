@@ -11,6 +11,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.restlet.Context;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Request;
@@ -103,7 +105,8 @@ public class SessionResource extends GenericResource<Session> {
     }
 
     private boolean onlyIds() {
-        return Boolean.TRUE.equals(getRequest().getAttributes().get("onlyid"));
+        Form query = getRequest().getResourceRef().getQueryAsForm(CharacterSet.UTF_8);
+        return Boolean.TRUE.toString().equals(query.getFirstValue("onlyid", null));
     }
 
     private String getEventId() {

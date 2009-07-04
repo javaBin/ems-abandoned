@@ -319,7 +319,6 @@
         <module>ems-client</module>
         <module>ems-cli</module>
         <module>ems-domain</module>
-        <module>ems-common</module>
         <module>ems-server</module>
         <module>ems-server-it</module>
         <module>ems-wiki</module>

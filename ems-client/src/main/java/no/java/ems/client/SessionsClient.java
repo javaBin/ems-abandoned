@@ -6,10 +6,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.restlet.Client;
+import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.Form;
 import org.restlet.resource.ObjectRepresentation;
 
 import java.util.List;
@@ -33,7 +33,9 @@ public class SessionsClient extends AbstractClient<Session> {
 
     public List<String> findSessionIdsByEvent(String eventId) {
         Request request = newRequest(Method.GET, eventId, "");
-        request.getAttributes().put("onlyid", true);
+        Form form = new Form();
+        form.set("onlyid", Boolean.TRUE.toString(), false);
+        request.getResourceRef().setQuery(form.getQueryString());
         return deserialize(doRequest(request), List.class);
     }
 
