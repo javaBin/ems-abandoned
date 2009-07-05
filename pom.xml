@@ -159,6 +159,7 @@
         <groupId>no.java.ems</groupId>
         <artifactId>ems-server</artifactId>
         <version>${project.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>no.java.ems</groupId>
@@ -367,9 +368,8 @@
   </profiles>
 
   <scm>
-    <connection>scm:svn:svn://www4.java.no/subversion/internal/ems/trunk/</connection>
-    <developerConnection>scm:svn:http://www4.java.no/subversion/internal/ems/trunk/</developerConnection>
-    <url>http://www4.java.no/subversion/internal/ems/trunk/</url>
+    <connection>scm:git:git@github.com:javaBin/ems.git</connection>
+    <developerConnection>scm:git:git@github.com:javaBin/ems.git</developerConnection>
   </scm>
 
   <properties>

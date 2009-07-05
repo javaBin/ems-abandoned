@@ -27,7 +27,6 @@
   <packaging>war</packaging>
 
   <name>Event Management Suite :: Server</name>
-  <url>http://ems.java.no/</url>
 
   <dependencies>
     <dependency>

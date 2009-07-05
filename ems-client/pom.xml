@@ -25,10 +25,12 @@
   <artifactId>ems-client</artifactId>
   <name>Event Management Suite :: Client</name>
   <dependencies>
+<!--
     <dependency>
       <groupId>no.java.ems</groupId>
       <artifactId>ems-domain</artifactId>
     </dependency>
+-->
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>

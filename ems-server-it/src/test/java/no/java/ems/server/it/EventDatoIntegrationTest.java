@@ -144,5 +144,7 @@ public class EventDatoIntegrationTest extends AbstractIntegrationTest {
             assertEquals(14, jz06.getTimeslots().get(4).getStart().getHourOfDay());
             assertEquals(15, jz06.getTimeslots().get(5).getStart().getHourOfDay());
         }
+
+        eventDao.deleteEvent(jz06.getId());
     }
 }

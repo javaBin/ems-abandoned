@@ -28,6 +28,7 @@
     <dependency>
       <groupId>no.java.ems</groupId>
       <artifactId>ems-server</artifactId>
+      <type>war</type>
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>

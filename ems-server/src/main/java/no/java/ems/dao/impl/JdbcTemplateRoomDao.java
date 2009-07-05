@@ -41,7 +41,6 @@ public class JdbcTemplateRoomDao extends AbstractDao implements RoomDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     public List<Room> getRooms() {
         //noinspection unchecked
         return jdbcTemplate.query("select * from room", new RoomMapper());
@@ -54,7 +53,6 @@ public class JdbcTemplateRoomDao extends AbstractDao implements RoomDao {
             new int[]{Types.VARCHAR},
             new RoomMapper()
         );
-
     }
 
     public void save(Room room) {
