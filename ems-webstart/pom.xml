@@ -24,10 +24,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>no.java.ems</groupId>
-  <artifactId>ems-dist</artifactId>
+  <artifactId>ems-webstart</artifactId>
   <packaging>war</packaging>
 
-  <name>Event Management Suite :: War distribution</name>
+  <name>Event Management Suite :: Webstart</name>
   <url>http://ems.java.no</url>
 
   <build>
