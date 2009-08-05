@@ -5,5 +5,5 @@ create table event (
   eventdate       date,
   tags            long varchar,
   notes           long varchar,
-  constraint event_pk rimary key(id)
+  primary key(id)
 )
