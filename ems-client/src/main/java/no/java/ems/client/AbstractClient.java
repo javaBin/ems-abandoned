@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractClient<T> {
 
-    protected final Logger logger = Logger.getLogger(getClass().getName());
+    protected final Logger requestLogger = Logger.getLogger("ems.request");
     protected final String baseUri;
     private final Client client;
     private ChallengeResponse challenge;
@@ -46,9 +46,9 @@ public abstract class AbstractClient<T> {
 
     protected Response doRequest(final Request request) {
         if (challenge != null) {
-            System.out.println("Getting (as '" + challenge.getIdentifier() + "'): " + request.getMethod().toString() + " " + request.getResourceRef().getPath());
+            requestLogger.info("Requesting (as '" + challenge.getIdentifier() + "'): " + request.getMethod().toString() + " " + request.getResourceRef().getPath());
         } else {
-            System.out.println("Requesting (anonymously): " + request.getMethod().toString() + " " + request.getResourceRef().getPath());
+            requestLogger.info("Requesting (anonymously): " + request.getMethod().toString() + " " + request.getResourceRef().getPath());
         }
         request.setChallengeResponse(challenge);
         request.getClientInfo().getAcceptedMediaTypes().add(0, new Preference<MediaType>(MediaType.APPLICATION_JAVA_OBJECT));
