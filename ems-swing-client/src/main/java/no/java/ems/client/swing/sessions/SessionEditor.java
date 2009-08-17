@@ -289,7 +289,10 @@ public class SessionEditor extends EntityEditor<Session> {
     }
 
     private String intervalToString(Interval timeslot) {
-        return dateFormatter.print(timeslot.getStart()) + " " + timeFormatter.print(timeslot.getStart()) + " - " + timeFormatter.print(timeslot.getEnd());
+        return dateFormatter.print(timeslot.getStart()) + " " +
+                timeFormatter.print(timeslot.getStart()) + " -> " +
+                timeFormatter.print(timeslot.getEnd()) + " " +
+                "(" + (timeslot.getEnd().getMinuteOfDay() - timeslot.getStart().getMinuteOfDay()) + " minutes)";
     }
 
     private class CopyURIAction extends DefaultAction {

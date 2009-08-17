@@ -345,7 +345,6 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
             setEnabled(false);
         }
 
-        @Override
         public void actionPerformed(final ActionEvent event) {
             if (tabs.getSelectedIndex() > 1) {
                 AbstractEditor editor = (AbstractEditor)tabs.getComponentAt(tabs.getSelectedIndex());
