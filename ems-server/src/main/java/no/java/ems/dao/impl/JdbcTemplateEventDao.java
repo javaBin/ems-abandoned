@@ -8,6 +8,7 @@ import no.java.ems.domain.Room;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import static org.joda.time.Minutes.minutesBetween;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,7 +20,6 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.Map;
 
 /**
  * @author Erlend Hamnaberg<erlend@hamnaberg.net>
@@ -135,7 +135,7 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
                     event.getId(),
                     position,
                     toSqlTimestamp(interval.getStart()),
-                    interval.toPeriod().getMinutes(),
+                    minutesBetween(interval.getStart(), interval.getEnd()).getMinutes(),
                 },
                 new int[]{
                     Types.VARCHAR,

@@ -1,11 +1,6 @@
 package no.java.ems.dao.impl;
 
-import org.joda.time.DateTime;
-import org.joda.time.DurationFieldType;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import org.joda.time.*;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -55,7 +50,6 @@ public abstract class AbstractDao {
         }
 
         LocalDateTime start = toLocalDateTime(timestamp);
-        LocalDateTime end = start.withFieldAdded(DurationFieldType.minutes(), rs.getInt("durationMinutes"));
-        return new Interval(start.toDateTime(), end.toDateTime());
+        return new Interval(start.toDateTime(), Minutes.minutes(rs.getInt("durationMinutes")));
     }
 }

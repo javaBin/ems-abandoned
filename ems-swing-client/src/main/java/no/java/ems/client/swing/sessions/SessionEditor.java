@@ -20,6 +20,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.jdesktop.swingx.JXHyperlink;
 import org.joda.time.Interval;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -289,10 +290,11 @@ public class SessionEditor extends EntityEditor<Session> {
     }
 
     private String intervalToString(Interval timeslot) {
+        //TODO: externalize
         return dateFormatter.print(timeslot.getStart()) + " " +
                 timeFormatter.print(timeslot.getStart()) + " -> " +
                 timeFormatter.print(timeslot.getEnd()) + " " +
-                "(" + (timeslot.getEnd().getMinuteOfDay() - timeslot.getStart().getMinuteOfDay()) + " minutes)";
+                "(" + (Minutes.minutesBetween(timeslot.getStart(), timeslot.getEnd()).getMinutes()) + " minutes)";
     }
 
     private class CopyURIAction extends DefaultAction {
