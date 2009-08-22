@@ -6,6 +6,7 @@
 
     <display-name>EMS Webstart</display-name>
 
+<!--
     <servlet>
         <servlet-name>JnlpDownloadServlet</servlet-name>
         <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
@@ -20,6 +21,7 @@
         <servlet-name>JnlpDownloadServlet</servlet-name>
         <url-pattern>/webstart/*</url-pattern>
     </servlet-mapping>
+-->
 <!--
     <context-param>
         <param-name>org.restlet.application</param-name>
@@ -36,6 +38,31 @@
         <url-pattern>/ems/*</url-pattern>
     </servlet-mapping>
 -->
+  <servlet>
+    <servlet-name>download</servlet-name>
+    <servlet-class>no.java.webstart.DownloadServlet</servlet-class>
+    <init-param>
+      <param-name>template</param-name>
+      <param-value>/webstart/launch.jnlp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>codebase</param-name>
+      <param-value>/webstart/</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>download</servlet-name>
+    <url-pattern>/webstart</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>download</servlet-name>
+    <url-pattern>/webstart/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>download</servlet-name>
+    <url-pattern>*.jnlp</url-pattern>
+  </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
