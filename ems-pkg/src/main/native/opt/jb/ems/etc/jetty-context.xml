@@ -5,9 +5,14 @@
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
 
   <Set name="contextPath">/ems</Set>
-  <Set name="war">/opt/jb/ems/swing-client.war</Set>
+  <Set name="war">/opt/jb/ems/webstart.war</Set>
 
   <Set name="extractWAR">false</Set>
   <Set name="copyWebDir">false</Set>
+
+  <Call name="setProperty" class="java.lang.System">
+    <Arg>session-browse-uri</Arg>
+    <Arg>http://www.java.no/submitit</Arg>
+  </Call>
 
 </Configure>

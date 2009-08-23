@@ -20,9 +20,9 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>no.java.ems:ems-dist:war</include>
+        <include>no.java.ems:ems-webstart:war</include>
       </includes>
-      <outputFileNameMapping>opt/jb/ems/swing-client.war</outputFileNameMapping>
+      <outputFileNameMapping>opt/jb/ems/webstart.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
   </dependencySets>
