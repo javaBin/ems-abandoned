@@ -1,6 +1,7 @@
 package no.java.webstart;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.VelocityContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -21,12 +22,12 @@ import java.net.URI;
  * @version $Revision: $
  */
 public class DownloadServlet extends HttpServlet {
-    private static final String HEADER_LASTMOD      = "Last-Modified";
+    private static final String HEADER_LASTMOD = "Last-Modified";
     private static final String HEADER_JNLP_VERSION = "x-java-jnlp-version-id";
-    private static final String JAR_MIME_TYPE       = "application/x-java-archive";
-    public static final String CONTENT_ENCODING         = "content-encoding";
-    public static final String PACK200_GZIP_ENCODING    = "pack200-gzip";
-    
+    private static final String JAR_MIME_TYPE = "application/x-java-archive";
+    public static final String CONTENT_ENCODING = "content-encoding";
+    public static final String PACK200_GZIP_ENCODING = "pack200-gzip";
+
     private final long lastModified = System.currentTimeMillis();
     private String template;
     private String codebase;
@@ -41,46 +42,46 @@ public class DownloadServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long modifiedSince = req.getDateHeader("If-Modified-Since");
+        /*long modifiedSince = req.getDateHeader("If-Modified-Since");
         if (modifiedSince > 0) {
             if (lastModified == modifiedSince) {
                 resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             }
         }
-        else {
-            String requestPath = req.getRequestURI();
-            if (requestPath.endsWith(".pack.gz")) {
-                String id = req.getParameter("version-id");
-                if (id != null) {
-                    String[] versions = id.split(",");
-                    id = versions[0];
-                }
-                else {
-                    id = "";
-                }
-                String filename = requestPath.substring(requestPath.indexOf(codebase));
-                String extension = ".jar.pack.gz";
-                String basename = filename.substring(0, filename.indexOf(extension));
-                String realFilename = basename + "-" + id + extension;
-                URL resource = getServletContext().getResource(realFilename);
-                InputStream stream = resource.openStream();
-                resp.setContentType(JAR_MIME_TYPE);
-                resp.setHeader(CONTENT_ENCODING, PACK200_GZIP_ENCODING );
-                if (StringUtils.isNotBlank(id)) {
-                    resp.setHeader(HEADER_JNLP_VERSION, id);
-                }
-                try {
-                    IOUtils.copy(stream, resp.getOutputStream());
-                } finally {
-                    IOUtils.closeQuietly(stream);
-                }
+        else {*/
+        //TODO: If-Modified-Since support.
+        String requestPath = req.getRequestURI();
+        if (requestPath.endsWith(".pack.gz")) {
+            String id = req.getParameter("version-id");
+            if (id != null) {
+                String[] versions = id.split(",");
+                id = versions[0];
             }
             else {
-                try {
-                    handlejnlpRequest(req, resp);
-                } catch (Exception e) {
-                    throw new ServletException(e);
+                id = "";
             }
+            String filename = requestPath.substring(requestPath.indexOf(codebase));
+            String extension = ".jar.pack.gz";
+            String basename = filename.substring(0, filename.indexOf(extension));
+            String realFilename = basename + "-" + id + extension;
+            URL resource = getServletContext().getResource(realFilename);
+            InputStream stream = resource.openStream();
+            resp.setContentType(JAR_MIME_TYPE);
+            resp.setHeader(CONTENT_ENCODING, PACK200_GZIP_ENCODING);
+            if (StringUtils.isNotBlank(id)) {
+                resp.setHeader(HEADER_JNLP_VERSION, id);
+            }
+            try {
+                IOUtils.copy(stream, resp.getOutputStream());
+            } finally {
+                IOUtils.closeQuietly(stream);
+            }
+        }
+        else {
+            try {
+                handlejnlpRequest(req, resp);
+            } catch (Exception e) {
+                throw new ServletException(e);
             }
         }
     }
@@ -102,7 +103,10 @@ public class DownloadServlet extends HttpServlet {
     private void specializeJnlpTemplate(HttpServletRequest request, HttpServletResponse resp, String jnlpTemplate) throws Exception {
         StringWriter writer = new StringWriter();
         URI baseURI = getBaseURI(request);
-        VelocityEngine engine = new VelocityEngine();
+        VelocityEngine engine = new VelocityEngine();        
+        engine.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.ServletLogChute");
+        engine.setProperty("runtime.log.logsystem.servlet.level", "info");
+        engine.setApplicationAttribute("javax.servlet.ServletContext", getServletContext());
         engine.init();
         VelocityContext context = new VelocityContext();
         context.put("name", "launch.jnlp");
@@ -123,11 +127,11 @@ public class DownloadServlet extends HttpServlet {
         StringBuilder sb = new StringBuilder();
         String scheme = req.getScheme();
         int port = req.getServerPort();
-        sb.append(scheme);		// http, https
+        sb.append(scheme);        // http, https
         sb.append("://");
         sb.append(req.getServerName());
         if (("http".equals(scheme) && port != 80)
-	    || ("https".equals(scheme) && port != 443)) {
+                || ("https".equals(scheme) && port != 443)) {
             sb.append(':');
             sb.append(req.getServerPort());
         }
