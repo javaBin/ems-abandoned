@@ -61,7 +61,7 @@ public class SessionResource extends GenericResource<Session> {
                 return new StringRepresentation(ToStringBuilder.reflectionToString(resource, ToStringStyle.MULTI_LINE_STYLE));
             }
 
-            //noinspection unchecked
+            //noinspection unchecked,ConstantConditions
             List<Session> sessions = (List<Session>) resource;
             StringBuilder string = new StringBuilder();
             string.append("Showing ").append(sessions.size()).append(" sessions.").append(EOL);
@@ -77,7 +77,7 @@ public class SessionResource extends GenericResource<Session> {
             cfg.setObjectWrapper(new DefaultObjectWrapper());
 
             Map<String, Object> rootMap = new HashMap<String, Object>();
-            String templateName = null;
+            String templateName;
             if (!StringUtils.isBlank(getId()) && resource instanceof Session) {
                 Session session = (Session)resource;
                 rootMap.put("session", resource);

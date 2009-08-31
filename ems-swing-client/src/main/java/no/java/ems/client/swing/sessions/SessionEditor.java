@@ -20,7 +20,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.jdesktop.swingx.JXHyperlink;
 import org.joda.time.Interval;
-import org.joda.time.Minutes;
+import static org.joda.time.Minutes.minutesBetween;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -28,14 +28,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.net.URI;
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
@@ -66,7 +66,7 @@ public class SessionEditor extends EntityEditor<Session> {
     private URI submitItURI;
 
     public SessionEditor(final Session session) {
-        super(session, "title");        
+        super(session, "title");
         initialize();
     }
 
@@ -180,9 +180,7 @@ public class SessionEditor extends EntityEditor<Session> {
             for (int i = 0; i < timeslotsModel.getSize(); i++) {
                 Interval interval = (Interval) timeslotsModel.getElementAt(i);
 
-                // TODO: this should compare the entire interval, not only the start.
-                // The current behaviour is like this because end is currently equal to start which is a bug - trygve
-                if (interval.getStart().equals(currentTimeslot.getStart())) {
+                if (interval.equals(currentTimeslot)) {
                     timeslotComboBox.setSelectedIndex(i);
                     break;
                 }
@@ -294,7 +292,7 @@ public class SessionEditor extends EntityEditor<Session> {
         return dateFormatter.print(timeslot.getStart()) + " " +
                 timeFormatter.print(timeslot.getStart()) + " -> " +
                 timeFormatter.print(timeslot.getEnd()) + " " +
-                "(" + (Minutes.minutesBetween(timeslot.getStart(), timeslot.getEnd()).getMinutes()) + " minutes)";
+                "(" + (minutesBetween(timeslot.getStart(), timeslot.getEnd()).getMinutes()) + " minutes)";
     }
 
     private class CopyURIAction extends DefaultAction {

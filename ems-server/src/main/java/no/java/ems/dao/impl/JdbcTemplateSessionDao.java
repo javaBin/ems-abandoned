@@ -8,6 +8,7 @@ import no.java.ems.domain.Language;
 import no.java.ems.domain.Session;
 import no.java.ems.domain.Speaker;
 import org.joda.time.LocalDate;
+import static org.joda.time.Minutes.minutesBetween;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -127,7 +128,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                         session.getRevision(),
                         session.getTitle(),
                         session.getTimeslot() != null ? toSqlTimestamp(session.getTimeslot().getStart()) : null,
-                        session.getTimeslot() != null ? session.getTimeslot().toPeriod().getMinutes() : null,
+                        session.getTimeslot() != null ? minutesBetween(session.getTimeslot().getStart(), session.getTimeslot().getEnd()).getMinutes() : null,
                         session.getState().name(),
                         session.getRoom() != null ? session.getRoom().getId() : null,
                         session.getLevel() != null ? session.getLevel().name() : null,
