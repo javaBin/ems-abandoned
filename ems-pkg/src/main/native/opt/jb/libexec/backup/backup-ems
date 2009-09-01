@@ -20,7 +20,7 @@ echo "Disabling EMS..."
 /usr/sbin/svcadm disable -st "$SMF_FMRI"
 
 echo "Backing up EMS to $backup_file"
-gtar zcf $backup_file -C /opt/jb/ems database
+gtar zcf $backup_file -C /opt/jb/ems database binaries
 ls -l $backup_file
 
 echo "Enabling EMS..."
