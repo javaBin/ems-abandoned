@@ -21,6 +21,7 @@ import org.codehaus.httpcache4j.*;
 import org.apache.commons.lang.Validate;
 import fj.data.Option;
 import static fj.data.Option.none;
+import static fj.data.Option.some;
 import fj.Unit;
 import static fj.Unit.unit;
 
@@ -111,7 +112,7 @@ public abstract class RESTfulClient {
         }
     }
 
-    public URI create(ResourceHandle handle, Payload payload) {
+    public ResourceHandle create(ResourceHandle handle, Payload payload) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
         HTTPRequest request = new HTTPRequest(handle.getUri(), HTTPMethod.POST);
@@ -120,20 +121,22 @@ public abstract class RESTfulClient {
         if (response.getStatus() != Status.CREATED) {
             throw new HttpException(handle.getUri(), response.getStatus());
         }
-        return URI.create(response.getHeaders().getFirstHeaderValue("Location"));
+        return new ResourceHandle(URI.create(response.getHeaders().getFirstHeaderValue("Location")), Option.<Tag>none());
     }
 
     public Option<Resource> read(ResourceHandle handle, List<MIMEType> types) {
         Validate.notNull(handle, "Handle may not be null");
         HTTPRequest request = new HTTPRequest(handle.getUri(), HTTPMethod.GET);
-        request.getConditionals().addIfNoneMatch(handle.getTag());
+        if (handle.isTagged()) {
+            request.getConditionals().addIfNoneMatch(handle.getTag().some());
+        }
         if (types != null) {
             for (MIMEType type : types) {
                 request.getPreferences().addMIMEType(type);
             }
         }
         HTTPResponse response = cache.doCachedRequest(request);
-        ResourceHandle updatedHandle = new ResourceHandle(handle.getUri(), response.getETag());
+        ResourceHandle updatedHandle = new ResourceHandle(handle.getUri(), some(response.getETag()));
         if (updatedHandle.equals(handle) && response.getStatus() == Status.NOT_MODIFIED) {
             return Option.none();
         }
@@ -152,7 +155,5 @@ public abstract class RESTfulClient {
             }
         }
         return none();
-    }
-    
-
+    }   
 }

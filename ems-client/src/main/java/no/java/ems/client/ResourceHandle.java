@@ -20,34 +20,37 @@ import org.apache.commons.lang.Validate;
 
 import java.net.URI;
 
+import fj.data.Option;
+import fj.F;
+
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
 public class ResourceHandle {
     private final URI uri;
-    private final Tag tag;
+    private final Option<Tag> tag;
 
-    ResourceHandle(final URI uri, final Tag tag) {
+    ResourceHandle(final URI uri, final Option<Tag> tag) {
         Validate.notNull(uri, "URI may not be null");
         this.uri = uri;
         this.tag = tag;
     }
 
     public ResourceHandle(final URI pUri) {
-        this(pUri, null);
+        this(pUri, Option.<Tag>none());
     }
 
     public URI getUri() {
         return uri;
     }
 
-    Tag getTag() {
+    Option<Tag> getTag() {
         return tag;
     }
 
     public boolean isTagged() {
-        return tag != null;
+        return tag.isSome();
     }
 
     @Override
@@ -59,9 +62,14 @@ public class ResourceHandle {
             return false;
         }
 
-        ResourceHandle that = (ResourceHandle) o;
+        final ResourceHandle that = (ResourceHandle) o;
 
-        if (tag != null ? !tag.equals(that.tag) : that.tag != null) {
+        Boolean equalTag = tag.map(new F<Tag, Boolean>() {
+            public Boolean f(Tag tag) {
+                return that.tag.isSome() && tag.equals(that.tag.some());
+            }
+        }).orSome(false);
+        if (!equalTag) {
             return false;
         }
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
