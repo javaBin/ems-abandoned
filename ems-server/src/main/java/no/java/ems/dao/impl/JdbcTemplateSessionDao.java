@@ -65,8 +65,8 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public Session getSession(String eventId, String id) {
         return (Session) jdbcTemplate.queryForObject(
                 "select * from session where id = ? and eventId = ? and revision in (select max(revision) from session where id = ?)",
-                new Object[]{id, eventId},
-                new int[]{VARCHAR, VARCHAR},
+                new Object[]{id, eventId, id},
+                new int[]{VARCHAR, VARCHAR, VARCHAR},
                 new SessionMapper()
         );
 
