@@ -29,7 +29,7 @@ import no.java.ems.client.ResourceHandle;
 public interface EmsV1Client2 {
     Option<EventV1> getEvent(ResourceHandle handle);
 
-    URI addEvent(EventV1 event);
+    ResourceHandle addEvent(EventV1 event);
 
     EventListV1 getEvents();
 
@@ -39,7 +39,7 @@ public interface EmsV1Client2 {
 
     SessionListV1 findSessions(ResourceHandle handle, String json);
 
-    URI addSession(ResourceHandle handle, SessionV1 session);
+    ResourceHandle addSession(ResourceHandle handle, SessionV1 session);
 
     Unit updateSession(ResourceHandle handle, SessionV1 session);
 
@@ -47,7 +47,7 @@ public interface EmsV1Client2 {
 
     Option<PersonV1> getPerson(ResourceHandle handle);
 
-    URI addPerson(PersonV1 personV1);
+    ResourceHandle addPerson(PersonV1 personV1);
 
     Unit updatePerson(PersonV1 personV1);
 }

@@ -103,7 +103,7 @@ public class RESTfulEmsV1Client implements EmsV1Client2 {
         return none();
     }
 
-    public URI addEvent(EventV1 event) {
+    public ResourceHandle addEvent(EventV1 event) {
         return client.create(endpoints.get("events").getHandle(), createJAXBPayload("event", EventV1.class, event, EVENT));
     }
 
@@ -131,7 +131,7 @@ public class RESTfulEmsV1Client implements EmsV1Client2 {
         return new SessionListV1(); //TODO: is this is a good idea?
     }
 
-    public URI addSession(ResourceHandle handle, SessionV1 session) {
+    public ResourceHandle addSession(ResourceHandle handle, SessionV1 session) {
         return client.create(handle, createJAXBPayload("session", SessionV1.class, session, SESSION));
     }
 
@@ -149,7 +149,7 @@ public class RESTfulEmsV1Client implements EmsV1Client2 {
         return extractObject(resourceOption, PersonV1.class);
     }
 
-    public URI addPerson(PersonV1 personV1) {
+    public ResourceHandle addPerson(PersonV1 personV1) {
         return client.create(endpoints.get("people").getHandle(), createJAXBPayload("person", PersonV1.class, personV1, PERSON));
     }
 

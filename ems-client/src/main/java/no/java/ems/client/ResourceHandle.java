@@ -41,7 +41,7 @@ public class ResourceHandle {
         this(pUri, Option.<Tag>none());
     }
 
-    public URI getUri() {
+    public URI getURI() {
         return uri;
     }
 
