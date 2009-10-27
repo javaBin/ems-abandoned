@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.DataAccessException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,21 +55,31 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     }
 
     public Session getSession(String id) {
-        return (Session) jdbcTemplate.queryForObject(
-                "select * from session where id = ? and revision in (select max(revision) from session where id = ?)",
-                new Object[]{id},
-                new int[]{VARCHAR},
-                new SessionMapper()
-        );
+        try {
+            return (Session) jdbcTemplate.queryForObject(
+                    "select * from session where id = ? and revision in (select max(revision) from session where id = ?)",
+                    new Object[]{id, id},
+                    new int[]{VARCHAR, VARCHAR},
+                    new SessionMapper()
+            );
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Session getSession(String eventId, String id) {
-        return (Session) jdbcTemplate.queryForObject(
-                "select * from session where id = ? and eventId = ? and revision in (select max(revision) from session where id = ?)",
-                new Object[]{id, eventId, id},
-                new int[]{VARCHAR, VARCHAR, VARCHAR},
-                new SessionMapper()
-        );
+        try {
+            return (Session) jdbcTemplate.queryForObject(
+                    "select * from session where id = ? and eventId = ? and revision in (select max(revision) from session where id = ?)",
+                    new Object[]{id, eventId, id},
+                    new int[]{VARCHAR, VARCHAR, VARCHAR},
+                    new SessionMapper()
+            );
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 
@@ -146,17 +157,15 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public void saveSession(Session session) {
         String sql;
 
-        sql = "insert into session(revision, title, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         if (session.getId() == null) {
             session.setId(UUID.randomUUID().toString());
         }
-
-        session.setRevision(session.getRevision() + 1);
+        sql = "insert into session (revision, title, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES((select count(*) + 1 from session where id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(
                 sql,
                 new Object[]{
-                        session.getRevision(),
+                        session.getId(),
                         session.getTitle(),
                         session.getTimeslot().map(intervalGetStart).map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
                         session.getTimeslot().map(intervalToPeriod).map(periodGetMinutes).orSome(0),
@@ -179,7 +188,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                         session.getId()
                 },
                 new int[]{
-                        INTEGER,     // revision
+                        VARCHAR,     // id
                         VARCHAR,     // title
                         TIMESTAMP,   // start
                         INTEGER,     // durationMinutes

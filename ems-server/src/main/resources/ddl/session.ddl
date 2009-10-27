@@ -1,6 +1,6 @@
 create table session (
   id              varchar(255) not null,
-  revision        integer not null,
+  revision        integer not null default 1,
   title           varchar(255),
   start           timestamp,
   durationMinutes integer,
@@ -20,8 +20,7 @@ create table session (
   equipment       long varchar,
   feedback        long varchar,
   published       char(1),
-  constraint session_pk primary key(id),
-  constraint session_unique_id unique (id, revision),
+  constraint session_pk primary key(id, revision),
   constraint session_fk_event foreign key(eventId) references event(id),
   constraint session_fk_room foreign key(roomId) references room(id)
 )
