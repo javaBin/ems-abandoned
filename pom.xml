@@ -163,6 +163,12 @@
       </dependency>
       <dependency>
         <groupId>no.java.ems</groupId>
+        <artifactId>ems-server</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>no.java.ems</groupId>
         <artifactId>ems-client</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -25,10 +25,17 @@
   <artifactId>ems-server-it</artifactId>
   <name>Event Management Suite :: Server Integration Tests</name>
   <dependencies>
+<!--
     <dependency>
       <groupId>no.java.ems</groupId>
       <artifactId>ems-server</artifactId>
       <type>war</type>
+    </dependency>
+-->
+    <dependency>
+      <groupId>no.java.ems</groupId>
+      <artifactId>ems-server</artifactId>
+      <classifier>classes</classifier>
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
