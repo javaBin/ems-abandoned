@@ -59,7 +59,7 @@ public class EndpointResource {
 
     private JSONObject createMapping(UriBuilder uriBuilder, String path) throws JSONException {
         JSONObject object = new JSONObject();
-        String uri = uriBuilder.path(path).build().toString();
+        String uri = uriBuilder.clone().path(path).build().toString();
         object.put("uri", uri);
         object.put("methods", new JSONArray(Arrays.asList("POST", "GET")));
         return object;
