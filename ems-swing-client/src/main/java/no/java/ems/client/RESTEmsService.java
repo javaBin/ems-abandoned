@@ -93,7 +93,7 @@ public class RESTEmsService {
         return person;
     }
 
-    public synchronized void deleteContact(Person person) {
+    public synchronized void deleteContact(URI person) {
         //client.removePerson(person.getURI());
         throw new UnsupportedOperationException("Not implemented yet...");
     }

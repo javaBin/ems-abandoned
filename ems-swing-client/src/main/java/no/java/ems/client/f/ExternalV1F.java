@@ -63,7 +63,7 @@ public class ExternalV1F {
             SessionV1 sessionV1 = objectFactory.createSessionV1();
             sessionV1.setUuid(session.getDisplayID());
             if (session.getURI() != null) {
-                sessionV1.setUrl(session.getURI().toString());
+                sessionV1.setUri(session.getURI().toString());
             }
             sessionV1.setEventUuid(session.getEventURI().toString());
             sessionV1.setTitle(session.getTitle());
@@ -93,7 +93,7 @@ public class ExternalV1F {
     public static final F<SessionV1, Session> session = new F<SessionV1, Session>() {
         public Session f(SessionV1 session) {
             Session newSession = new Session();
-            newSession.setURI(URI.create(session.getUrl()));
+            newSession.setURI(URI.create(session.getUri()));
             newSession.setDisplayID(session.getUuid());
             newSession.setEventURI(URI.create(session.getEventUuid()));
             newSession.setTitle(session.getTitle());
@@ -126,7 +126,7 @@ public class ExternalV1F {
 
     private static F<SpeakerV1, Speaker> speakerV1 = new F<SpeakerV1, Speaker>() {
         public Speaker f(SpeakerV1 speakerV1) {
-            Speaker speaker = new Speaker(URI.create(speakerV1.getPersonUrl()), speakerV1.getName());
+            Speaker speaker = new Speaker(URI.create(speakerV1.getPersonUri()), speakerV1.getName());
             speaker.setDescription(speakerV1.getDescription());
             URIBinaryV1 photo = speakerV1.getPhoto();
             speaker.setPhoto(fromNull(photo).map(uriBinary).orSome((Binary)null));            
@@ -138,7 +138,7 @@ public class ExternalV1F {
     private static F<Speaker, SpeakerV1> speaker = new F<Speaker, SpeakerV1>() {
         public SpeakerV1 f(Speaker speaker) {
             SpeakerV1 speakerV1 = objectFactory.createSpeakerV1();
-            speakerV1.setPersonUrl(speaker.getPersonURI().toString());
+            speakerV1.setPersonUri(speaker.getPersonURI().toString());
             Option<URIBinaryV1> photo = uriBinaryV1.f(speaker.getPhoto());
             if (photo.isSome()) {
                 speakerV1.setPhoto(photo.some());
@@ -337,7 +337,7 @@ public class ExternalV1F {
     public static F<PersonV1, Person> person = new F<PersonV1, Person>() {
         public Person f(PersonV1 personV1) {
             Person person = new Person();
-            person.setURI(URI.create(personV1.getUrl()));
+            person.setURI(URI.create(personV1.getUri()));
             person.setDisplayID(personV1.getUuid());
             person.setName(personV1.getName());
             if (personV1.getLanguage() != null) {
@@ -386,7 +386,7 @@ public class ExternalV1F {
     public static final F<EventV1, Event> event = new F<EventV1, Event>() {
         public Event f(EventV1 event) {
             Event e = new Event(event.getName());
-            e.setURI(URI.create(event.getUrl()));
+            e.setURI(URI.create(event.getUri()));
             e.setDisplayID(event.getUuid());
             //TODO: this should not be set here... We need to get the links from the response.
             e.setSessionURI(e.getURI());
@@ -401,7 +401,7 @@ public class ExternalV1F {
     public static final F<Room, RoomV1> roomV1 = new F<Room, RoomV1>() {
         public RoomV1 f(Room room) {
             RoomV1 roomV1 = new RoomV1();
-            //roomV1.setURI(room.getURI());
+            roomV1.setUri(room.getURI().toString());
             roomV1.setName(room.getName());
             roomV1.setDescription(room.getDescription());
             return roomV1;
@@ -411,7 +411,7 @@ public class ExternalV1F {
     public static final F<RoomV1, Room> room = new F<RoomV1, Room>() {
         public Room f(RoomV1 externalRoom) {
             Room room = new Room();
-            //room.setURI(externalRoom.getURI());
+            room.setURI(URI.create(externalRoom.getUri()));
             room.setName(externalRoom.getName());
             room.setDescription(externalRoom.getDescription());
             room.setModified(false);
