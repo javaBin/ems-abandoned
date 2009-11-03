@@ -82,7 +82,11 @@ public class ResourceHandle {
     @Override
     public int hashCode() {
         int result = uri != null ? uri.hashCode() : 0;
-        result = 31 * result + (tag != null ? tag.hashCode() : 0);
+        int hc = tag.map(new F<Tag, Integer>() {
+            public Integer f(Tag tag) {
+                return tag.hashCode();
+            }}).orSome(0);
+        result = 31 * result + hc;
         return result;
     }
 }
