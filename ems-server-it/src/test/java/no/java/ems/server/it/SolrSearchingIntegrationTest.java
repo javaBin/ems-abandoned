@@ -16,7 +16,7 @@ package no.java.ems.server.it;
 
 import no.java.ems.server.domain.EmsServerConfiguration;
 import no.java.ems.server.search.SearchService;
-import no.java.ems.server.search.SolrSearchService;
+import no.java.ems.server.solr.SolrSearchService;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 

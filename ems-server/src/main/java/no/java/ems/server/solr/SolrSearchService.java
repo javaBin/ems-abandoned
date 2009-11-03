@@ -13,13 +13,16 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.search;
+package no.java.ems.server.solr;
 
 import no.java.ems.server.domain.AbstractEntity;
 import no.java.ems.server.domain.Event;
 import no.java.ems.server.domain.Person;
 import no.java.ems.server.domain.Session;
 import no.java.ems.server.domain.EmsServerConfiguration;
+import no.java.ems.server.search.SearchRequest;
+import no.java.ems.server.search.SearchResponse;
+import no.java.ems.server.search.SearchService;
 import no.java.ems.server.solr.ResourceToSolrTranslator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
