@@ -172,9 +172,7 @@ public class DerbyService implements InitializingBean, DisposableBean {
                     String sql = IOUtils.toString(inputStream);
                     jdbcTemplate.execute(sql);
                 } catch (IOException e) {
-                    System.err.println("Failed!");
-                    e.printStackTrace();
-                    return false;
+                    throw new RuntimeException("Failed on io", e);
                 } finally {
                     IOUtils.closeQuietly(inputStream);
                 }

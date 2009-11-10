@@ -18,12 +18,11 @@ package no.java.ems.server.it;
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.server.domain.Room;
+import no.java.ems.external.v1.RestletEmsV1Client;
 import no.java.ems.server.DerbyService;
 import no.java.ems.server.EmsSrcEmbedder;
-import no.java.ems.external.v1.RestletEmsV1Client;
+import no.java.ems.server.domain.Room;
 import org.codehaus.plexus.PlexusTestCase;
-import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 import org.codehaus.plexus.util.FileUtils;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
@@ -65,13 +64,14 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        File emsHome = PlexusTestCase.getTestFile("target/ems-home-" + EventDatoIntegrationTest.class.getName());
+        String baseDir = TestHelper.getBaseDir(AbstractIntegrationTest.class).getPath();
+        File emsHome = PlexusTestCase.getTestFile(baseDir + "/..", "target/ems-home-" + EventDatoIntegrationTest.class.getName());
         FileUtils.deleteDirectory(emsHome);
         assertTrue(emsHome.mkdirs());
 //        assertTrue(new File(emsHome, "database/ems").mkdirs());
 //        System.out.println("new File(emsHome, \"database/ems\").getAbsolutePath() = " + new File(emsHome, "database/ems").getAbsolutePath());
 
-        embedder = new EmsSrcEmbedder(getTestFile("../ems-server"), emsHome);
+        embedder = new EmsSrcEmbedder(new File(baseDir + "/../ems-server/"), emsHome);
         embedder.start();
         embedder.getBean(DerbyService.class).maybeCreateTables(false);
         baseUri = embedder.getBaseUri();
