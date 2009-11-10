@@ -32,7 +32,6 @@ import static fj.data.Option.some;
 import static fj.Function.curry;
 import fj.F2;
 import fj.F;
-import org.json.JSONException;
 import org.joda.time.LocalDate;
 
 import java.net.URI;
@@ -42,6 +41,7 @@ import java.io.InputStream;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
+@Produces(MIMETypes.SESSION_LIST_MIME_TYPE)
 public class SessionResource {
     private UriInfo uriInfo;
     private EmsServer emsServer;
@@ -52,7 +52,6 @@ public class SessionResource {
     }
 
     @GET
-    @Produces("application/xml;type=session-list")
     public Response getSessions(@PathParam("eventId") String eventId) {
         List<Session> sessions = emsServer.getSessions(eventId);
         return some(sessions.
@@ -84,7 +83,6 @@ public class SessionResource {
     };
 
     @GET
-    @Produces("application/xml;type=session-list")
     @Path("by-date/{year}/{month}/{day}")
     //TODO: replace by the JSON thing...
     public Response getSessionsByDate(@PathParam("eventId") String eventId, @PathParam("year") int year, @PathParam("month") int month, @PathParam("day") int day) {
@@ -102,7 +100,6 @@ public class SessionResource {
     }
 
     @GET
-    @Produces("application/xml;type=session-list")
     @Path("by-title/{title}")
     //TODO: replace by the JSON thing...
     public Response getSessionsByTitle(@PathParam("eventId") String eventId, @PathParam("title") String title) {
@@ -119,7 +116,7 @@ public class SessionResource {
     }
 
     @GET
-    @Produces("application/xml;type=session")
+    @Produces(MIMETypes.SESSION_MIME_TYPE)
     @Path("{sessionId}")
     public Response getSession(@Context Request request,
             @PathParam("eventId") String eventId,
@@ -137,8 +134,8 @@ public class SessionResource {
     }
 
     @POST
-    @Consumes("application/xml;type=session")
-    @Produces("application/xml;type=session")
+    @Consumes(MIMETypes.SESSION_MIME_TYPE)
+    @Produces(MIMETypes.SESSION_MIME_TYPE)
     public Response addSession(@PathParam("eventId") String id, SessionV1 entity) {
         Session input = Option.some(entity).
                 map(personURItoId).
@@ -148,13 +145,6 @@ public class SessionResource {
 
         URI location = URI.create(input.getId());
         return Response.created(location).build();
-    }
-
-    @POST
-    @Consumes("application/json")
-    @Produces("application/xml;type=session")
-    public Response search(@PathParam("eventId") String id, String entity) throws JSONException {        
-        return Response.noContent().build();
     }
 
     @POST
@@ -184,7 +174,7 @@ public class SessionResource {
     }
 
     @PUT
-    @Consumes("application/xml;type=session")
+    @Consumes(MIMETypes.SESSION_MIME_TYPE)
     @Path("{sessionId}")
     public Response saveSession(
             @PathParam("eventId") String eventId,

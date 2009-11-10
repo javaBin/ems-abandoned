@@ -22,6 +22,7 @@ import no.java.ems.server.domain.Room;
 import no.java.ems.external.v1.EmsV1F;
 import no.java.ems.external.v1.RoomListV1;
 import no.java.ems.external.v1.RoomV1;
+import no.java.ems.external.v1.MIMETypes;
 import no.java.ems.server.domain.EmsServer;
 import static no.java.ems.server.f.ExternalV1F.roomV1;
 import org.apache.commons.lang.Validate;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
  */
 @Path("1/rooms/")
 @Component
-@Consumes("application/xml;type=room")
+@Consumes(MIMETypes.ROOM_MIME_TYPE)
 public class RoomResource {
 
     F2<RoomListV1, RoomV1, RoomListV1> aggregator = new F2<RoomListV1, RoomV1, RoomListV1>() {
@@ -59,7 +60,7 @@ public class RoomResource {
 
 
     @GET
-    @Produces("application/xml;type=room-list")
+    @Produces(MIMETypes.ROOM_LIST_MIME_TYPE)
     public JAXBElement<RoomListV1> getRooms() {
         List<Room> rooms = List.iterableList(new ArrayList<Room>());
         Option<JAXBElement<RoomListV1>> option = Option.some(rooms.map(roomV1).
@@ -70,7 +71,7 @@ public class RoomResource {
 
     @GET
     @Path("{roomId}")
-    @Produces("application/xml;type=room")
+    @Produces(MIMETypes.ROOM_MIME_TYPE)
     public JAXBElement<RoomV1> getRoom(@PathParam("roomId") String roomId) {
         Room room = new Room();
         Option<JAXBElement<RoomV1>> option = Option.some(room).

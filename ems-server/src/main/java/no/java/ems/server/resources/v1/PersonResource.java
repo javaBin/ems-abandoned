@@ -21,10 +21,7 @@ import static fj.Function.curry;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.some;
-import no.java.ems.external.v1.EmsV1F;
-import no.java.ems.external.v1.PersonListV1;
-import no.java.ems.external.v1.PersonV1;
-import no.java.ems.external.v1.URIBinaryV1;
+import no.java.ems.external.v1.*;
 import no.java.ems.server.domain.*;
 import no.java.ems.server.f.ExternalV1F;
 import static no.java.ems.server.f.ExternalV1F.personV1;
@@ -45,7 +42,7 @@ import java.net.URI;
  */
 @Path("1/people/")
 @Component
-@Consumes("application/xml;type=person")
+@Consumes(MIMETypes.PERSON_MIME_TYPE)
 public class PersonResource {
 
     F2<PersonListV1, PersonV1, PersonListV1> aggregator = new F2<PersonListV1, PersonV1, PersonListV1>() {
@@ -73,7 +70,7 @@ public class PersonResource {
     }
 
     @GET
-    @Produces("application/xml;type=person-list")
+    @Produces(MIMETypes.PERSON_LIST_MIME_TYPE)
     public Response getPeople() {
         List<Person> people = emsServer.getPeople();
         return some(people.
@@ -87,7 +84,7 @@ public class PersonResource {
 
     @GET
     @Path("{personId}")
-    @Produces("application/xml;type=person")
+    @Produces(MIMETypes.PERSON_MIME_TYPE)
     public Response getPerson(@Context Request request, @PathParam("personId") String personId) {
         final Option<Person> personOption = emsServer.getPerson(personId);
         return personOption.

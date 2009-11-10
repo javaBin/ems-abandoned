@@ -17,18 +17,17 @@ package no.java.ems.server.resources.v1;
 
 import org.json.JSONObject;
 import org.json.JSONException;
-import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.GET;
-import java.util.Arrays;
+
+import no.java.ems.external.v1.MIMETypes;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -41,27 +40,25 @@ public class EndpointResource {
     
     private UriInfo uriInfo;
 
-    @Produces("application/json")
+    @Produces(MIMETypes.ENDPOINT_MIME_TYPE)
     @GET
     public Response get() {
         JSONObject object = new JSONObject();
-        UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
         try {
-            object.put("events", createMapping(uriBuilder, "/1/events"));
-            object.put("people", createMapping(uriBuilder, "/1/people"));
-            object.put("rooms", createMapping(uriBuilder, "/1/rooms"));
-            object.put("binaries", createMapping(uriBuilder, "binaries"));
+            object.put("events", createMapping("/1/events"));
+            object.put("people", createMapping("/1/people"));
+            object.put("rooms", createMapping("/1/rooms"));
+            object.put("binaries", createMapping("/binaries"));
         } catch (JSONException e) {
             throw new WebApplicationException(500);
         }
         return Response.ok(object.toString()).build();
     }
 
-    private JSONObject createMapping(UriBuilder uriBuilder, String path) throws JSONException {
+    private JSONObject createMapping(String path) throws JSONException {
         JSONObject object = new JSONObject();
-        String uri = uriBuilder.clone().path(path).build().toString();
+        String uri = uriInfo.getBaseUriBuilder().path(path).build().toString();
         object.put("uri", uri);
-        object.put("methods", new JSONArray(Arrays.asList("POST", "GET")));
         return object;
     }
 
