@@ -22,6 +22,7 @@ import no.java.ems.external.v1.RestletEmsV1Client;
 import no.java.ems.server.DerbyService;
 import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.domain.Room;
+import no.java.ems.util.TestHelper;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 import org.joda.time.Interval;

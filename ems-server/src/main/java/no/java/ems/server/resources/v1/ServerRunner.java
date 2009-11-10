@@ -17,6 +17,7 @@ package no.java.ems.server.resources.v1;
 
 import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.DerbyService;
+import no.java.ems.util.TestHelper;
 import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class ServerRunner {
         File emsHome = new File(System.getProperty("ems.home", defaultHome.getAbsolutePath()));
         emsHome.mkdirs();
 
-        EmsSrcEmbedder emsEmbedder = new EmsSrcEmbedder(new File("."), emsHome);
+        EmsSrcEmbedder emsEmbedder = new EmsSrcEmbedder(TestHelper.getBaseDir(ServerRunner.class), emsHome);
 
         emsEmbedder.start();
         emsEmbedder.getBean(DerbyService.class).maybeCreateTables(false);
