@@ -357,7 +357,7 @@
       </activation>
       <modules>
         <module>ems-swing-client</module>
-        <module>ems-dist</module>
+        <module>ems-webstart</module>
       </modules>
     </profile>
     <profile>

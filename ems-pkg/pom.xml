@@ -28,12 +28,11 @@
       <groupId>no.java.ems</groupId>
       <artifactId>ems-server</artifactId>
       <version>${project.version}</version>
-      <classifier>standalone</classifier>
-      <type>tar.gz</type>
+      <type>war</type>
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
-      <artifactId>ems-dist</artifactId>
+      <artifactId>ems-webstart</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
