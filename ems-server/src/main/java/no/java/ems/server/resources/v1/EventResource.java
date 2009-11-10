@@ -25,9 +25,7 @@ import no.java.ems.external.v1.*;
 import no.java.ems.server.domain.*;
 import no.java.ems.server.f.ExternalV1F;
 import static no.java.ems.server.f.ExternalV1F.eventV1;
-import static no.java.ems.server.f.ExternalV1F.sessionV1;
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,15 +36,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.*;
-import java.io.InputStream;
 import java.net.URI;
 
 @Path("1/events/")
 @Component
-@Produces("application/xml;type=event")
-@Consumes("application/xml;type=event")
+@Produces(MIMETypes.EVENT_MIME_TYPE)
+@Consumes(MIMETypes.EVENT_MIME_TYPE)
 public class EventResource {
 
     private final EmsServer emsServer;
@@ -59,7 +55,7 @@ public class EventResource {
     }
 
     @GET
-    @Produces("application/xml;type=event-list")
+    @Produces(MIMETypes.EVENT_LIST_MIME_TYPE)
     public Response getEvents() {
         List<Event> list = emsServer.getEvents();
         return some(list.
