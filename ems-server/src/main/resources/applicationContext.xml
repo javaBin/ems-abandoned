@@ -34,7 +34,7 @@
   <context:component-scan base-package="no.java.ems.dao.impl"/>
   <context:component-scan base-package="no.java.ems.server.domain"/>
   <context:component-scan base-package="no.java.ems.server.resources"/>
-  <context:component-scan base-package="no.java.ems.server.search"/>
+  <context:component-scan base-package="no.java.ems.server.solr"/>
 
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
     <property name="dataSource" ref="dataSource"/>
