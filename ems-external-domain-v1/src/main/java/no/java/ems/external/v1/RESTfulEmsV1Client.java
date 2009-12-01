@@ -44,20 +44,19 @@ import no.java.ems.client.*;
 public class RESTfulEmsV1Client implements EmsV1Client2 {
 
     private static final String CONTEXT_PATH = EventV1.class.getPackage().getName();
-    public static final String MIME_TEMPLATE = "application/xml;type=%s";
 
     private final Map<String, EndpointParser.Endpoint> endpoints = new HashMap<String, EndpointParser.Endpoint>();
     private final RESTfulClient client;
     private Marshaller marshaller;
-    private static final MIMEType SESSION = MIMEType.valueOf(String.format(MIME_TEMPLATE, "session"));
-    private static final MIMEType JSON = MIMEType.valueOf("application/json");
-    private static final MIMEType EVENT_LIST = MIMEType.valueOf(String.format(MIME_TEMPLATE, "event-list"));
-    private static final MIMEType SESSION_LIST = MIMEType.valueOf(String.format(MIME_TEMPLATE, "session-list"));
-    private static final MIMEType EVENT = MIMEType.valueOf(String.format(MIME_TEMPLATE, "event"));
-    private static final MIMEType PERSON_LIST = MIMEType.valueOf(String.format(MIME_TEMPLATE, "person-list"));
-    private static final MIMEType PERSON = MIMEType.valueOf(String.format(MIME_TEMPLATE, "person"));
-    private static final MIMEType ROOM_LIST = MIMEType.valueOf(String.format(MIME_TEMPLATE, "room-list"));
-    private static final MIMEType ROOM = MIMEType.valueOf(String.format(MIME_TEMPLATE, "room"));
+    private static final MIMEType SESSION = MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE);
+    private static final MIMEType JSON = MIMEType.valueOf(MIMETypes.ENDPOINT_MIME_TYPE);
+    private static final MIMEType EVENT_LIST = MIMEType.valueOf(MIMETypes.EVENT_LIST_MIME_TYPE);
+    private static final MIMEType SESSION_LIST = MIMEType.valueOf(MIMETypes.SESSION_LIST_MIME_TYPE);
+    private static final MIMEType EVENT = MIMEType.valueOf(MIMETypes.EVENT_MIME_TYPE);
+    private static final MIMEType PERSON_LIST = MIMEType.valueOf(MIMETypes.PERSON_LIST_MIME_TYPE);
+    private static final MIMEType PERSON = MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE);
+    private static final MIMEType ROOM_LIST = MIMEType.valueOf(MIMETypes.ROOM_LIST_MIME_TYPE);
+    private static final MIMEType ROOM = MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE);
 
 
     public RESTfulEmsV1Client(HTTPCache cache, String username, String password) throws Exception {

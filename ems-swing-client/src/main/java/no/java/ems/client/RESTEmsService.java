@@ -27,7 +27,6 @@ import java.io.InputStream;
 
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
-import org.codehaus.httpcache4j.cache.InMemoryResponseCreator;
 import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
 import org.codehaus.httpcache4j.HTTPRequest;
 import org.codehaus.httpcache4j.HTTPResponse;
@@ -50,7 +49,7 @@ public class RESTEmsService {
     public RESTEmsService(String baseURI, String username, String password) {
         cache = new HTTPCache(
                 new MemoryCacheStorage(),
-                new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager()), new InMemoryResponseCreator()));
+                new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager())));
         this.baseURI = baseURI;
         client = createEmsClient(username, password);
     }

@@ -16,9 +16,9 @@
 package no.java.ems.cli;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
-import org.codehaus.httpcache4j.cache.InMemoryResponseCreator;
 import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
 
 /**
@@ -27,6 +27,6 @@ import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
  */
 public class InMemoryHttpCache extends HTTPCache {
     public InMemoryHttpCache() {
-        super(new MemoryCacheStorage(1000), new HTTPClientResponseResolver(new HttpClient(), new InMemoryResponseCreator()));
+        super(new MemoryCacheStorage(), new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager())));
     }
 }
