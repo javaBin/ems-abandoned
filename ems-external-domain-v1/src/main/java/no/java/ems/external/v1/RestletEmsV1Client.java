@@ -15,30 +15,25 @@
 
 package no.java.ems.external.v1;
 
-import fj.F;
-import fj.F2;
+import fj.*;
+
 import static fj.Function.compose;
 import static fj.Function.curry;
-import fj.P2;
-import fj.Unit;
+
 import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
-import org.codehaus.httpcache4j.Challenge;
-import org.codehaus.httpcache4j.ChallengeMethod;
-import org.codehaus.httpcache4j.HTTPMethod;
+import org.codehaus.httpcache4j.*;
+
 import static org.codehaus.httpcache4j.HTTPMethod.GET;
 import static org.codehaus.httpcache4j.HTTPMethod.POST;
 import static org.codehaus.httpcache4j.HTTPMethod.PUT;
-import org.codehaus.httpcache4j.HTTPRequest;
-import org.codehaus.httpcache4j.HTTPResponse;
-import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.Parameter;
-import org.codehaus.httpcache4j.Status;
+
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.payload.InputStreamPayload;
+import org.codehaus.httpcache4j.util.URIBuilder;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -50,18 +45,12 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.events.XMLEvent;
-import javax.xml.stream.events.StartElement;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPath;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.Class;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -79,11 +68,8 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     private static final String contextPath = EventV1.class.getPackage().getName();
 
-    private static final MIMEType APPLICATION_XML = MIMEType.valueOf("application/xml");
-
     public final Option<Challenge> challenge;
     public final String baseUri;
-    private URI wadlURI;
 
     private final HTTPCache client;
     private final String getPeopleUrl;
@@ -132,17 +118,11 @@ public class RestletEmsV1Client implements EmsV1Client {
         // This has to be here, javac complains that 'challenge' might not be initialized
         defaultProcessRequestForGet = compose(
             curry(setChallenge, challenge),
-            curry(setMediaTypes, APPLICATION_XML));
+            curry(setMediaTypes, MIMEType.ALL));
 
         defaultProcessRequestForAdd = compose(
             curry(setChallenge, challenge),
-            curry(setMediaTypes, APPLICATION_XML));
-    }
-
-    public void login(URI endpoint) throws Exception {
-        HTTPResponse response = client.doCachedRequest(new HTTPRequest(endpoint));
-        InputStream stream = response.getPayload().getInputStream();
-
+            curry(setMediaTypes, MIMEType.ALL));
     }
 
     // -----------------------------------------------------------------------
@@ -156,7 +136,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public URI addEvent(EventV1 event) {
         return request(doCachedRequest,
-            compose(curry(setBody(EventV1.class, "event"), event), defaultProcessRequestForAdd),
+            compose(curry(setBody(EventV1.class, "event"), event, MIMEType.valueOf(MIMETypes.EVENT_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, getEventUrl);
@@ -199,7 +179,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public URI addSession(SessionV1 session) {
         return request(doCachedRequest,
-            compose(curry(setBody(SessionV1.class, "session"), session),defaultProcessRequestForAdd),
+            compose(curry(setBody(SessionV1.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, eventsSessionsUrl, session.getEventUuid());
@@ -207,7 +187,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public Unit updateSession(SessionV1 session) {
         return request(doCachedRequest,
-            compose(curry(setBody(SessionV1.class, "session"), session), defaultProcessRequestForAdd),
+            compose(curry(setBody(SessionV1.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForPUT,
             responseForPut,
             PUT, getSessionUrl, session.getEventUuid(), session.getUuid());
@@ -215,7 +195,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public URI addRoom(String eventId, RoomV1 room) {
         return request(doCachedRequest,
-            compose(curry(setBody(RoomV1.class, "room"), room),defaultProcessRequestForAdd),
+            compose(curry(setBody(RoomV1.class, "room"), room, MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, eventsRoomsUrl, eventId);
@@ -231,7 +211,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public URI addPerson(PersonV1 person) {
         return request(doCachedRequest,
-            compose(curry(setBody(PersonV1.class, "person"), person), defaultProcessRequestForAdd),
+            compose(curry(setBody(PersonV1.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, getPeopleUrl);
@@ -239,7 +219,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     public Unit updatePerson(PersonV1 person) {
         return request(doCachedRequest,
-            compose(curry(setBody(PersonV1.class, "person"), person), defaultProcessRequestForAdd),
+            compose(curry(setBody(PersonV1.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseForPut,
             PUT, getPersonUrl, person.getUuid());
@@ -280,7 +260,7 @@ public class RestletEmsV1Client implements EmsV1Client {
                 return response;
             }
 
-            throw new RuntimeException("Got unexpected status: " + response.getStatus().getDescription());
+            throw new RuntimeException("Got unexpected status: " + response.getStatus().getName());
         }
     };
 
@@ -293,7 +273,7 @@ public class RestletEmsV1Client implements EmsV1Client {
                 return response;
             }
 
-            throw new RuntimeException("Got unexpected status: " + response.getStatus().getDescription());
+            throw new RuntimeException("Got unexpected status: " + response.getStatus().getName());
         }
     };
 
@@ -313,7 +293,7 @@ public class RestletEmsV1Client implements EmsV1Client {
                 return response;
             }
 
-            throw new RuntimeException("Got unexpected status: " + response.getStatus().getDescription());
+            throw new RuntimeException("Got unexpected status: " + response.getStatus().getName());
         }
     };
 
@@ -323,7 +303,7 @@ public class RestletEmsV1Client implements EmsV1Client {
                 return Unit.unit();
             }
 
-            throw new RuntimeException("Got unexpected status: " + response.getStatus().getDescription());
+            throw new RuntimeException("Got unexpected status: " + response.getStatus().getName());
         }
     };
 
@@ -331,7 +311,7 @@ public class RestletEmsV1Client implements EmsV1Client {
         public HTTPRequest f(Option<Challenge> option, HTTPRequest request) {
             if (option.isSome()) {
                 Challenge challenge = option.some();
-                request.setChallenge(challenge);
+                request = request.challenge(challenge);
                 System.out.println(request.getMethod() + " (as '" + challenge.getIdentifier() + "'): " + request.getMethod().toString() + " " + request.getRequestURI().getPath());
             } else {
                 System.out.println(request.getMethod() + " (anonymously): " + request.getRequestURI().getPath());
@@ -343,23 +323,31 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     private static F2<MIMEType, HTTPRequest, HTTPRequest> setMediaTypes = new F2<MIMEType, HTTPRequest, HTTPRequest>() {
         public HTTPRequest f(MIMEType preference, HTTPRequest request) {
-            request.getPreferences().addMIMEType(preference);
-            return request;
+            return request.preferences(request.getPreferences().addMIMEType(preference));
         }
     };
 
     private static F2<List<Parameter>, HTTPRequest, HTTPRequest> setParameters = new F2<List<Parameter>, HTTPRequest, HTTPRequest>() {
         public HTTPRequest f(List<Parameter> parameters, HTTPRequest request) {
+            URIBuilder builder = URIBuilder.fromURI(request.getRequestURI());
             for (Parameter parameter : parameters) {
-                request.addParameter(parameter);
+                builder.addParameter(parameter);
             }
-            return request;
+            HTTPRequest returnValue = new HTTPRequest(builder.toURI(), request.getMethod());
+            returnValue = returnValue.headers(request.getHeaders());
+            returnValue = returnValue.challenge(request.getChallenge());
+            returnValue = returnValue.conditionals(request.getConditionals());
+            returnValue = returnValue.preferences(request.getPreferences());
+            if (request.getMethod() == HTTPMethod.PUT || request.getMethod() == HTTPMethod.POST) {
+                returnValue = returnValue.payload(request.getPayload());
+            }
+            return returnValue;
         }
     };
 
-    private <A> F2<A, HTTPRequest, HTTPRequest> setBody(final Class<A> klass, final String tag) {
-        return new F2<A, HTTPRequest, HTTPRequest>() {
-            public HTTPRequest f(final A a, HTTPRequest request) {
+    private <A> F3<A, MIMEType, HTTPRequest, HTTPRequest> setBody(final Class<A> klass, final String tag) {
+        return new F3<A, MIMEType,HTTPRequest , HTTPRequest>() {
+            public HTTPRequest f(final A a, MIMEType mimeType, HTTPRequest request) {
                 try {
                     // TODO: This should be streamed
 
@@ -372,9 +360,7 @@ public class RestletEmsV1Client implements EmsV1Client {
                     System.out.println();
                     System.out.println("-----------------------------------");
 
-                    request.setPayload(new InputStreamPayload(new ByteArrayInputStream(data.toByteArray()), APPLICATION_XML));
-
-                    return request;
+                    return request.payload(new InputStreamPayload(new ByteArrayInputStream(data.toByteArray()), mimeType));                    
                 } catch (JAXBException e) {
                     throw new RuntimeException("Unable to marshall object.", e);
                 } catch (IOException e) {
@@ -490,7 +476,7 @@ public class RestletEmsV1Client implements EmsV1Client {
 
     F<P2<String, String>, Challenge> newChallenge = new F<P2<String, String>, Challenge>() {
         public Challenge f(P2<String, String> credentials) {
-            return new Challenge(credentials._1(), credentials._2().toCharArray(), ChallengeMethod.BASIC);
+            return new UsernamePasswordChallenge(credentials._1(), credentials._2());
         }
     };
 

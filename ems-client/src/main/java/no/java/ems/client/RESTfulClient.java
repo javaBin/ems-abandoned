@@ -23,6 +23,8 @@ import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.Unit;
+import org.codehaus.httpcache4j.preference.Preferences;
+
 import static fj.Unit.unit;
 
 import java.util.*;
@@ -40,7 +42,7 @@ public abstract class RESTfulClient {
 
     protected RESTfulClient(HTTPCache cache, String username, String password) {
         Validate.notNull(cache, "Cache may not be null");
-        challenge = new Challenge(username, password.toCharArray(), ChallengeMethod.BASIC);
+        challenge = new UsernamePasswordChallenge(username, password);
         this.cache = cache;
     }
 
@@ -59,9 +61,9 @@ public abstract class RESTfulClient {
     public Unit update(ResourceHandle handle, Payload payload) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
-        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.PUT);
-        request.setChallenge(challenge);
-        request.setPayload(payload);
+        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.PUT).
+                challenge(challenge).
+                payload(payload);               
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.OK) {
             throw new HttpException(handle.getURI(), response.getStatus());
@@ -82,8 +84,7 @@ public abstract class RESTfulClient {
     public Option<Resource> process(ResourceHandle handle, Payload payload) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
-        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST);
-        request.setPayload(payload);
+        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);        
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus().isClientError() || response.getStatus().isServerError()) {
             throw new HttpException(handle.getURI(), response.getStatus());
@@ -97,8 +98,7 @@ public abstract class RESTfulClient {
     public Option<Resource> createAndRead(ResourceHandle handle, Payload payload, List<MIMEType> types) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
-        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST);
-        request.setPayload(payload);
+        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.CREATED) {
             throw new HttpException(handle.getURI(), response.getStatus());
@@ -115,8 +115,7 @@ public abstract class RESTfulClient {
     public ResourceHandle create(ResourceHandle handle, Payload payload) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
-        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST);
-        request.setPayload(payload);
+        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.CREATED) {
             throw new HttpException(handle.getURI(), response.getStatus());
@@ -128,12 +127,14 @@ public abstract class RESTfulClient {
         Validate.notNull(handle, "Handle may not be null");
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.GET);
         if (handle.isTagged()) {
-            request.getConditionals().addIfNoneMatch(handle.getTag().some());
+            request = request.conditionals(request.getConditionals().addIfNoneMatch(handle.getTag().some()));
         }
         if (types != null) {
+            Preferences preferences = new Preferences();
             for (MIMEType type : types) {
-                request.getPreferences().addMIMEType(type);
+                preferences = preferences.addMIMEType(type);
             }
+            request = request.preferences(preferences);
         }
         HTTPResponse response = cache.doCachedRequest(request);
         ResourceHandle updatedHandle = new ResourceHandle(handle.getURI(), some(response.getETag()));
