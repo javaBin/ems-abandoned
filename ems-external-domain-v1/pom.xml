@@ -53,20 +53,6 @@
       <artifactId>jaxb-impl</artifactId>
     </dependency>
   </dependencies>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>java.net</id>
-      <name>java.net Maven Repository</name>
-      <url>https://maven-repository.dev.java.net/repository</url>
-      <layout>legacy</layout>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
   <build>
     <plugins>
       <plugin>
