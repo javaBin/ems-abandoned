@@ -41,7 +41,7 @@ public abstract class AbstractEntity implements Serializable {
     private String notes;
     private String displayID;
     private List<String> tags = new ArrayList<String>();
-    private List<Binary> attachements = new ArrayList<Binary>();
+    private List<Binary> attachments = new ArrayList<Binary>();
 
     public URI getURI() {
         return uri;
@@ -106,12 +106,12 @@ public abstract class AbstractEntity implements Serializable {
         firePropertyChange("tags", getTags(), Collections.unmodifiableList(this.tags = new ArrayList<String>(tags)));
     }
 
-    public List<Binary> getAttachements() {
-        return Collections.unmodifiableList(attachements);
+    public List<Binary> getAttachments() {
+        return Collections.unmodifiableList(attachments);
     }
 
-    public void setAttachements(final List<Binary> attachements) {
-        firePropertyChange("attachements", getAttachements(), Collections.unmodifiableList(this.attachements = new ArrayList<Binary>(attachements)));
+    public void setAttachments(final List<Binary> attachments) {
+        firePropertyChange("attachements", getAttachments(), Collections.unmodifiableList(this.attachments = new ArrayList<Binary>(attachments)));
     }
 
     public String getTagsAsString(final String delimiter) {
@@ -180,7 +180,7 @@ public abstract class AbstractEntity implements Serializable {
     public void sync(final AbstractEntity other) {
         setRevision(other.getRevision());
         setNotes(other.getNotes());
-        setAttachements(other.getAttachements());
+        setAttachments(other.getAttachments());
         setTags(other.getTags());
     }
 

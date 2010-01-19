@@ -249,9 +249,9 @@ public class AttachementsPanel extends DefaultPanel {
             for (Object binaryObject : attachementsList.getSelectedValues()) {
                 selected.add((Binary)binaryObject);
             }
-            List<Binary> newBinaries = new ArrayList<Binary>(binding.getSourceObject().getAttachements());
+            List<Binary> newBinaries = new ArrayList<Binary>(binding.getSourceObject().getAttachments());
             newBinaries.removeAll(selected);
-            binding.getSourceObject().setAttachements(newBinaries);
+            binding.getSourceObject().setAttachments(newBinaries);
         }
 
     }
@@ -329,9 +329,9 @@ public class AttachementsPanel extends DefaultPanel {
 
         @Override
         protected void process(final List<Binary> binaries) {
-            List<Binary> newBinaries = new ArrayList<Binary>(binding.getSourceObject().getAttachements());
+            List<Binary> newBinaries = new ArrayList<Binary>(binding.getSourceObject().getAttachments());
             newBinaries.addAll(binaries);
-            binding.getSourceObject().setAttachements(newBinaries);
+            binding.getSourceObject().setAttachments(newBinaries);
             // todo: select added attachements
         }
 

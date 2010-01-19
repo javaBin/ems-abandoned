@@ -117,7 +117,7 @@ public class ExternalV1F {
             }
             if (session.getAttachments() != null) {
                 List<Binary> list = List.iterableList(session.getAttachments().getBinary()).map(uriBinary);
-                newSession.setAttachements(new ArrayList<Binary>(list.toCollection()));
+                newSession.setAttachments(new ArrayList<Binary>(list.toCollection()));
             }
             newSession.setModified(false);
             return newSession;

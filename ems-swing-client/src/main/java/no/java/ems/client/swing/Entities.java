@@ -446,14 +446,14 @@ public class Entities extends HashSet<AbstractEntity> {
         private void saveAttachments(final AbstractEntity entity) {
             List<Binary> savedAttachments = new ArrayList<Binary>();
             RESTEmsService service = EmsClient.getInstance().getClientService();
-            for (Binary attachement : entity.getAttachements()) {
+            for (Binary attachement : entity.getAttachments()) {
                 if (!isLocalBinary(attachement)) {
                     savedAttachments.add(attachement);
                 } else {
                     savedAttachments.add(service.saveBinary(attachement));
                 }
             }
-            entity.setAttachements(savedAttachments);
+            entity.setAttachments(savedAttachments);
         }
     }
 }
