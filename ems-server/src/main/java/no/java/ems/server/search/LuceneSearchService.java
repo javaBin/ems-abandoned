@@ -15,6 +15,8 @@
 
 package no.java.ems.server.search;
 
+import no.java.ems.server.URIBuilder;
+import no.java.ems.server.domain.ObjectType;
 import no.java.ems.server.domain.Session;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -125,7 +127,7 @@ public class LuceneSearchService implements SearchService {
         }
     }
 
-    public synchronized SearchResponse search(SearchRequest request) {
+    public synchronized SearchResponse search(SearchRequest request, URIBuilder builder) {
         if (!StringUtils.isNotBlank(request.getText())) {
             throw new RuntimeException("At least one field in the search request has to be set.");
         }
@@ -170,7 +172,7 @@ public class LuceneSearchService implements SearchService {
                 Document document = hits.doc(i);
 
                 String s = Integer.toString(hits.id(i));
-                objectHits.add(new SearchResponse.Hit(ObjectType.valueOf(document.get("type")), document.get("id"), s));
+                //objectHits.add(new SearchResponse.Hit(ObjectType.valueOf(document.get("type")), document.get("id"), s));
             }
 
             executionTime = System.currentTimeMillis() - executionTime;

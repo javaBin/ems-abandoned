@@ -15,16 +15,13 @@
 
 package no.java.ems.server.search;
 
+import no.java.ems.server.URIBuilder;
+
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public interface SearchService {
-    enum ObjectType {
-        session,
-        person,
-        event
-    }
 
     IndexStatistics getIndexStatistics();
 
@@ -32,9 +29,9 @@ public interface SearchService {
 
     void delete(Object o);
 
-    SearchResponse search(SearchRequest request);
+    SearchResponse search(SearchRequest request, URIBuilder uriBuilder);
 
     class IndexStatistics {
-        public int numberOfDocuments;
+        public long numberOfDocuments;
     }
 }

@@ -15,6 +15,8 @@
 
 package no.java.ems.server.it;
 
+import no.java.ems.server.URIBuilder;
+import no.java.ems.server.domain.ObjectType;
 import no.java.ems.server.domain.Session;
 import no.java.ems.server.search.SearchRequest;
 import no.java.ems.server.search.SearchResponse;
@@ -51,11 +53,12 @@ public abstract class AbstractSearchingIntegrationTest extends Assert {
 
         SearchRequest request = new SearchRequest();
         request.setText("lead");
-        SearchResponse response = searchService.search(request);
+        URIBuilder uriBuilder = new URIBuilder("http://localhost:3000/ems/");
+        SearchResponse response = searchService.search(request, uriBuilder);
         assertNotNull(response);
         assertEquals(1, response.getHitCount());
-        assertEquals("123", response.getHits().get(0).getId());
-        assertEquals(SearchService.ObjectType.session, response.getHits().get(0).getType());
+        assertEquals(uriBuilder.forObject(session), response.getHits().get(0).getURI());
+        assertEquals(ObjectType.session, response.getHits().get(0).getType());
 
         // Add the same object again
         searchService.update(session);
@@ -65,10 +68,10 @@ public abstract class AbstractSearchingIntegrationTest extends Assert {
 
         request = new SearchRequest();
         request.setText("lead");
-        response = searchService.search(request);
+        response = searchService.search(request, uriBuilder);
         assertEquals(1, response.getHitCount());
-        assertEquals("123", response.getHits().get(0).getId());
-        assertEquals(SearchService.ObjectType.session, response.getHits().get(0).getType());
+        assertEquals(uriBuilder.forObject(session), response.getHits().get(0).getURI());
+        assertEquals(ObjectType.session, response.getHits().get(0).getType());
     }
 
     @BeforeClass

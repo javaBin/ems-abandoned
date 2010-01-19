@@ -182,10 +182,10 @@ public class EmsServer implements InitializingBean {
      * @param delete {@code true} if the entity should be removed from the index.
      */
     protected <T extends AbstractEntity> void index(T entity, boolean delete) {
-        if (!delete) {
-            searchService.update(entity);
-        } else {
+        if (delete) {
             searchService.delete(entity);
+        } else {
+            searchService.update(entity);
         }
     }
 

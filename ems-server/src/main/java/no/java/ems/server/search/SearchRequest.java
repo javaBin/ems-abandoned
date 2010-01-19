@@ -15,6 +15,7 @@
 
 package no.java.ems.server.search;
 
+import no.java.ems.server.domain.ObjectType;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -25,6 +26,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class SearchRequest {
 
     private String eventId;
+    private ObjectType objectType;
 
     /**
      * Searches session.{title,lead,body}
@@ -74,5 +76,13 @@ public class SearchRequest {
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
     }
 }

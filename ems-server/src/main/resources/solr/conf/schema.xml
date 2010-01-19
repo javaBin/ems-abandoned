@@ -196,7 +196,7 @@ lexicographic ordering isn't equal to the numeric ordering) -->
         <field name="name" type="text" indexed="true" stored="false"/>
 
         <!--Type can for instance be event, session or person -->
-        <field name="type" type="string" indexed="true" stored="false"/>
+        <field name="type" type="string" indexed="true" stored="true"/>
         <field name="keywords" type="string" indexed="true" multiValued="true" stored="false"/>
         <field name="tags" type="string" indexed="true" multiValued="true" stored="false"/>
 
@@ -206,13 +206,13 @@ lexicographic ordering isn't equal to the numeric ordering) -->
         <field name="description" type="text" indexed="true" stored="false"/>
 
         <!-- session specific -->
-        <field name="eventid" type="string" indexed="true" stored="false"/>
+        <field name="eventid" type="string" indexed="true" stored="true"/>
         <field name="slot" type="string" indexed="true" stored="false"/>
         <field name="state" type="string" indexed="true" stored="false"/>
         <field name="format" type="string" indexed="true" stored="false"/>
         <field name="room" type="string" indexed="true" stored="false" />
         <field name="level" type="string" indexed="true" stored="false"/>
-        <field name="title" type="text" indexed="true" stored="false"/>
+        <field name="title" type="text" indexed="true" stored="true"/>
         <field name="slot_start" type="date" indexed="true" stored="true"/>
         <field name="slot_end" type="date" indexed="true" stored="true"/>
         <field name="published" type="boolean" indexed="true" stored="true"/>
