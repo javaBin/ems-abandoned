@@ -35,6 +35,10 @@
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
+      <artifactId>ems-external-domain-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>no.java.ems</groupId>
       <artifactId>ems-wiki</artifactId>
     </dependency>
     <dependency>
