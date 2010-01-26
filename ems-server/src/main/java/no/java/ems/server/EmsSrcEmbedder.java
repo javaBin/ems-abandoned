@@ -25,7 +25,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import java.io.File;
 
 /**
- * An easy way to embed EMS when running from a subverison checkout.
+ * An easy way to embed EMS when running from a subversion checkout.
  *
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
