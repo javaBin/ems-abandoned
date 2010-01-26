@@ -49,6 +49,17 @@
 
   <repositories>
     <repository>
+      <id>javabin-release</id>
+      <name>javaBin Release Repository</name>
+      <url>http://smia.java.no/maven/repo/release</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.org</url>
