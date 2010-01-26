@@ -27,7 +27,8 @@ import org.codehaus.plexus.util.FileUtils;
  * @author last modified by $Author: $
  * @version $Id: $
  */
-public class LuceneSearchingIntegrationTest extends AbstractSearchingIntegrationTest {
+//TODO: GO away
+public abstract class LuceneSearchingIntegrationTest extends AbstractSearchingIntegrationTest {
     protected SearchService createSearchService() throws Exception {
         File luceneHome = PlexusTestCase.getTestFile("target/test-index");
         FileUtils.deleteDirectory(luceneHome);
