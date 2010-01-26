@@ -15,6 +15,7 @@
 
 package no.java.ems.cli;
 
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.external.v1.RoomV1;
 import org.apache.commons.cli.Options;
 
@@ -55,7 +56,7 @@ public class CreateRoom extends AbstractCli {
         RoomV1 room = new RoomV1();
         room.setName(getCommandLine().getOptionValue(OPTION_ROOM_NAME));
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
-        URI uri = getEms().addRoom(eventId, room);
+        ResourceHandle uri = getEms().addRoom(eventId, room);
         System.err.println("room.getId() = " + uri);
     }
 }

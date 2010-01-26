@@ -82,9 +82,9 @@ public class RESTEmsService {
 
     public synchronized Person saveContact(Person person) {
         Option<PersonV1> option = Option.some(person).map(ExternalV1F.personV1);
-        if (person.getURI() == null) {
-            URI uri = client.addPerson(option.some());                       
-            person.setURI(uri);
+        if (person.getHandle() == null) {
+            ResourceHandle handle = client.addPerson(option.some());                       
+            person.setHandle(handle);
         }
         else {
             client.updatePerson(option.some());
@@ -92,7 +92,7 @@ public class RESTEmsService {
         return person;
     }
 
-    public synchronized void deleteContact(URI person) {
+    public synchronized void deleteContact(ResourceHandle person) {
         //client.removePerson(person.getURI());
         throw new UnsupportedOperationException("Not implemented yet...");
     }
@@ -103,8 +103,8 @@ public class RESTEmsService {
         return new ArrayList<Event>(events);
     }
 
-    public synchronized Event getEvent(URI id) {
-        String path = getUUID(id);
+    public synchronized Event getEvent(ResourceHandle id) {
+        String path = getUUID(id.getURI());
         Option<Event> event = client.getEvent(path)
                 .map(ExternalV1F.event);
 
@@ -116,13 +116,16 @@ public class RESTEmsService {
 
     public synchronized Event saveEvent(Event event) {
         Option<EventV1> eventToSave = Option.some(event).map(ExternalV1F.eventV1);
-        if (event.getURI() != null) {
-            URI uri = client.addEvent(eventToSave.some());
-        }
         throw new UnsupportedOperationException("Not implemented yet...");
+        /*if (event.getHandle() == null) {
+            ResourceHandle handle = client.addEvent(eventToSave.some());
+        }
+        else {
+
+        }*/
     }
 
-    public synchronized void deleteEvent(URI id) {
+    public synchronized void deleteEvent(ResourceHandle id) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
@@ -154,14 +157,14 @@ public class RESTEmsService {
     public synchronized Session saveSession(Session session) {
         Option<SessionV1> option = Option.some(session).map(ExternalV1F.sessionV1);
         if (option.isSome()) {
-            if (session.getURI() == null) {
-                URI uri = client.addSession(option.some());
-                session.setURI(uri);
+            if (session.getHandle() == null) {
+                ResourceHandle handle = client.addSession(option.some());
+                session.setHandle(handle);
                 return session;
             }
             else {
                 client.updateSession(option.some());
-                option = client.getSession(getUUID(session.getEventURI()), session.getDisplayID());//TODO: EVIL: go away, should be session.getURI()
+                option = client.getSession(getUUID(session.getEventHandle().getURI()), session.getDisplayID());//TODO: EVIL: go away, should be session.getURI()
                 Option<Session> sessionOption = option.map(ExternalV1F.session);
                 if (sessionOption.isSome()) {
                     session.sync(sessionOption.some());
@@ -172,7 +175,7 @@ public class RESTEmsService {
         throw new IllegalArgumentException("Unable to save session");
     }
     
-    public synchronized void deleteSession(URI uri) {
+    public synchronized void deleteSession(ResourceHandle handle) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 

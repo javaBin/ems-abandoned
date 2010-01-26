@@ -16,6 +16,7 @@
 package no.java.ems.client.swing;
 
 import no.java.ems.client.RESTEmsService;
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.domain.*;
 import no.java.swing.ApplicationTask;
 import no.java.swing.BeanPropertyUndoableEdit;
@@ -169,7 +170,7 @@ public class Entities extends HashSet<AbstractEntity> {
 
     public boolean hasModifications() {
         for (AbstractEntity entity : this) {
-            if (entity.getURI() == null || entity.isModified()) {
+            if (entity.getHandle() == null || entity.isModified()) {
                 return true;
             }
         }
@@ -179,36 +180,36 @@ public class Entities extends HashSet<AbstractEntity> {
     public void registerForDeletion(final List<? extends AbstractEntity> entities) {
         for (AbstractEntity entity : entities) {
             boolean wasRemoved = remove(entity);
-            if (wasRemoved && entity.getURI() != null) {
+            if (wasRemoved && entity.getHandle() != null) {
                 delete.add(entity);
             }
         }
     }
 
-    public Person getContact(final URI personId) {
+    public Person getContact(final ResourceHandle personId) {
         Validate.notNull(personId, "Person ID may not be null");
         for (Person contact : contacts) {
-            if (personId.equals(contact.getURI())) {
+            if (personId.equals(contact.getHandle())) {
                 return contact;
             }
         }
         return null;
     }
 
-    public Event getEvent(final URI eventId) {
+    public Event getEvent(final ResourceHandle eventId) {
         Validate.notNull(eventId, "Event ID may not be null");
         for (Event event : events) {
-            if (eventId.equals(event.getURI())) {
+            if (eventId.equals(event.getHandle())) {
                 return event;
             }
         }
         return null;
     }
 
-    public Session getSession(final URI sessionId) {
+    public Session getSession(final ResourceHandle sessionId) {
         Validate.notNull(sessionId, "Session ID may not be null");
         for (Session session : sessions) {
-            if (sessionId.equals(session.getURI())) {
+            if (sessionId.equals(session.getHandle())) {
                 return session;
             }
         }
@@ -256,7 +257,7 @@ public class Entities extends HashSet<AbstractEntity> {
             super.succeeded(newContacts);
             Set<Person> keep = new HashSet<Person>();
             for (Person newContact : newContacts) {
-                Person existingContact = getContact(newContact.getURI());
+                Person existingContact = getContact(newContact.getHandle());
                 if (existingContact == null) {
                     add(newContact);
                     keep.add(newContact);
@@ -298,7 +299,7 @@ public class Entities extends HashSet<AbstractEntity> {
             super.succeeded(newEvents);
             Set<Event> keep = new HashSet<Event>();
             for (Event newEvent : newEvents) {
-                Event existingEvent = getEvent(newEvent.getURI());
+                Event existingEvent = getEvent(newEvent.getHandle());
                 if (existingEvent == null) {
                     add(newEvent);
                     keep.add(newEvent);
@@ -338,17 +339,17 @@ public class Entities extends HashSet<AbstractEntity> {
         public SaveChangesTask() {
             super("no.java.ems.client.swing.Entities.saveChangesTask");
             for (Person contact : contacts) {
-                if (contact.isModified() || contact.getURI() == null) {
+                if (contact.isModified() || contact.getHandle() == null) {
                     changedContacts.add(contact);
                 }
             }
             for (Event event : events) {
-                if (event.isModified() || event.getURI() == null) {
+                if (event.isModified() || event.getHandle() == null) {
                     changedEvents.add(event);
                 }
             }
             for (Session session : sessions) {
-                if (session.isModified() || session.getURI() == null) {
+                if (session.isModified() || session.getHandle() == null) {
                     changedSessions.add(session);
                 }
             }
@@ -408,19 +409,19 @@ public class Entities extends HashSet<AbstractEntity> {
             }
             for (Session session : deletedSessions) {
                 setMessage(getString("session.delete", session.getTitle()));
-                service.deleteSession(session.getURI());
+                service.deleteSession(session.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(session, null));
             }
             for (Event event : deletedEvents) {
                 setMessage(getString("event.delete", event.getName()));
-                service.deleteEvent(event.getURI());
+                service.deleteEvent(event.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(event, null));
             }
             for (Person contact : deletedContacts) {
                 setMessage(getString("contact.delete", contact.getName()));
-                service.deleteContact(contact.getURI());
+                service.deleteContact(contact.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(contact, null));
             }

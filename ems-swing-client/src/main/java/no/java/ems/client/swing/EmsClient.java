@@ -126,7 +126,7 @@ public class EmsClient extends SingleFrameApplication implements InitSequence {
             if (component instanceof TabComponent) {
                 TabComponent tabComponent = (TabComponent)component;
                 String id = tabComponent.getTab().getId();
-                if (id != null && id.equals(entity.getURI())) {
+                if (id != null && id.equals(entity.getHandle())) {
                     tabs.setSelectedIndex(index);
                     return;
                 }

@@ -68,7 +68,7 @@ public class ResourceHandle {
             public Boolean f(Tag tag) {
                 return that.tag.isSome() && tag.equals(that.tag.some());
             }
-        }).orSome(false);
+        }).orSome(true);
         if (!equalTag) {
             return false;
         }
@@ -88,5 +88,10 @@ public class ResourceHandle {
             }}).orSome(0);
         result = 31 * result + hc;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return uri.toString();
     }
 }

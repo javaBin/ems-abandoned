@@ -15,6 +15,7 @@
 
 package no.java.ems.client.swing.binding;
 
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.client.swing.Entities;
 import no.java.ems.domain.Person;
 import no.java.ems.domain.Speaker;
@@ -29,7 +30,7 @@ public class SpeakersConverter extends ListConverter<Speaker> {
     }
 
     protected String toString(final Speaker speaker) {
-        Person person = Entities.getInstance().getContact(speaker.getPersonURI());
+        Person person = Entities.getInstance().getContact(speaker.getHandle());
         return person == null ? speaker.getPersonURI() + "???" : person.getName();
     }
 

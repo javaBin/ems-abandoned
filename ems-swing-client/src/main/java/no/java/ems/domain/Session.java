@@ -15,6 +15,7 @@
 
 package no.java.ems.domain;
 
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.joda.time.Interval;
@@ -52,7 +53,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
         Course,
     }
 
-    private URI eventURI;
+    private ResourceHandle eventHandle;
     private Interval timeslot;
     private State state = State.Pending;
     private Format format = Format.Presentation;
@@ -80,12 +81,12 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
         this.title = title;
     }
 
-    public URI getEventURI() {
-        return eventURI;
+    public ResourceHandle getEventHandle() {
+        return eventHandle;
     }
 
-    public void setEventURI(final URI eventURI) {
-        firePropertyChange("eventURI", this.eventURI, this.eventURI = eventURI);
+    public void setEventHandle(final ResourceHandle eventHandle) {
+        firePropertyChange("eventHandle", this.eventHandle, this.eventHandle = eventHandle);
     }
 
     public Interval getTimeslot() {
@@ -286,7 +287,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
 
     public void sync(final Session other) {
         super.sync(other);
-        setEventURI(other.getEventURI());
+        setEventHandle(other.getEventHandle());
         setTimeslot(other.getTimeslot());
         setState(other.getState());
         setFormat(other.getFormat());

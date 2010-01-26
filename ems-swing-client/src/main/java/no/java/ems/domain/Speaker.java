@@ -15,6 +15,7 @@
 
 package no.java.ems.domain;
 
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.lang.Validate;
 
 import java.net.URI;
@@ -37,11 +38,11 @@ public class Speaker extends AbstractEntity {
         Validate.notNull(personURI, "Person identifier may not be null.");
         Validate.notNull(name, "Person name may not be null.");
         this.name = name;
-        setURI(personURI);
+        setHandle(new ResourceHandle(personURI));
     }
 
     public URI getPersonURI() {
-        return getURI();
+        return getHandle().getURI();
     }
 
     public String getDescription() {
