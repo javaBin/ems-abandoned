@@ -15,6 +15,7 @@
 
 package no.java.ems.cli;
 
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.cli.Options;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
@@ -96,8 +97,8 @@ public class CreateSession extends AbstractCli {
 //        List<String> keywords = new ArrayList<String>();
 //        List<Speaker> speakers = new ArrayList<Speaker>();
 
-        URI uri = getEms().addSession(session);
+        ResourceHandle handle = getEms().addSession(session);
 
-        System.err.println("Session created, id: " + uri.toURL().toExternalForm());
+        System.err.println("Session created, id: " + handle.getURI().toURL().toExternalForm());
     }
 }

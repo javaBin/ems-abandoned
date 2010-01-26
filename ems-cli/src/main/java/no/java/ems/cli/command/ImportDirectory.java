@@ -20,6 +20,7 @@ import fj.F;
 import fj.F2;
 import fj.Function;
 import fj.data.List;
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.external.v1.RestletEmsV1Client;
 import no.java.ems.external.v1.SessionV1;
 
@@ -82,7 +83,7 @@ public class ImportDirectory implements Runnable {
 
     private Effect<SessionV1> addSession = new Effect<SessionV1>() {
         public void e(SessionV1 session) {
-            URI uri = ems.addSession(session);
+            ResourceHandle uri = ems.addSession(session);
 
             System.err.println("URI: " + uri);
         }

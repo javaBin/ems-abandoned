@@ -15,6 +15,7 @@
 
 package no.java.ems.domain;
 
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -35,7 +36,7 @@ public abstract class AbstractEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    private URI uri;
+    private ResourceHandle handle;
     private int revision;
     private transient boolean modified;
     private String notes;
@@ -43,12 +44,12 @@ public abstract class AbstractEntity implements Serializable {
     private List<String> tags = new ArrayList<String>();
     private List<Binary> attachments = new ArrayList<Binary>();
 
-    public URI getURI() {
-        return uri;
+    public ResourceHandle getHandle() {
+        return handle;
     }
 
-    public void setURI(final URI uri) {
-        firePropertyChange("uri", this.uri, this.uri = uri);
+    public void setHandle(final ResourceHandle handle) {
+        firePropertyChange("handle", this.handle, this.handle = handle);
     }
 
     public String getDisplayID() {

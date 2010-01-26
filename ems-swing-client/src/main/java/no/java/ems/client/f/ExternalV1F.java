@@ -26,6 +26,8 @@ import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.domain.*;
 import static no.java.ems.external.v1.EmsV1F.toLocalDate;
 import static no.java.ems.external.v1.EmsV1F.toXmlGregorianCalendar;
@@ -62,10 +64,10 @@ public class ExternalV1F {
         public SessionV1 f(Session session) {
             SessionV1 sessionV1 = objectFactory.createSessionV1();
             sessionV1.setUuid(session.getDisplayID());
-            if (session.getURI() != null) {
-                sessionV1.setUri(session.getURI().toString());
+            if (session.getHandle() != null) {
+                sessionV1.setUri(session.getHandle().toString());
             }
-            sessionV1.setEventUuid(session.getEventURI().toString());
+            sessionV1.setEventUuid(session.getEventHandle().toString());
             sessionV1.setTitle(session.getTitle());
             sessionV1.setBody(session.getBody());
             sessionV1.setNotes(session.getNotes());
@@ -93,9 +95,9 @@ public class ExternalV1F {
     public static final F<SessionV1, Session> session = new F<SessionV1, Session>() {
         public Session f(SessionV1 session) {
             Session newSession = new Session();
-            newSession.setURI(URI.create(session.getUri()));
+            newSession.setHandle(new ResourceHandle(URI.create(session.getUri())));
             newSession.setDisplayID(session.getUuid());
-            newSession.setEventURI(URI.create(session.getEventUuid()));
+            newSession.setEventHandle(new ResourceHandle(URI.create(session.getEventUuid())));
             newSession.setTitle(session.getTitle());
             newSession.setBody(session.getBody());
             newSession.setNotes(session.getNotes());
@@ -314,8 +316,8 @@ public class ExternalV1F {
             PersonV1 personV1 = objectFactory.createPersonV1();
             personV1.setName(person.getName());
             personV1.setUuid(person.getDisplayID());
-            if (person.getURI() != null) {
-                personV1.setUri(person.getURI().toString());
+            if (person.getHandle() != null) {
+                personV1.setUri(person.getHandle().toString());
             }
             if (person.getLanguage() != null) {
                 personV1.setLanguage(person.getLanguage().getIsoCode());
@@ -341,7 +343,7 @@ public class ExternalV1F {
     public static F<PersonV1, Person> person = new F<PersonV1, Person>() {
         public Person f(PersonV1 personV1) {
             Person person = new Person();
-            person.setURI(URI.create(personV1.getUri()));
+            person.setHandle(new ResourceHandle(URI.create(personV1.getUri())));
             person.setDisplayID(personV1.getUuid());
             person.setName(personV1.getName());
             if (personV1.getLanguage() != null) {
@@ -379,8 +381,8 @@ public class ExternalV1F {
             EventV1 e = objectFactory.createEventV1();
             e.setName(event.getName());
             e.setUuid(e.getUuid());
-            if (event.getURI() != null) {
-                e.setUri(event.getURI().toString());
+            if (event.getHandle() != null) {
+                e.setUri(event.getHandle().toString());
             }
             e.setDate(fromNull(event.getDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
             Java.<Room>ArrayList_List().f(new ArrayList<Room>(event.getRooms())).
@@ -394,10 +396,10 @@ public class ExternalV1F {
     public static final F<EventV1, Event> event = new F<EventV1, Event>() {
         public Event f(EventV1 event) {
             Event e = new Event(event.getName());
-            e.setURI(URI.create(event.getUri()));
+            e.setHandle(new ResourceHandle(URI.create(event.getUri())));
             e.setDisplayID(event.getUuid());
             //TODO: this should not be set here... We need to get the links from the response.
-            e.setSessionURI(e.getURI());
+            e.setSessionURI(e.getHandle().getURI());
             e.setDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
             e.setTags(new ArrayList<String>(event.getTags().getTag()));
             e.setModified(false);
@@ -409,8 +411,8 @@ public class ExternalV1F {
     public static final F<Room, RoomV1> roomV1 = new F<Room, RoomV1>() {
         public RoomV1 f(Room room) {
             RoomV1 roomV1 = new RoomV1();
-            if (room.getURI() != null) {
-                roomV1.setUri(room.getURI().toString());                
+            if (room.getHandle() != null) {
+                roomV1.setUri(room.getHandle().toString());
             }
             roomV1.setName(room.getName());
             roomV1.setDescription(room.getDescription());
@@ -421,7 +423,7 @@ public class ExternalV1F {
     public static final F<RoomV1, Room> room = new F<RoomV1, Room>() {
         public Room f(RoomV1 externalRoom) {
             Room room = new Room();
-            room.setURI(URI.create(externalRoom.getUri()));
+            room.setHandle(new ResourceHandle(URI.create(externalRoom.getUri())));
             room.setName(externalRoom.getName());
             room.setDescription(externalRoom.getDescription());
             room.setModified(false);

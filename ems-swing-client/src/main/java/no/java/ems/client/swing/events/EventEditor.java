@@ -219,7 +219,7 @@ public class EventEditor extends EntityListEditor<Session> {
 
     protected Session createEntity() {
         Session session = new Session();
-        session.setEventURI(getEvent().getURI());
+        session.setEventHandle(getEvent().getHandle());
         sessions.add(session);
         return session;
     }
@@ -281,7 +281,7 @@ public class EventEditor extends EntityListEditor<Session> {
             }
             Set<Session> keep = new HashSet<Session>();
             for (Session newSession : newSessions) {
-                Session existingSession = Entities.getInstance().getSession(newSession.getURI());
+                Session existingSession = Entities.getInstance().getSession(newSession.getHandle());
                 if (existingSession == null) {
                     sessions.add(newSession);
                     keep.add(newSession);

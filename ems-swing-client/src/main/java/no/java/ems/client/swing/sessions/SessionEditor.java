@@ -33,7 +33,6 @@ import no.java.swing.SelectableLabel;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
@@ -45,7 +44,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
@@ -81,7 +79,7 @@ public class SessionEditor extends EntityEditor<Session> {
     }
 
     public void initModels() {
-        Event event = getEmsService().getEvent(entity.getEventURI());
+        Event event = getEmsService().getEvent(entity.getEventHandle());
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Room room : event.getRooms()) {
             model.addElement(room);

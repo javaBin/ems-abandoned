@@ -23,6 +23,8 @@ import static fj.Function.curry;
 import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.codehaus.httpcache4j.*;
@@ -134,7 +136,7 @@ public class RestletEmsV1Client implements EmsV1Client {
         return defaultGetRequest(eventUnmarshaller, GET, getEventUrl, eventId);
     }
 
-    public URI addEvent(EventV1 event) {
+    public ResourceHandle addEvent(EventV1 event) {
         return request(doCachedRequest,
             compose(curry(setBody(EventV1.class, "event"), event, MIMEType.valueOf(MIMETypes.EVENT_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
@@ -177,7 +179,7 @@ public class RestletEmsV1Client implements EmsV1Client {
             GET, searchSessionsUrl, eventId);
     }
 
-    public URI addSession(SessionV1 session) {
+    public ResourceHandle addSession(SessionV1 session) {
         return request(doCachedRequest,
             compose(curry(setBody(SessionV1.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
@@ -193,7 +195,7 @@ public class RestletEmsV1Client implements EmsV1Client {
             PUT, getSessionUrl, session.getEventUuid(), session.getUuid());
     }
 
-    public URI addRoom(String eventId, RoomV1 room) {
+    public ResourceHandle addRoom(String eventId, RoomV1 room) {
         return request(doCachedRequest,
             compose(curry(setBody(RoomV1.class, "room"), room, MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
@@ -209,7 +211,7 @@ public class RestletEmsV1Client implements EmsV1Client {
         return defaultGetRequest(personUnmarshaller, GET, getPersonUrl, personId);
     }
 
-    public URI addPerson(PersonV1 person) {
+    public ResourceHandle addPerson(PersonV1 person) {
         return request(doCachedRequest,
             compose(curry(setBody(PersonV1.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
@@ -277,10 +279,10 @@ public class RestletEmsV1Client implements EmsV1Client {
         }
     };
 
-    private static final F<HTTPResponse, URI> responseToUri = new F<HTTPResponse, URI>() {
-        public URI f(HTTPResponse response) {
+    private static final F<HTTPResponse, ResourceHandle> responseToUri = new F<HTTPResponse, ResourceHandle>() {
+        public ResourceHandle f(HTTPResponse response) {
             if (response.getStatus().equals(Status.CREATED)) {
-                return URI.create(response.getHeaders().getFirstHeader("Location").getValue());
+                return new ResourceHandle(URI.create(response.getHeaders().getFirstHeader("Location").getValue()));
             }
 
             throw new RuntimeException("Expected HTTP code 'created', got " + response.getStatus().getCode() + ".");

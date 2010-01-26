@@ -89,4 +89,9 @@ public class ResourceHandle {
         result = 31 * result + hc;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return uri.toString();
+    }
 }
