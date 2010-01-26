@@ -15,12 +15,7 @@
 
 package no.java.ems.server.solr;
 
-import no.java.ems.server.domain.AbstractEntity;
-import no.java.ems.server.domain.Event;
-import no.java.ems.server.domain.Person;
-import no.java.ems.server.domain.Session;
-import no.java.ems.server.domain.ValueObject;
-import no.java.ems.server.search.SearchService;
+import no.java.ems.server.domain.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.solr.common.SolrInputDocument;
 import org.joda.time.DateTime;
@@ -73,13 +68,13 @@ public class ResourceToSolrTranslator {
     private void addTypeField(AbstractEntity resource) {
         String type;
         if (resource instanceof Session) {
-            type = SearchService.ObjectType.session.name();
+            type = ObjectType.session.name();
         }
         else if (resource instanceof Person) {
-            type = SearchService.ObjectType.person.name();
+            type = ObjectType.person.name();
         }
         else if (resource instanceof Event) {
-            type = SearchService.ObjectType.event.name();
+            type = ObjectType.event.name();
         }
         else {
             throw new IllegalArgumentException("I cannot index this object type: " + resource.getClass());

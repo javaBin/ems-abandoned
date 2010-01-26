@@ -35,6 +35,10 @@
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
+      <artifactId>ems-external-domain-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>no.java.ems</groupId>
       <artifactId>ems-wiki</artifactId>
     </dependency>
     <dependency>
@@ -110,12 +114,12 @@
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>1.0.2</version>
+      <version>1.1.4.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-spring</artifactId>
-      <version>1.0.2</version>
+      <version>1.1.4.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.grizzly</groupId>
@@ -136,6 +140,12 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -148,12 +158,12 @@
       <!--
         Run these commands to get a working copy of EMS:
 
-        tar zxf ems-20090324-000000.tar.gz 
+        tar zxf ems-20090324-000000.tar.gz
         mkdir target/ems-home
         mkdir target/ems-home/database
         mv database/database/ems/ target/ems-home/database/derby
-        mv database/binaries target/ems-home/database 
-        rm database/database/derby.log 
+        mv database/binaries target/ems-home/database
+        rm database/database/derby.log
         rmdir database/database/
         mv database/index target/ems-home/database/solr
         mvn install exec:java

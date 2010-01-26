@@ -17,9 +17,12 @@ package no.java.ems.server.cli;
 
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.SessionDao;
+import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.domain.Event;
 import no.java.ems.server.domain.Session;
 import no.java.ems.server.search.SearchService;
+
+import static org.codehaus.httpcache4j.util.TestUtil.getTestFile;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -41,6 +44,9 @@ public class Reindex {
         }
 
         System.err.println("TODO: Implement this");
+        EmsSrcEmbedder server = new EmsSrcEmbedder(getTestFile("."), commandLine.getEmsHome());
+        server.start();
+        new Reindex(server.getBean(EventDao.class), server.getBean(SessionDao.class), server.getBean(SearchService.class)).work();
 //        EmsServices emsServices = new EmsServices(commandLine.getEmsHome(), 0, true, false, 0, false);
 //
 //        new Reindex(emsServices.getEventDao(), emsServices.getSessionDao(), emsServices.getSearchService()).work();

@@ -15,9 +15,11 @@
 
 package no.java.ems.server.search;
 
+import no.java.ems.server.domain.ObjectType;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -32,26 +34,26 @@ public class SearchResponse {
     private List<Hit> hits;
 
     public static class Hit {
-        SearchService.ObjectType type;
-        String id;
-        String internalId;
+        ObjectType type;
+        URI uri;
+        String title;
 
-        public Hit(SearchService.ObjectType type, String id, String internalId) {
+        public Hit(ObjectType type, URI uri, String title) {
             this.type = type;
-            this.id = id;
-            this.internalId = internalId;
+            this.uri = uri;
+            this.title = title;
         }
 
-        public SearchService.ObjectType getType() {
+        public ObjectType getType() {
             return type;
         }
 
-        public String getId() {
-            return id;
+        public URI getURI() {
+            return uri;
         }
 
-        public String getInternalId() {
-            return internalId;
+        public String getTitle() {
+            return this.title;
         }
     }
 

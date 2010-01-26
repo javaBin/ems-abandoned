@@ -117,7 +117,7 @@ public class ExternalV1F {
             }
             if (session.getAttachments() != null) {
                 List<Binary> list = List.iterableList(session.getAttachments().getBinary()).map(uriBinary);
-                newSession.setAttachements(new ArrayList<Binary>(list.toCollection()));
+                newSession.setAttachments(new ArrayList<Binary>(list.toCollection()));
             }
             newSession.setModified(false);
             return newSession;
@@ -313,6 +313,10 @@ public class ExternalV1F {
         public PersonV1 f(Person person) {
             PersonV1 personV1 = objectFactory.createPersonV1();
             personV1.setName(person.getName());
+            personV1.setUuid(person.getDisplayID());
+            if (person.getURI() != null) {
+                personV1.setUri(person.getURI().toString());
+            }
             if (person.getLanguage() != null) {
                 personV1.setLanguage(person.getLanguage().getIsoCode());
             }
@@ -374,6 +378,10 @@ public class ExternalV1F {
         public EventV1 f(Event event) {
             EventV1 e = objectFactory.createEventV1();
             e.setName(event.getName());
+            e.setUuid(e.getUuid());
+            if (event.getURI() != null) {
+                e.setUri(event.getURI().toString());
+            }
             e.setDate(fromNull(event.getDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
             Java.<Room>ArrayList_List().f(new ArrayList<Room>(event.getRooms())).
                     map(roomV1).
@@ -401,7 +409,9 @@ public class ExternalV1F {
     public static final F<Room, RoomV1> roomV1 = new F<Room, RoomV1>() {
         public RoomV1 f(Room room) {
             RoomV1 roomV1 = new RoomV1();
-            roomV1.setUri(room.getURI().toString());
+            if (room.getURI() != null) {
+                roomV1.setUri(room.getURI().toString());                
+            }
             roomV1.setName(room.getName());
             roomV1.setDescription(room.getDescription());
             return roomV1;

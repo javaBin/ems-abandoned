@@ -15,11 +15,8 @@
 
 package no.java.ems.server.solr;
 
-import no.java.ems.server.domain.AbstractEntity;
-import no.java.ems.server.domain.Event;
-import no.java.ems.server.domain.Person;
-import no.java.ems.server.domain.Session;
-import no.java.ems.server.domain.EmsServerConfiguration;
+import no.java.ems.server.URIBuilder;
+import no.java.ems.server.domain.*;
 import no.java.ems.server.search.SearchRequest;
 import no.java.ems.server.search.SearchResponse;
 import no.java.ems.server.search.SearchService;
@@ -51,6 +48,7 @@ import org.springframework.stereotype.Component;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,21 +87,60 @@ public class SolrSearchService implements SearchService {
     // -----------------------------------------------------------------------
 
     public IndexStatistics getIndexStatistics() {
-        return new IndexStatistics();
+        IndexStatistics stats = new IndexStatistics();
+        try {
+            QueryResponse docs = solrServer.query(new SolrQuery("*:*"));
+            stats.numberOfDocuments = docs.getResults().getNumFound();
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        }
+        return stats;
     }
 
     public void update(Object entity) {
         if (!(entity instanceof AbstractEntity)) {
             return;
         }
-
-        if (!(entity instanceof Session)) {
-            return;
+        
+        if (entity instanceof Session) {
+            index((Session) entity);
         }
+        else if (entity instanceof Person) {
+            index((Person) entity);
+        }
+        else if (entity instanceof Event) {
+            index((Event) entity);
+        }
+    }
 
+    private void index(Session entity) {
         try {
-            solrServer.deleteById(((Session) entity).getId());
-            solrServer.add(createIndexDocument((Session) entity));
+            solrServer.deleteById(entity.getId());
+            solrServer.add(createIndexDocument(entity));
+            solrServer.commit();
+        } catch (SolrServerException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private void index(Person entity) {
+        try {
+            solrServer.deleteById(entity.getId());
+            solrServer.add(createIndexDocument(entity));
+            solrServer.commit();
+        } catch (SolrServerException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void index(Event entity) {
+        try {
+            solrServer.deleteById(entity.getId());
+            solrServer.add(createIndexDocument(entity));
             solrServer.commit();
         } catch (SolrServerException e) {
             throw new RuntimeException(e);
@@ -127,17 +164,20 @@ public class SolrSearchService implements SearchService {
         }
     }
 
-    public SearchResponse search(SearchRequest request) {
+    public SearchResponse search(SearchRequest request, URIBuilder uriBuilder) {
         SolrQuery query = new SolrQuery();
         query.setRows(request.getLimit());
         query.setStart(request.getOffset() * request.getLimit());
         BooleanQuery aggregate = new BooleanQuery();
         if (!StringUtils.isBlank(request.getText())) {
             TermQuery termQuery = new TermQuery(new Term("", request.getText()));
-            aggregate.add(termQuery, BooleanClause.Occur.SHOULD);
+            aggregate.add(termQuery, BooleanClause.Occur.MUST);
         }
         if (!StringUtils.isBlank(request.getEventId())) {
             aggregate.add(new TermQuery(new Term("eventid", request.getEventId())), BooleanClause.Occur.MUST);
+        }
+        if (request.getObjectType() != null) {
+            aggregate.add(new BooleanClause(new TermQuery(new Term("type", request.getObjectType().name())), BooleanClause.Occur.MUST));
         }
         query.setQuery(aggregate.toString());
 
@@ -149,13 +189,35 @@ public class SolrSearchService implements SearchService {
             log.info("RESULTS WAS: " + results);
             ArrayList<SearchResponse.Hit> hits = new ArrayList<SearchResponse.Hit>();
             for (SolrDocument result : results) {
-                hits.add(new SearchResponse.Hit(ObjectType.session, String.valueOf(result.getFieldValue("id")), null));
+                ObjectType type = extractType(result);
+                String id = String.valueOf(result.getFieldValue("id"));
+                URI uri;
+                if (type == ObjectType.session) {
+                    String eventId = String.valueOf(result.getFieldValue("eventid"));
+                    uri = uriBuilder.forObject(eventId, id, type);
+                }
+                else {
+                    uri = uriBuilder.forObject(null, id, type);
+                }
+                hits.add(new SearchResponse.Hit(type, uri, (String)result.getFieldValue("title")));
             }
             return new SearchResponse(results.getNumFound(), queryResponse.getElapsedTime(), hits);
         } catch (SolrServerException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private ObjectType extractType(SolrDocument result) {
+        String typeValue = (String) result.getFieldValue("type");
+        ObjectType type;
+        if (!StringUtils.isBlank(typeValue)) {
+            type = ObjectType.valueOf(typeValue);
+        }
+        else {
+            type = null;
+        }
+        return type;
     }
 
     // -----------------------------------------------------------------------

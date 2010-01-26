@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ems Search Result</title>
+</head>
+<body>    
+    #if(!$result.hits.empty)
+    <ul>
+        #foreach ($item in $result.hits)
+            <li>
+                <a href="$item.URI">$item.title</a>
+            </li>
+        #end
+    </ul>
+    #else
+    <p>No hits</p>
+    #end
+</body>
+</html>

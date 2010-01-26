@@ -170,6 +170,11 @@
       </dependency>
       <dependency>
         <groupId>no.java.ems</groupId>
+        <artifactId>ems-external-domain-java</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>no.java.ems</groupId>
         <artifactId>ems-server</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -355,6 +360,7 @@
 
   <modules>
     <module>ems-external-domain-v1</module>
+    <module>ems-external-domain-java</module>
     <module>ems-cli</module>
     <module>ems-client</module>
     <module>ems-server</module>

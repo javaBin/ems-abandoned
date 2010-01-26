@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ems Search form</title>
+</head>
+<body>
+    <form action="${action}" method="get">
+        <input type="text" name="q"/>
+        <select name="type">
+            #foreach($type in $types)
+                <option value="$type">$type</option>
+            #end
+        </select>
+        <input type="text" name="offset" value="0"/>
+        <input type="text" name="limit" value="10"/>
+        <input type="submit"/>
+    </form>
+</body>
+</html>

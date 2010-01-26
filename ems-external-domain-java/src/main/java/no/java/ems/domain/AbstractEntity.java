@@ -1,18 +1,3 @@
-/*
- * Copyright 2009 JavaBin
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- */
-
 package no.java.ems.domain;
 
 import org.apache.commons.lang.Validate;
@@ -25,7 +10,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
@@ -35,28 +19,19 @@ public abstract class AbstractEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    private URI uri;
+    private String id;
     private int revision;
     private transient boolean modified;
     private String notes;
-    private String displayID;
     private List<String> tags = new ArrayList<String>();
-    private List<Binary> attachments = new ArrayList<Binary>();
+    private List<Binary> attachements = new ArrayList<Binary>();
 
-    public URI getURI() {
-        return uri;
+    public String getId() {
+        return id;
     }
 
-    public void setURI(final URI uri) {
-        firePropertyChange("uri", this.uri, this.uri = uri);
-    }
-
-    public String getDisplayID() {
-        return displayID;
-    }
-
-    public void setDisplayID(String displayID) {
-        firePropertyChange("displayID", this.displayID, this.displayID = displayID);
+    public void setId(final String id) {
+        firePropertyChange("id", this.id, this.id = id);
     }
 
     public int getRevision() {
@@ -106,12 +81,12 @@ public abstract class AbstractEntity implements Serializable {
         firePropertyChange("tags", getTags(), Collections.unmodifiableList(this.tags = new ArrayList<String>(tags)));
     }
 
-    public List<Binary> getAttachments() {
-        return Collections.unmodifiableList(attachments);
+    public List<Binary> getAttachements() {
+        return Collections.unmodifiableList(attachements);
     }
 
-    public void setAttachments(final List<Binary> attachments) {
-        firePropertyChange("attachements", getAttachments(), Collections.unmodifiableList(this.attachments = new ArrayList<Binary>(attachments)));
+    public void setAttachements(final List<Binary> attachements) {
+        firePropertyChange("attachements", getAttachements(), Collections.unmodifiableList(this.attachements = new ArrayList<Binary>(attachements)));
     }
 
     public String getTagsAsString(final String delimiter) {
@@ -154,9 +129,9 @@ public abstract class AbstractEntity implements Serializable {
 
     @Override
     public final boolean equals(final Object other) {
-        // final because we can not use uri-based equality without refactoring the Entities class:
+        // final because we can not use id-based equality without refactoring the Entities class:
         // when new entities are created, they have null ids and are placed in sets
-        // when saved, the uri assigned by the server is set on the entity and therefore breaking the contract
+        // when saved, the id assigned by the server is set on the entity and therefore breaking the contract
         return super.equals(other);
     }
 
@@ -180,7 +155,7 @@ public abstract class AbstractEntity implements Serializable {
     public void sync(final AbstractEntity other) {
         setRevision(other.getRevision());
         setNotes(other.getNotes());
-        setAttachments(other.getAttachments());
+        setAttachements(other.getAttachements());
         setTags(other.getTags());
     }
 
