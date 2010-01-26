@@ -68,7 +68,7 @@ public class ResourceHandle {
             public Boolean f(Tag tag) {
                 return that.tag.isSome() && tag.equals(that.tag.some());
             }
-        }).orSome(false);
+        }).orSome(true);
         if (!equalTag) {
             return false;
         }
