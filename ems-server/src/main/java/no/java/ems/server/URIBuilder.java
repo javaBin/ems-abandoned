@@ -107,7 +107,7 @@ public class URIBuilder {
             this.search = search;
         }
 
-        public URI search() {
+        public URI getURI() {
             return search.build();
         }
     }

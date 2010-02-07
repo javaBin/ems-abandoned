@@ -75,7 +75,7 @@ public class Reindex {
 
     private void indexEvent(Event event) {
         System.out.println("Indexing event: " + event.getName() + " (" + event.getId() + ")...");
-
+        searchService.update(event);
         for (Session session : sessionDao.getSessions(event.getId())) {
             indexSession(session);
         }

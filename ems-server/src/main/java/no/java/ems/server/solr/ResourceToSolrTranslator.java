@@ -16,19 +16,18 @@
 package no.java.ems.server.solr;
 
 import no.java.ems.server.domain.*;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.solr.common.SolrInputDocument;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  *
@@ -38,6 +37,7 @@ public class ResourceToSolrTranslator {
 
     protected static final String UTC_TIMEFORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private SolrInputDocument inputDocument = new SolrInputDocument();
+    private static final DateTimeZone UTC_TIMEZONE = DateTimeZone.forTimeZone(TimeZone.getTimeZone("UTC"));
 
     /**
      * This method will always add these fields to the solr index:
@@ -56,8 +56,8 @@ public class ResourceToSolrTranslator {
         addField("id", resource.getId());
         addField("tags", resource.getTags());
         addTypeField(resource);
-        maybeAddNamedProperty("keywords", resource);
-        maybeAddNamedProperty("name", resource);
+        addTitleProperty(resource);
+        addKeywordsProperty(resource);
         if (additionalFields != null) {
             for (Map.Entry<String, Object> entry : additionalFields.entrySet()) {
                 addField(entry.getKey(), entry.getValue());
@@ -82,13 +82,28 @@ public class ResourceToSolrTranslator {
         addField("type", type);
     }
 
-    private void maybeAddNamedProperty(final String pName, AbstractEntity resource) {
-        try {
-            Object object = PropertyUtils.getProperty(resource, pName);
-            addField(pName, object);
-        } catch (Exception e) {
-            //there was not field with that name.
+    private void addTitleProperty(AbstractEntity resource) {
+        String title = null;
+        if (resource instanceof Session) {
+            title = ((Session) resource).getTitle();
         }
+        else if (resource instanceof Person) {
+            title = ((Person) resource).getName();
+        }
+        else if (resource instanceof Event) {
+            title = ((Event) resource).getName();
+        }
+        if (title != null) {
+            addField("title", title);
+        }
+    }
+
+    private void addKeywordsProperty(AbstractEntity resource) {
+        List<String> keywords = null;
+        if (resource instanceof Session) {
+            keywords = ((Session) resource).getKeywords();
+        }
+        addField("keywords", keywords);
     }
 
     private void addField(String name, Object value) {
@@ -124,11 +139,10 @@ public class ResourceToSolrTranslator {
     }
 
     private void addDateTimeInUTC(String name, DateTime time) {
-        long utctime = time.getZone().convertLocalToUTC(time.getMillis(), true);
-        Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-        cal.setTimeInMillis(utctime);
-        DateFormat format = new SimpleDateFormat(UTC_TIMEFORMAT);
-        inputDocument.addField(name, format.format(cal.getTime()));
+        DateTimeFormatter format = DateTimeFormat.
+                forPattern(UTC_TIMEFORMAT).
+                withZone(UTC_TIMEZONE);
+        inputDocument.addField(name, format.print(time));
     }
 
     public SolrInputDocument getInputDocument() {

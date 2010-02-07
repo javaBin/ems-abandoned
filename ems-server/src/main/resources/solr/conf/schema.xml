@@ -27,7 +27,7 @@
  http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="example" version="1.1">
+<schema name="ems" version="1.1">
     <!-- attribute "name" is the name of this schema and is only used for display purposes.
 Applications should change this to reflect the nature of the search collection.
 version="1.1" is Solr's version number for the schema syntax and semantics.  It should
@@ -193,7 +193,8 @@ lexicographic ordering isn't equal to the numeric ordering) -->
 
         <!-- common fields-->
         <field name="id" type="string" indexed="true" stored="true" required="true"/>
-        <field name="name" type="text" indexed="true" stored="false"/>
+        <field name="title" type="text" indexed="true" stored="true"/>
+        <field name="summary" type="text" indexed="false" stored="true"/> 
 
         <!--Type can for instance be event, session or person -->
         <field name="type" type="string" indexed="true" stored="true"/>
@@ -203,7 +204,6 @@ lexicographic ordering isn't equal to the numeric ordering) -->
         <!-- common for person, session and speaker -->
         <field name="language" type="string" indexed="true" stored="false"/>
         <field name="nationality" type="string" indexed="true" stored="false"/>
-        <field name="description" type="text" indexed="true" stored="false"/>
 
         <!-- session specific -->
         <field name="eventid" type="string" indexed="true" stored="true"/>
@@ -212,7 +212,6 @@ lexicographic ordering isn't equal to the numeric ordering) -->
         <field name="format" type="string" indexed="true" stored="false"/>
         <field name="room" type="string" indexed="true" stored="false" />
         <field name="level" type="string" indexed="true" stored="false"/>
-        <field name="title" type="text" indexed="true" stored="true"/>
         <field name="slot_start" type="date" indexed="true" stored="true"/>
         <field name="slot_end" type="date" indexed="true" stored="true"/>
         <field name="published" type="boolean" indexed="true" stored="true"/>
@@ -277,7 +276,6 @@ or to add multiple fields to the same field for easier/faster searching.  -->
     <copyField source="speakers" dest="text"/>
     <copyField source="sessions" dest="text"/>
 
-    <copyField source="name" dest="text"/>
 
     <!-- Similarity is the scoring routine for each document vs. a query.
 A custom similarity may be specified here, but the default is fine

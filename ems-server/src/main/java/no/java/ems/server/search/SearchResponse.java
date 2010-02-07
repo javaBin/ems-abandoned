@@ -34,14 +34,16 @@ public class SearchResponse {
     private List<Hit> hits;
 
     public static class Hit {
-        ObjectType type;
-        URI uri;
-        String title;
+        private final ObjectType type;
+        private final URI uri;
+        private final String title;
+        private final String summary;
 
-        public Hit(ObjectType type, URI uri, String title) {
+        public Hit(ObjectType type, URI uri, String title, String summary) {
             this.type = type;
             this.uri = uri;
             this.title = title;
+            this.summary = summary;
         }
 
         public ObjectType getType() {
@@ -54,6 +56,10 @@ public class SearchResponse {
 
         public String getTitle() {
             return this.title;
+        }
+
+        public String getSummary() {
+            return summary;
         }
     }
 

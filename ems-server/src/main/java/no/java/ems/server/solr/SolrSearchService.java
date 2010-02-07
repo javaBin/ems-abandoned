@@ -199,7 +199,7 @@ public class SolrSearchService implements SearchService {
                 else {
                     uri = uriBuilder.forObject(null, id, type);
                 }
-                hits.add(new SearchResponse.Hit(type, uri, (String)result.getFieldValue("title")));
+                hits.add(new SearchResponse.Hit(type, uri, (String)result.getFieldValue("title"), (String) result.getFieldValue("summary")));
             }
             return new SearchResponse(results.getNumFound(), queryResponse.getElapsedTime(), hits);
         } catch (SolrServerException e) {
@@ -226,7 +226,7 @@ public class SolrSearchService implements SearchService {
 
     private SolrInputDocument createIndexDocument(Person resource) {
         Map<String, Object> additionalIndexedProperties = new HashMap<String, Object>();
-        additionalIndexedProperties.put("description", resource.getDescription());
+        additionalIndexedProperties.put("summary", resource.getDescription());
         additionalIndexedProperties.put("gender", resource.getGender());
         additionalIndexedProperties.put("language", resource.getLanguage());
         additionalIndexedProperties.put("nationality", resource.getNationality());
@@ -250,7 +250,7 @@ public class SolrSearchService implements SearchService {
         additionalIndexedFields.put("format", resource.getFormat());
         additionalIndexedFields.put("room", resource.getRoom());
         additionalIndexedFields.put("level", resource.getLevel());
-        additionalIndexedFields.put("title", resource.getTitle());
+        additionalIndexedFields.put("summary", resource.getLead() + "\n" + resource.getBody());
         additionalIndexedFields.put("lead_text", resource.getLead());
         additionalIndexedFields.put("body_text", resource.getBody());
         additionalIndexedFields.put("language", resource.getLanguage());
