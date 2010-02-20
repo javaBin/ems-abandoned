@@ -1,12 +1,10 @@
 package no.java.ems.server.resources.v1;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.*;
 import com.sun.syndication.feed.synd.*;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
+import no.java.ems.external.v1.MIMETypes;
 import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.ObjectType;
 import no.java.ems.server.search.SearchRequest;
@@ -21,11 +19,11 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -37,19 +35,27 @@ import java.util.*;
 public class SearchResource {
     private SearchService searchService;
     private VelocityEngine velocityEngine;
+    private static final String ATOM = "application/atom+xml";
+    private static final String XHTML = "application/xhtml+xml";
+    private int rows;
 
     @Autowired
     public SearchResource(SearchService searchService) {
         this.searchService = searchService;
+        rows = 10;
     }
 
-    private Response form(URIBuilder uriBuilder) {
+    @GET
+    @Path("form")
+    @Produces(XHTML)
+    public Response form(@Context UriInfo info) {
+        URIBuilder uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         VelocityContext context = new VelocityContext();
         context.put("action", uriBuilder.search().getURI());
         context.put("types", ObjectType.values());
         String form = render(context, "/jersey/search-form.vm");
 
-        return Response.ok(form).type("application/xhtml+xml").build();
+        return Response.ok(form).type(XHTML).build();
     }
 
     private String render(VelocityContext context, final String path) {
@@ -77,18 +83,21 @@ public class SearchResource {
     }
 
     @GET
-    @Produces({"application/atom+xml", "application/xhtml+xml"})
-    public Response query(@Context UriInfo info, @QueryParam("q") String query, @QueryParam("type") String type, @QueryParam("offset") int start, @QueryParam("limit") int rows) {
+    @Produces(ATOM)
+    public Response query(@Context UriInfo info, @QueryParam("q") String query, @QueryParam("type") String type, @QueryParam("pw") int page) {
         URIBuilder uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         if (StringUtils.isBlank(query) && StringUtils.isBlank(type)) {
-            return form(uriBuilder);
+            return Response.status(400).build();
         }
-        if (rows == 0) {
-            rows = 10;
+        else if (StringUtils.isBlank(type)) {
+            return Response.status(400).build();
         }
         SearchRequest request = new SearchRequest();
-        request.setOffset(start);
-        request.setLimit(rows == 0 ? 10 : rows);
+        if (page == 0) {
+            page = 1;
+        }
+        request.setOffset(page-1);
+        request.setLimit(rows);
         if (!StringUtils.isBlank(type)) {
             ObjectType objectType;
             try {
@@ -100,9 +109,29 @@ public class SearchResource {
         }
         request.setText(query);
         SearchResponse response = searchService.search(request, uriBuilder);
+        if (!isPageWithinResult(page, response.getHitCount())) {
+            return Response.status(404).build();
+        }
+
         Feed feed = new Feed("atom_1.0");
-        feed.setId(UriBuilder.fromUri(uriBuilder.search().getURI()).queryParam("q", query).queryParam("type", type).queryParam("offset", start).queryParam("limit", rows).build().toString());
+        URI self = uriBuilder.search().getURI(query, type, page);
+
+        feed.setAuthors(Collections.singletonList(createPerson("EMS")));
+        feed.setId(self.toString());
         feed.setEncoding("UTF-8");
+        feed.setTitle(response.getHitCount() == 0 ? "No hits" : response.getHitCount() + " hit(s)");
+        ArrayList<Link> links = new ArrayList<Link>();
+        links.add(createLink("search", uriBuilder.search().form(), XHTML));
+        links.add(createLink("self", self, ATOM));
+
+        if (page > 1) {
+            links.add(createLink("previous", uriBuilder.search().getURI(query, type, page), ATOM));
+        }
+        if (hasNext(page, response.getHitCount())) {
+            links.add(createLink("next", uriBuilder.search().getURI(query, type, page), ATOM));
+        }
+        feed.setOtherLinks(links);
+
         List<Entry> entries = new ArrayList<Entry>();
         for (SearchResponse.Hit hit : response.getHits()) {
             entries.add(toEntry(hit));
@@ -110,22 +139,61 @@ public class SearchResource {
         feed.setEntries(entries);
         SyndFeedOutput out = new SyndFeedOutput();
         try {
-            return Response.ok(out.outputString(new SyndFeedImpl(feed))).type("application/atom+xml").build();
+            return Response.ok(out.outputString(new SyndFeedImpl(feed))).build();
         } catch (FeedException e) {
             throw new WebApplicationException(Response.status(500).entity(e.getMessage()).build());
         }
     }
 
+    private boolean isPageWithinResult(int page, long hitCount) {
+        return page == 1 || rows <= hitCount || hasNext(page, hitCount);
+    }
+
+    private Person createPerson(String name) {
+        Person person = new Person();
+        person.setName(name);        
+        return person;
+    }
+
+    private boolean hasNext(int page, long hitCount) {
+        return (page * rows) < hitCount;
+    }
+
+    private Link createLink(String relation, URI uri, final String mimeType) {
+        Link link = new Link();
+        link.setRel(relation);
+        link.setType(mimeType);
+        link.setHref(uri.toString());
+        return link;
+    }
+
     private Entry toEntry(SearchResponse.Hit hit) {
         Entry entry = new Entry();
+        entry.setAuthors(Collections.singletonList(createPerson("EMS")));
         entry.setTitle(hit.getTitle());
         Content summary = new Content();
         summary.setValue(hit.getSummary());
         entry.setSummary(summary);
-        Link editLink = new Link();
-        editLink.setRel("edit");
-        editLink.setHref(hit.getURI().toString());
-        entry.setOtherLinks(Arrays.asList(editLink));
+        entry.setOtherLinks(Arrays.asList(createLink("edit", hit.getURI(), findMimeType(hit.getType()))));
         return entry;
+    }
+
+    private String findMimeType(ObjectType type) {
+        String mimeType;
+        switch (type) {
+            case person:
+                mimeType = MIMETypes.PERSON_MIME_TYPE;
+                break;
+            case session:
+                mimeType = MIMETypes.SESSION_MIME_TYPE;
+                break;
+            case event:
+                mimeType = MIMETypes.EVENT_MIME_TYPE;
+                break;
+            default:
+                mimeType = "application/octet-stream";
+                break;
+        }
+        return mimeType;
     }
 }

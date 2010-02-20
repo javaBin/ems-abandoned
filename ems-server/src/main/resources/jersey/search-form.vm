@@ -3,7 +3,7 @@
     <title>Ems Search form</title>
 </head>
 <body>
-    <form action="${action}" method="get" accept="application/atom+xml">
+    <form action="${action}" method="get">
         <input type="text" name="q"/>
         <select name="type">
             #foreach($type in $types)

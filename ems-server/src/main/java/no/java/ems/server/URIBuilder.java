@@ -127,6 +127,17 @@ public class URIBuilder {
         public URI getURI() {
             return search.build();
         }
+
+        public URI getURI(String query, String type, int offset) {
+            return search.queryParam("q", query == null ? "" : query).
+                    queryParam("type", type).
+                    queryParam("pw", String.valueOf(offset)).
+                    build();
+        }
+
+        public URI form() {
+            return search.segment("form").build();
+        }
     }
 
     public static class PeopleUri {

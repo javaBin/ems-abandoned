@@ -41,7 +41,7 @@ import java.net.URI;
 //TODO: Use JaxB for instead of the JSONObject.
 public class EndpointResource {
     
-    @Produces(MIMETypes.ENDPOINT_MIME_TYPE)
+    @Produces({"application/json", MIMETypes.ENDPOINT_MIME_TYPE})
     @GET
     public Response get(@Context UriInfo info) {
         URIBuilder uriBuilder = new URIBuilder(info.getBaseUriBuilder());
@@ -51,6 +51,7 @@ public class EndpointResource {
             object.put("people", createMapping(uriBuilder.people().people()));
             object.put("rooms", createMapping(uriBuilder.rooms().rooms()));
             object.put("binaries", createMapping(uriBuilder.binaries().binaries()));
+            object.put("search", createMapping(uriBuilder.search().form()));
         } catch (JSONException e) {
             throw new WebApplicationException(500);
         }
