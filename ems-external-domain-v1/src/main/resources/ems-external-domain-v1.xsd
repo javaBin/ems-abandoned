@@ -181,6 +181,7 @@
     <xsd:sequence>
       <xsd:element name="uuid" type="xsd:string"/>
       <xsd:element name="uri" type="xsd:anyURI"/>
+      <xsd:element name="display-uri" type="xsd:anyURI"/>
       <xsd:element name="event-uri" type="xsd:anyURI"/>
       <xsd:element name="event-uuid" type="xsd:string"/>
       <xsd:element name="title" type="xsd:string"/>
