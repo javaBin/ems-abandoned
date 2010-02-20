@@ -17,7 +17,7 @@
               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
               xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <jxb:bindings schemaLocation="ems-external-domain-v1.xsd" node="/xs:schema">  
+  <jxb:bindings schemaLocation="ems-external-domain-v2.xsd" node="/xs:schema">  
     <jxb:schemaBindings>
       <jxb:package name="no.java.ems.external.v1"/>
       <jxb:nameXmlTransform>

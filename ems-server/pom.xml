@@ -31,7 +31,7 @@
   <dependencies>
     <dependency>
       <groupId>no.java.ems</groupId>
-      <artifactId>ems-external-domain-v1</artifactId>
+      <artifactId>ems-external-domain-v2</artifactId>
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>

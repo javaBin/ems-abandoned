@@ -40,11 +40,6 @@
       <name>Trygve Laugstøl</name>
       <email>trygvis@java.no</email>
     </developer>
-    <developer>
-      <id>rune.lien</id>
-      <name>Rune Lien</name>
-      <email>lien.runelien@gmail.com</email>
-    </developer>
   </developers>
 
   <repositories>
@@ -171,12 +166,7 @@
     <dependencies>
       <dependency>
         <groupId>no.java.ems</groupId>
-        <artifactId>ems-domain</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>no.java.ems</groupId>
-        <artifactId>ems-external-domain-v1</artifactId>
+        <artifactId>ems-external-domain-v2</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -213,7 +203,7 @@
       </dependency>
       <dependency>
         <groupId>no.java.ems</groupId>
-        <artifactId>ems-dist</artifactId>
+        <artifactId>ems-webstart</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -330,7 +320,7 @@
       <dependency>
         <groupId>org.functionaljava</groupId>
         <artifactId>fj</artifactId>
-        <version>2.16</version>
+        <version>2.19</version>
       </dependency>
       <dependency>
         <groupId>org.json</groupId>
@@ -370,7 +360,7 @@
   </dependencies>
 
   <modules>
-    <module>ems-external-domain-v1</module>
+    <module>ems-external-domain-v2</module>
     <module>ems-external-domain-java</module>
     <module>ems-cli</module>
     <module>ems-client</module>
