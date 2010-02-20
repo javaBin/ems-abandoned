@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Id $
  */
-@Path("1/rooms/")
+@Path("2/rooms/")
 @Component
 @Consumes(MIMETypes.ROOM_MIME_TYPE)
 public class RoomResource {

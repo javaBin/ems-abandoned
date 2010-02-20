@@ -15,6 +15,7 @@
 
 package no.java.ems.server.resources.v1;
 
+import no.java.ems.server.URIBuilder;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.springframework.stereotype.Component;
@@ -29,41 +30,36 @@ import javax.ws.rs.GET;
 
 import no.java.ems.external.v1.MIMETypes;
 
+import java.net.URI;
+
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
-@Path("1")
+@Path("2")
 @Component
 //TODO: Use JaxB for instead of the JSONObject.
 public class EndpointResource {
     
-    private UriInfo uriInfo;
-
     @Produces(MIMETypes.ENDPOINT_MIME_TYPE)
     @GET
-    public Response get() {
+    public Response get(@Context UriInfo info) {
+        URIBuilder uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         JSONObject object = new JSONObject();
         try {
-            object.put("events", createMapping("/1/events"));
-            object.put("people", createMapping("/1/people"));
-            object.put("rooms", createMapping("/1/rooms"));
-            object.put("binaries", createMapping("/binaries"));
+            object.put("events", createMapping(uriBuilder.events().getURI()));
+            object.put("people", createMapping(uriBuilder.people().people()));
+            object.put("rooms", createMapping(uriBuilder.rooms().rooms()));
+            object.put("binaries", createMapping(uriBuilder.binaries().binaries()));
         } catch (JSONException e) {
             throw new WebApplicationException(500);
         }
         return Response.ok(object.toString()).build();
     }
 
-    private JSONObject createMapping(String path) throws JSONException {
+    private JSONObject createMapping(URI uri) throws JSONException {
         JSONObject object = new JSONObject();
-        String uri = uriInfo.getBaseUriBuilder().path(path).build().toString();
-        object.put("uri", uri);
+        object.put("uri", uri.toString());
         return object;
-    }
-
-    @Context
-    public void setUriInfo(UriInfo uriInfo) {
-        this.uriInfo = uriInfo;
     }
 }

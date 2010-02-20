@@ -98,16 +98,16 @@ public class RestletEmsV1Client implements EmsV1Client {
         this.baseUri = baseUri;
 
         challenge = credentials.map(newChallenge);
-        getPeopleUrl = baseUri + "/1/people";
-        getPersonUrl = baseUri + "/1/people/%s";
-        getEventsUrl = baseUri + "/1/events";
-        getEventUrl = baseUri + "/1/events/%s";
-        eventsSessionsUrl = baseUri + "/1/events/%s/sessions";
-        getSessionUrl = baseUri + "/1/events/%s/sessions/%s";
-        findSessionsByDateUrl = baseUri + "/1/events/%s/sessions/by-date/%s";
-        findSessionsByTitleUrl = baseUri + "/1/events/%s/sessions/by-title/%s";
-        searchSessionsUrl = baseUri + "/1/events/%s/sessions/search";
-        eventsRoomsUrl = baseUri + "/1/events/%s/rooms";
+        getPeopleUrl = baseUri + "/2/people";
+        getPersonUrl = baseUri + "/2/people/%s";
+        getEventsUrl = baseUri + "/2/events";
+        getEventUrl = baseUri + "/2/events/%s";
+        eventsSessionsUrl = baseUri + "/2/events/%s/sessions";
+        getSessionUrl = baseUri + "/2/events/%s/sessions/%s";
+        findSessionsByDateUrl = baseUri + "/2/events/%s/sessions/by-date/%s";
+        findSessionsByTitleUrl = baseUri + "/2/events/%s/sessions/by-title/%s";
+        searchSessionsUrl = baseUri + "/2/events/%s/sessions/search";
+        eventsRoomsUrl = baseUri + "/2/events/%s/rooms";
         try {
             // TODO: add schema
             JAXBContext context = JAXBContext.newInstance(contextPath);

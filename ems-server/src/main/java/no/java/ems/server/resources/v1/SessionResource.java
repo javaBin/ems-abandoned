@@ -15,10 +15,8 @@
 
 package no.java.ems.server.resources.v1;
 
-import no.java.ems.server.domain.Session;
-import no.java.ems.server.domain.Speaker;
-import no.java.ems.server.domain.Binary;
-import no.java.ems.server.domain.EmsServer;
+import no.java.ems.server.URIBuilder;
+import no.java.ems.server.domain.*;
 import static no.java.ems.server.f.ExternalV1F.sessionV1;
 import no.java.ems.server.f.ExternalV1F;
 import no.java.ems.external.v1.*;
@@ -43,11 +41,11 @@ import java.io.InputStream;
  */
 @Produces(MIMETypes.SESSION_LIST_MIME_TYPE)
 public class SessionResource {
-    private UriInfo uriInfo;
+    private URIBuilder uriBuilder;
     private EmsServer emsServer;
 
-    public SessionResource(UriInfo uriInfo, EmsServer emsServer) {
-        this.uriInfo = uriInfo;
+    public SessionResource(EmsServer emsServer, final URIBuilder uriBuilder) {
+        this.uriBuilder = uriBuilder;
         this.emsServer = emsServer;
     }
 
@@ -74,13 +72,6 @@ public class SessionResource {
                 orSome(ResourcesF.notFound).build();
     }
 
-    F2<StringBuilder, Session, StringBuilder> uriListBuilder = new F2<StringBuilder, Session, StringBuilder>() {
-        public StringBuilder f(StringBuilder builder, Session session) {
-            URI uri = uriInfo.getBaseUriBuilder().path("/1/events/{eventId}/sessions/{sessionId}").build(session.getEventId(), session.getId());
-            builder.append(uri).append("\r\n");
-            return builder;
-        }
-    };
 
     @GET
     @Path("by-date/{year}/{month}/{day}")
@@ -168,7 +159,7 @@ public class SessionResource {
             Session session = sessionOption.some();
             session.addAttachment(binary);
             emsServer.saveSession(eventId, session);
-            return Response.created(uriInfo.getBaseUriBuilder().path("binaries/{binaryId}").build(binary.getId())).build();
+            return Response.created(uriBuilder.binaries().binary(binary.getId())).build();
         }
         return Response.status(404).build();
     }
@@ -238,44 +229,43 @@ public class SessionResource {
         Binary binary = emsServer.createBinary(stream, filename, headers.getMediaType().toString());
         found.setPhoto(binary);
         emsServer.saveSession(eventId, session);
-        return Response.created(uriInfo.getBaseUriBuilder().path("binaries/{binaryId}").build(binary.getId())).build();
+        return Response.created(uriBuilder.binaries().binary(binary.getId())).build();
     }
 
-    F2<SessionListV1, SessionV1, SessionListV1> sessionAggregator = new F2<SessionListV1, SessionV1, SessionListV1>() {
+    private F2<SessionListV1, SessionV1, SessionListV1> sessionAggregator = new F2<SessionListV1, SessionV1, SessionListV1>() {
         public SessionListV1 f(SessionListV1 sessionListV1, SessionV1 sessionV1) {
             sessionListV1.getSession().add(sessionV1);
             return sessionListV1;
         }
     };
 
-    F2<String, SessionV1, SessionV1> sessionIdV1 = new F2<String, SessionV1, SessionV1>() {
+    private F2<String, SessionV1, SessionV1> sessionIdV1 = new F2<String, SessionV1, SessionV1>() {
         public SessionV1 f(String eventId, SessionV1 sessionV1) {
-            UriBuilder builder = uriInfo.getBaseUriBuilder().path("/1/events/{eventId}/sessions/{sessionId}");
-            String uri = builder.build(eventId, sessionV1.getUuid()).toString();
+            URI uri = uriBuilder.forObject(eventId, sessionV1.getUuid(), ObjectType.session);
             sessionV1.setEventUuid(eventId);
-            sessionV1.setUri(uri);
+            sessionV1.setUri(uri.toString());
             for (URIBinaryV1 binaryV1 : sessionV1.getAttachments().getBinary()) {
-                binaryV1.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(binaryV1.getUri()).toString());
+                binaryV1.setUri(uriBuilder.binaries().binary(binaryV1.getUri()).toString());
             }
             return sessionV1;
         }
     };
 
-    F<SessionV1, SessionV1> sessionEventIdV1 = new F<SessionV1, SessionV1>() {
+    private F<SessionV1, SessionV1> sessionEventIdV1 = new F<SessionV1, SessionV1>() {
         public SessionV1 f(SessionV1 session) {
-            session.setEventUri(uriInfo.getBaseUriBuilder().path("/1/events/{eventId}").build(session.getEventUuid()).toString());
+            session.setEventUri(uriBuilder.events().eventUri(session.getEventUuid()).toString());
             return session;
         }
     };
 
-    F<SessionV1, SessionV1> sessionPersonIdV1 = new F<SessionV1, SessionV1>() {
+    private F<SessionV1, SessionV1> sessionPersonIdV1 = new F<SessionV1, SessionV1>() {
         public SessionV1 f(SessionV1 session) {
             if (session.getSpeakers() != null) {
                 for (SpeakerV1 speakerV1 : session.getSpeakers().getSpeaker()) {
-                    speakerV1.setPersonUri(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(speakerV1.getPersonUuid()).toString());
+                    speakerV1.setPersonUri(uriBuilder.forObject(null, speakerV1.getPersonUuid(), ObjectType.person).toString());
                     URIBinaryV1 photo = speakerV1.getPhoto();
                     if (photo != null) {
-                        photo.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(photo.getUri()).toString());
+                        photo.setUri(uriBuilder.binaries().binary(photo.getUri()).toString());
                     }
                 }
             }
@@ -283,11 +273,11 @@ public class SessionResource {
         }
     };
 
-    F<SessionV1, SessionV1> personURItoId = new F<SessionV1, SessionV1>() {
+    private F<SessionV1, SessionV1> personURItoId = new F<SessionV1, SessionV1>() {
         public SessionV1 f(SessionV1 session) {
             if (session.getSpeakers() != null) {
                 for (SpeakerV1 speaker : session.getSpeakers().getSpeaker()) {
-                    URI personURI = uriInfo.getBaseUriBuilder().path("/1/people/").build();
+                    URI personURI = uriBuilder.people().people();
                     URI uri = personURI.relativize(URI.create(speaker.getPersonUri()));
                     speaker.setPersonUuid(uri.toString());
                 }
@@ -296,15 +286,13 @@ public class SessionResource {
         }
     };
 
-    final F<SpeakerV1, SpeakerV1> photoURI = new F<SpeakerV1, SpeakerV1>() {
-        public SpeakerV1 f(SpeakerV1 speakerV1) {
-            UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
-            URIBinaryV1 photo = speakerV1.getPhoto();
-            if (photo != null) {
-                photo.setUri(uriBuilder.path("binaries/{binaryId}").build(photo.getUri()).toString());
-            }
-            return speakerV1;
+    private F2<StringBuilder, Session, StringBuilder> uriListBuilder = new F2<StringBuilder, Session, StringBuilder>() {
+        public StringBuilder f(StringBuilder builder, Session session) {
+            URI uri = uriBuilder.forObject(session);
+            builder.append(uri).append("\r\n");
+            return builder;
         }
     };
+
 
 }

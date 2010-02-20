@@ -16,7 +16,7 @@ public class URIBuilder {
     private final UriBuilder baseurl;
 
     public URIBuilder(UriBuilder baseurl) {
-        this.baseurl = baseurl.clone().segment("1");
+        this.baseurl = baseurl.clone().segment("2");
     }
 
     public URIBuilder(String baseurl) {
@@ -34,6 +34,15 @@ public class URIBuilder {
     public PeopleUri people() {
         return new PeopleUri(baseurl.clone().segment("people"));
     }
+
+    public SessionsUri sessions() {
+        return new SessionsUri(baseurl.clone().segment("events"));
+    }
+
+    public RoomsUri rooms() {
+        return new RoomsUri(baseurl.clone().segment("rooms"));
+    }
+
 
     public URI forObject(AbstractEntity entity) {
         if (entity instanceof Session) {
@@ -62,11 +71,19 @@ public class URIBuilder {
         }
     }
 
+    public BinariesUri binaries() {
+        return new BinariesUri(baseurl.clone().segment("binaries"));
+    }
+
     public static class EventsUri {
         private final UriBuilder events;
 
         private EventsUri(UriBuilder events) {
             this.events = events;
+        }
+
+        public URI getURI() {
+            return events.build();
         }
 
         public EventUri eventUri(String id) {
@@ -123,8 +140,60 @@ public class URIBuilder {
             return people.build();
         }
 
+        public URI personWithPhoto(String personId) {
+            return people.segment(personId, "photo").build();
+        }
+
         public URI person(String personId) {
             return people.segment(personId).build();
+        }
+    }
+
+    public static class SessionsUri {
+        private final UriBuilder builder;
+
+        private SessionsUri(UriBuilder builder) {
+            this.builder = builder;
+        }
+
+        public URI sessions(String eventid) {
+            return builder.segment(eventid).build();
+        }
+
+        public URI session(String eventid, String sessionid) {
+            return builder.segment(eventid, "sessions", sessionid).build();
+        }
+    }
+
+    public class RoomsUri {
+        private final UriBuilder builder;
+
+        public RoomsUri(UriBuilder builder) {
+            this.builder = builder;
+        }
+
+        public URI rooms() {
+            return builder.build();
+        }
+
+        public URI room(String roomId) {
+            return builder.segment(roomId).build();
+        }
+    }
+
+    public class BinariesUri {
+        private final UriBuilder builder;
+
+        public BinariesUri(UriBuilder builder) {
+            this.builder = builder;
+        }
+
+        public URI binaries() {
+            return builder.build();
+        }
+
+        public URI binary(String binaryId) {
+            return builder.segment(binaryId).build();
         }
     }
 }

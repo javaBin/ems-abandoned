@@ -33,22 +33,19 @@ import java.util.*;
  * @version $Revision: $
  */
 @Component
-@Path("/1/search/")
+@Path("/2/search/")
 public class SearchResource {
     private SearchService searchService;
     private VelocityEngine velocityEngine;
-
-    @Context
-    private UriInfo uriInfo;
 
     @Autowired
     public SearchResource(SearchService searchService) {
         this.searchService = searchService;
     }
 
-    private Response form() {
+    private Response form(URIBuilder uriBuilder) {
         VelocityContext context = new VelocityContext();
-        context.put("action", uriInfo.getBaseUriBuilder().path("/1/search").build());
+        context.put("action", uriBuilder.search().getURI());
         context.put("types", ObjectType.values());
         String form = render(context, "/jersey/search-form.vm");
 
@@ -81,9 +78,13 @@ public class SearchResource {
 
     @GET
     @Produces({"application/atom+xml", "application/xhtml+xml"})
-    public Response query(@QueryParam("q") String query, @QueryParam("type") String type, @QueryParam("offset") int start, @QueryParam("limit") int rows) {
+    public Response query(@Context UriInfo info, @QueryParam("q") String query, @QueryParam("type") String type, @QueryParam("offset") int start, @QueryParam("limit") int rows) {
+        URIBuilder uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         if (StringUtils.isBlank(query) && StringUtils.isBlank(type)) {
-            return form();
+            return form(uriBuilder);
+        }
+        if (rows == 0) {
+            rows = 10;
         }
         SearchRequest request = new SearchRequest();
         request.setOffset(start);
@@ -98,9 +99,8 @@ public class SearchResource {
             request.setObjectType(objectType);
         }
         request.setText(query);
-        URIBuilder uriBuilder = new URIBuilder(uriInfo.getBaseUriBuilder());
         SearchResponse response = searchService.search(request, uriBuilder);
-        Feed feed = new Feed("atom_1.0");        
+        Feed feed = new Feed("atom_1.0");
         feed.setId(UriBuilder.fromUri(uriBuilder.search().getURI()).queryParam("q", query).queryParam("type", type).queryParam("offset", start).queryParam("limit", rows).build().toString());
         feed.setEncoding("UTF-8");
         List<Entry> entries = new ArrayList<Entry>();

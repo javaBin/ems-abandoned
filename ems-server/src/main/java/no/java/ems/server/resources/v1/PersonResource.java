@@ -22,6 +22,7 @@ import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.some;
 import no.java.ems.external.v1.*;
+import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.*;
 import no.java.ems.server.f.ExternalV1F;
 import static no.java.ems.server.f.ExternalV1F.personV1;
@@ -40,7 +41,7 @@ import java.net.URI;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Id $
  */
-@Path("1/people/")
+@Path("2/people/")
 @Component
 @Consumes(MIMETypes.PERSON_MIME_TYPE)
 public class PersonResource {
@@ -51,6 +52,7 @@ public class PersonResource {
             return listV1;
         }
     };
+    private URIBuilder uriBuilder;
 
     static <A> F<JAXBElement<A>, GenericEntity<JAXBElement<A>>> getEntity_() {
         return new F<JAXBElement<A>, GenericEntity<JAXBElement<A>>>() {
@@ -61,7 +63,6 @@ public class PersonResource {
     }    
 
     private EmsServer emsServer;
-    private UriInfo uriInfo;
 
     @Autowired
     public PersonResource(EmsServer emsServer) {
@@ -71,7 +72,8 @@ public class PersonResource {
 
     @GET
     @Produces(MIMETypes.PERSON_LIST_MIME_TYPE)
-    public Response getPeople() {
+    public Response getPeople(@Context UriInfo info) {
+        uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         List<Person> people = emsServer.getPeople();
         return some(people.
                 map(personV1).
@@ -85,7 +87,8 @@ public class PersonResource {
     @GET
     @Path("{personId}")
     @Produces(MIMETypes.PERSON_MIME_TYPE)
-    public Response getPerson(@Context Request request, @PathParam("personId") String personId) {
+    public Response getPerson(@Context UriInfo info, @Context Request request, @PathParam("personId") String personId) {
+        uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         final Option<Person> personOption = emsServer.getPerson(personId);
         return personOption.
                 map(personV1).
@@ -97,7 +100,8 @@ public class PersonResource {
     }
 
     @POST
-    public Response addPerson(PersonV1 entity) {
+    public Response addPerson(@Context UriInfo info, PersonV1 entity) {
+        uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Option<Person> personOption = some(entity).map(ExternalV1F.person);
         if (personOption.isSome()) {
             Person person = personOption.some();
@@ -110,10 +114,12 @@ public class PersonResource {
     @POST
     @Path("{personId}/photo")
     @Consumes("image/*")
-    public Response addPhoto(@Context HttpHeaders headers,
+    public Response addPhoto(@Context UriInfo info,
+                             @Context HttpHeaders headers,
                              @HeaderParam("Content-Disposition") String dispositionHeader,
                              @PathParam("{personId}") String personId,
                              InputStream entity) {
+        uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Option<Person> personOption = emsServer.getPerson(personId);
         MediaType type = headers.getMediaType();
         if (personOption.isSome()) {
@@ -123,7 +129,7 @@ public class PersonResource {
                 Person person = personOption.some();
                 person.setPhoto(binary);
                 emsServer.savePerson(person);
-                return Response.created(uriInfo.getBaseUriBuilder().path("binaries/{binaryId}").build(binary.getId())).build();
+                return Response.created(uriBuilder.binaries().binary(binary.getId())).build();
             } else {
                 return Response.status(Response.Status.PRECONDITION_FAILED).build();
             }
@@ -134,9 +140,11 @@ public class PersonResource {
     @PUT
     @Path("{personId}")
     public Response savePerson(
+            @Context UriInfo info,
             @PathParam("personId") String personId,
             @Context HttpHeaders headers,
             PersonV1 entity) {
+        uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Option<Person> option = emsServer.getPerson(personId);
         if (option.isSome()) {
             Person person = option.some();
@@ -158,24 +166,19 @@ public class PersonResource {
 
     F<PersonV1, PersonV1> personURIsV1 = new F<PersonV1, PersonV1>() {
         public PersonV1 f(PersonV1 personV1) {
-            personV1.setUri(uriInfo.getBaseUriBuilder().path("/1/people/{personId}").build(personV1.getUuid()).toString());
+            personV1.setUri(uriBuilder.people().person(personV1.getUuid()).toString());
             URIBinaryV1 photo = personV1.getPhoto();
             if (photo != null) {
-                photo.setUri(uriInfo.getBaseUriBuilder().path("/binaries/{binaryId}").build(photo.getUri()).toString());
+                photo.setUri(uriBuilder.binaries().binary(photo.getUri()).toString());
             }            
             return personV1;
         }
     };
 
     F2<String, Response.ResponseBuilder, Response.ResponseBuilder> photoAlternateURI = new F2<String, Response.ResponseBuilder, Response.ResponseBuilder>() {
-        public Response.ResponseBuilder f(String personId, Response.ResponseBuilder responseBuilder) {
-            responseBuilder.header("Link", String.format("<%s>;rel=photo", uriInfo.getBaseUriBuilder().path("/1/people/{personId}/photo").build(personId)));
+        public Response.ResponseBuilder f(String personId, Response.ResponseBuilder responseBuilder) {            
+            responseBuilder.header("Link", String.format("<%s>;rel=photo", uriBuilder.people().personWithPhoto(personId)));
             return responseBuilder;
         }
     };    
-
-    @Context
-    public void setUriInfo(UriInfo uriInfo) {
-        this.uriInfo = uriInfo;
-    }
 }

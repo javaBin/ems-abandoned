@@ -10,8 +10,6 @@
                 <option value="$type">$type</option>
             #end
         </select>
-        <input type="text" name="offset" value="0"/>
-        <input type="text" name="limit" value="10"/>
         <input type="submit"/>
     </form>
 </body>
