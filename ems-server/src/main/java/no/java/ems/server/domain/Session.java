@@ -26,6 +26,8 @@ import java.util.List;
 
 import fj.data.Option;
 
+import static fj.data.Option.none;
+
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
@@ -53,7 +55,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
     }
 
     private String eventId;
-    private Option<Interval> timeslot;
+    private Option<Interval> timeslot = none();
     private State state = State.Pending;
     private Format format = Format.Presentation;
     private Room room;
@@ -90,7 +92,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
     }
 
     public Option<Interval> getTimeslot() {
-        return timeslot;
+        return timeslot == null ? Option.<Interval>none() : timeslot;
     }
 
     public void setTimeslot(Option<Interval> timeslot) {
