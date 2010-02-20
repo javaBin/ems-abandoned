@@ -53,6 +53,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
         Course,
     }
 
+    private URI displayURI;
     private ResourceHandle eventHandle;
     private Interval timeslot;
     private State state = State.Pending;
@@ -80,6 +81,15 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
     public Session(final String title) {
         this.title = title;
     }
+
+    public URI getDisplayURI() {
+        return displayURI;
+    }
+
+    public void setDisplayURI(URI displayURI) {
+        firePropertyChange("displayId", this.displayURI, this.displayURI = displayURI);        
+    }
+
 
     public ResourceHandle getEventHandle() {
         return eventHandle;

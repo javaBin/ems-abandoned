@@ -247,7 +247,7 @@ public class SessionEditor extends EntityEditor<Session> {
 
     public void initLayout() {
         List<Map.Entry<JLabel, JComponent>> content = new ArrayList<Map.Entry<JLabel, JComponent>>();
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("id", idField), idField));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("displayId", idField), idField));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("published", publishedCheckBox), publishedCheckBox));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("title", titleField), titleField));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("speakers", speakersPanel), speakersPanel));
