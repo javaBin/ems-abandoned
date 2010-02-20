@@ -207,7 +207,7 @@ lexicographic ordering isn't equal to the numeric ordering) -->
 
         <!-- session specific -->
         <field name="eventid" type="string" indexed="true" stored="true"/>
-        <field name="slot" type="string" indexed="true" stored="false"/>
+        <field name="event_date" type="date" indexed="true" stored="false"/>
         <field name="state" type="string" indexed="true" stored="false"/>
         <field name="format" type="string" indexed="true" stored="false"/>
         <field name="room" type="string" indexed="true" stored="false" />

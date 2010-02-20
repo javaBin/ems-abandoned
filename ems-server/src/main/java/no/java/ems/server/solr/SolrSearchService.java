@@ -245,7 +245,9 @@ public class SolrSearchService implements SearchService {
     private SolrInputDocument createIndexDocument(Session resource) {
         Map<String, Object> additionalIndexedFields = new HashMap<String, Object>();
         additionalIndexedFields.put("eventid", resource.getEventId());
-        additionalIndexedFields.put("slot", resource.getTimeslot());
+        if (resource.getTimeslot().isSome()) {
+            additionalIndexedFields.put("slot", resource.getTimeslot().some());            
+        }
         additionalIndexedFields.put("state", resource.getState());
         additionalIndexedFields.put("format", resource.getFormat());
         additionalIndexedFields.put("room", resource.getRoom());

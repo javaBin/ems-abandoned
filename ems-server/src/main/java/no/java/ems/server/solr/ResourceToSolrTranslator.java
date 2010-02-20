@@ -120,6 +120,7 @@ public class ResourceToSolrTranslator {
             DateTime end = interval.getEnd();
             addDateTimeInUTC(name + "_start", start);
             addDateTimeInUTC(name + "_end", end);
+            inputDocument.removeField(name);
         } else if (value instanceof ValueObject) {
             ValueObject object = (ValueObject) value;
             inputDocument.addField(name, object.getIndexingValue());
