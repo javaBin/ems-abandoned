@@ -29,7 +29,6 @@ import org.jdesktop.observablecollections.ObservableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
@@ -389,7 +388,6 @@ public class Entities extends HashSet<AbstractEntity> {
             }
             for (Event event : changedEvents) {
                 setMessage(getString("event", event.getName()));
-                saveAttachments(event);
                 Event savedEvent = service.saveEvent(event);
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(event, savedEvent));
@@ -444,7 +442,7 @@ public class Entities extends HashSet<AbstractEntity> {
             }
         }
 
-        private void saveAttachments(final AbstractEntity entity) {
+        private void saveAttachments(final AttachmentHolder entity) {
             List<Binary> savedAttachments = new ArrayList<Binary>();
             RESTEmsService service = EmsClient.getInstance().getClientService();
             for (Binary attachement : entity.getAttachments()) {

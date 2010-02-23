@@ -67,8 +67,4 @@ public class EmailAddress extends ValueObject implements Comparable<EmailAddress
     public int compareTo(final EmailAddress other) {
         return new CompareToBuilder().append(emailAddress, other == null ? null : other.getEmailAddress()).toComparison();
     }
-
-    public String getIndexingValue() {
-        return emailAddress;
-    }
 }

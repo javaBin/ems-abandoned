@@ -39,7 +39,6 @@ public abstract class EntityEditor<T extends AbstractEntity> extends AbstractEdi
     protected JTextField titleField;
     protected JTextField tagsField;
     protected JTextArea notesTextArea;
-    protected AttachementsPanel attachementsPanel;
 
     protected EntityEditor(final T entity, final String titleProperty) {
         Validate.notNull(entity, "Entity may not be null");
@@ -56,7 +55,7 @@ public abstract class EntityEditor<T extends AbstractEntity> extends AbstractEdi
                     if (evt.getNewValue() != null) {
                         setId(entity.getHandle().getURI());
                     }
-                    entity.removePropertyChangeListener(this);
+                    entity.removePropertyChangeListener("handle", this);
                 }
             });
         }
@@ -77,8 +76,6 @@ public abstract class EntityEditor<T extends AbstractEntity> extends AbstractEdi
         notesTextArea = new JTextArea(4, 50);
         notesTextArea.setLineWrap(true);
         notesTextArea.setWrapStyleWord(true);
-        attachementsPanel = new AttachementsPanel(entity);
-        attachementsPanel.setName(entity.getClass().getSimpleName().toLowerCase() + ".attachements");
         SwingHelper.setTabFocusTraversalKeys(notesTextArea);
     }
 

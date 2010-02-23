@@ -30,7 +30,7 @@ public class SpeakersConverter extends ListConverter<Speaker> {
     }
 
     protected String toString(final Speaker speaker) {
-        Person person = Entities.getInstance().getContact(speaker.getHandle());
+        Person person = Entities.getInstance().getContact(new ResourceHandle(speaker.getPersonURI()));
         return person == null ? speaker.getPersonURI() + "???" : person.getName();
     }
 

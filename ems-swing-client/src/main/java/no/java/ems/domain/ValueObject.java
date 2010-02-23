@@ -42,7 +42,4 @@ public abstract class ValueObject implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
-    public abstract String getIndexingValue();
-
 }

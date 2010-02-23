@@ -18,6 +18,7 @@ package no.java.ems.client.swing.sessions;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.FormLayout;
+import no.java.ems.client.swing.AttachmentsPanel;
 import no.java.ems.client.swing.Entities;
 import no.java.ems.client.swing.EntityEditor;
 import no.java.ems.client.swing.binding.LanguageConverter;
@@ -29,17 +30,19 @@ import no.java.ems.domain.Session;
 import no.java.ems.domain.Speaker;
 import no.java.swing.AutoCompleter;
 import no.java.swing.SwingHelper;
-import no.java.swing.SelectableLabel;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +71,13 @@ public class SessionEditor extends EntityEditor<Session> {
     private JComboBox levelComboBox;
     private JCheckBox englishCheckBox;
     private JCheckBox publishedCheckBox;
-    private SelectableLabel idField;
+    private JXHyperlink idField;
+    private AttachmentsPanel attachmentsPanel;
+
 
     private DateTimeFormatter dateFormatter = DateTimeFormat.shortDate();
     private DateTimeFormatter timeFormatter = DateTimeFormat.shortTime();
+    private HyperlinkAction displayURIAction;
 
     public SessionEditor(final Session session) {
         super(session, "title");
@@ -94,11 +100,14 @@ public class SessionEditor extends EntityEditor<Session> {
     }
 
     public void initActions() {
+        displayURIAction = new HyperlinkAction();
     }
 
     @Override
     public void initComponents() {
         super.initComponents();
+        attachmentsPanel = new AttachmentsPanel(entity);
+        attachmentsPanel.setName(entity.getClass().getSimpleName().toLowerCase() + ".attachments");        
         speakersPanel = new SpeakersPanel(entity);
         keywordsField = new JTextField(50);
         leadTextArea = createMediumTextArea();
@@ -116,12 +125,12 @@ public class SessionEditor extends EntityEditor<Session> {
         englishCheckBox.setName(getFullResourceKey("englishCheckBox"));
         publishedCheckBox = new JCheckBox("published");
         publishedCheckBox.setName(getFullResourceKey("publishedCheckBox"));
-        idField = new SelectableLabel(false);
+        idField = new JXHyperlink(displayURIAction);
         SwingHelper.setTabFocusTraversalKeys(leadTextArea);
         SwingHelper.setTabFocusTraversalKeys(bodyTextArea);
         new AutoCompleter<String>(tagsField, Entities.getInstance().getTags());
         new AutoCompleter<String>(keywordsField, Entities.getInstance().getKeywords());
-        setTransferHandler(attachementsPanel.getTransferHandler());
+        setTransferHandler(attachmentsPanel.getTransferHandler());
 
         roomComboBox.setRenderer(
                 new DefaultListCellRenderer() {
@@ -201,7 +210,7 @@ public class SessionEditor extends EntityEditor<Session> {
     @Override
     public void initBindings() {
         super.initBindings();
-        AutoBinding<Session, String, SelectableLabel, String> sessionIdBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, entity, BeanProperty.<Session, String>create("displayID"), idField, BeanProperty.<SelectableLabel, String>create("text"));
+        AutoBinding<Session, URI, HyperlinkAction, URI> sessionIdBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, entity, BeanProperty.<Session, URI>create("displayURI"), displayURIAction, BeanProperty.<HyperlinkAction, URI>create("target"));
         getBindingGroup().addBinding(sessionIdBinding);
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("lead"), leadTextArea, null));
         getBindingGroup().addBinding(createTextComponentBinding(BeanProperty.<Session, String>create("body"), bodyTextArea, null));
@@ -266,7 +275,7 @@ public class SessionEditor extends EntityEditor<Session> {
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("expectedAudience", expectedAudienceTextArea), new JScrollPane(expectedAudienceTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("equipment", equipmentTextArea), new JScrollPane(equipmentTextArea)));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("feedback", feedbackTextArea), new JScrollPane(feedbackTextArea)));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachements", attachementsPanel), attachementsPanel));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachments", attachmentsPanel), attachmentsPanel));
         DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("r:p,3dlu,l:d"));
         for (Map.Entry<JLabel, JComponent> entry : content) {
             builder.appendRow("p");

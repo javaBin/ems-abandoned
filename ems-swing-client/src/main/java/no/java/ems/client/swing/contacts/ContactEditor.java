@@ -19,6 +19,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import no.java.ems.client.swing.AttachmentsPanel;
 import no.java.ems.client.swing.Entities;
 import no.java.ems.client.swing.EntityEditor;
 import no.java.ems.client.swing.PhotoPanel;
@@ -51,6 +52,7 @@ public class ContactEditor extends EntityEditor<Person> {
     private JComboBox genderComboBox;
     private JCheckBox englishCheckBox;
     private PhotoPanel photoPanel;
+    private AttachmentsPanel attachmentsPanel;
 
     public ContactEditor(final Person person) {
         super(person, "name");
@@ -66,6 +68,8 @@ public class ContactEditor extends EntityEditor<Person> {
     @Override
     public void initComponents() {
         super.initComponents();
+        attachmentsPanel = new AttachmentsPanel(entity);
+        attachmentsPanel.setName(entity.getClass().getSimpleName().toLowerCase() + ".attachments");  
         photoPanel = new PhotoPanel(new Dimension(100, 125));
         photoPanel.setBorder(BorderFactory.createEtchedBorder());
         photoPanel.setOpaque(false);
@@ -79,7 +83,7 @@ public class ContactEditor extends EntityEditor<Person> {
         SwingHelper.setTabFocusTraversalKeys(descriptionTextArea);
         SwingHelper.setTabFocusTraversalKeys(notesTextArea);
         new AutoCompleter<String>(tagsField, Entities.getInstance().getTags());
-        setTransferHandler(attachementsPanel.getTransferHandler());
+        setTransferHandler(attachmentsPanel.getTransferHandler());
     }
 
     @Override
@@ -119,7 +123,7 @@ public class ContactEditor extends EntityEditor<Person> {
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("gender", genderComboBox), genderComboBox));
         content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("language", englishCheckBox), englishCheckBox));
         //content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("notes", notesTextArea), new JScrollPane(notesTextArea)));
-        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachements", attachementsPanel), attachementsPanel));
+        content.add(new AbstractMap.SimpleEntry<JLabel, JComponent>(createLabel("attachements", attachmentsPanel), attachmentsPanel));
         DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("r:p,3dlu,l:d"));
         for (Map.Entry<JLabel, JComponent> entry : content) {
             builder.appendRow("p");

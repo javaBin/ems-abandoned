@@ -16,16 +16,22 @@
 package no.java.ems.domain;
 
 import no.java.ems.client.ResourceHandle;
+import no.java.swing.WeakReferencePropertyChangeListener;
 import org.apache.commons.lang.Validate;
 
+import javax.swing.event.SwingPropertyChangeSupport;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
-public class Speaker extends AbstractEntity {
+public class Speaker extends ValueObject {
 
+    private final PropertyChangeSupport changeSupport = new SwingPropertyChangeSupport(this, true);
     private final String name;
+    private final URI personURI;
     private String description;
     private Binary photo;
 
@@ -38,11 +44,11 @@ public class Speaker extends AbstractEntity {
         Validate.notNull(personURI, "Person identifier may not be null.");
         Validate.notNull(name, "Person name may not be null.");
         this.name = name;
-        setHandle(new ResourceHandle(personURI));
+        this.personURI = personURI;
     }
 
     public URI getPersonURI() {
-        return getHandle().getURI();
+        return personURI;
     }
 
     public String getDescription() {
@@ -50,7 +56,7 @@ public class Speaker extends AbstractEntity {
     }
 
     public void setDescription(final String description) {
-        firePropertyChange("description", this.description, this.description = description);
+        changeSupport.firePropertyChange("description", this.description, this.description = description);
     }
 
     public Binary getPhoto() {
@@ -58,10 +64,14 @@ public class Speaker extends AbstractEntity {
     }
 
     public void setPhoto(final Binary photo) {
-        firePropertyChange("photo", this.photo, this.photo = photo);
+        changeSupport.firePropertyChange("photo", this.photo, this.photo = photo);
     }
 
     public String getName() {
         return name;
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(propertyName, new WeakReferencePropertyChangeListener(listener));
     }
 }

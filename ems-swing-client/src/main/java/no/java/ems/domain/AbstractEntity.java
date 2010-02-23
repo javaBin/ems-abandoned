@@ -16,6 +16,7 @@
 package no.java.ems.domain;
 
 import no.java.ems.client.ResourceHandle;
+import no.java.swing.WeakReferencePropertyChangeListener;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -42,7 +43,6 @@ public abstract class AbstractEntity implements Serializable {
     private String notes;
     private String displayID;
     private List<String> tags = new ArrayList<String>();
-    private List<Binary> attachments = new ArrayList<Binary>();
 
     public ResourceHandle getHandle() {
         return handle;
@@ -107,14 +107,6 @@ public abstract class AbstractEntity implements Serializable {
         firePropertyChange("tags", getTags(), Collections.unmodifiableList(this.tags = new ArrayList<String>(tags)));
     }
 
-    public List<Binary> getAttachments() {
-        return Collections.unmodifiableList(attachments);
-    }
-
-    public void setAttachments(final List<Binary> attachments) {
-        firePropertyChange("attachements", getAttachments(), Collections.unmodifiableList(this.attachments = new ArrayList<Binary>(attachments)));
-    }
-
     public String getTagsAsString(final String delimiter) {
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
@@ -134,7 +126,7 @@ public abstract class AbstractEntity implements Serializable {
     public void addPropertyChangeListener(final String property, final PropertyChangeListener listener) {
         Validate.notNull(property, "Property may not be null");
         Validate.notNull(listener, "Listener may not be null");
-        propertyChangeSupport.addPropertyChangeListener(property, listener);
+        propertyChangeSupport.addPropertyChangeListener(property, new WeakReferencePropertyChangeListener(listener));
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
@@ -181,7 +173,6 @@ public abstract class AbstractEntity implements Serializable {
     public void sync(final AbstractEntity other) {
         setRevision(other.getRevision());
         setNotes(other.getNotes());
-        setAttachments(other.getAttachments());
         setTags(other.getTags());
     }
 

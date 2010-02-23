@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
-public class Person extends AbstractEntity implements Comparable<Person> {
+public class Person extends AbstractEntity implements Comparable<Person>, AttachmentHolder {
 
     public enum Gender {
 
@@ -43,6 +43,7 @@ public class Person extends AbstractEntity implements Comparable<Person> {
     private Nationality nationality;
     private List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
     private Binary photo;
+    private List<Binary> attachments = new ArrayList<Binary>();    
 
     public Person() {
     }
@@ -137,8 +138,17 @@ public class Person extends AbstractEntity implements Comparable<Person> {
         return new CompareToBuilder().append(name, other == null ? null : other.getName()).toComparison();
     }
 
+    public List<Binary> getAttachments() {
+        return Collections.unmodifiableList(attachments);
+    }
+
+    public void setAttachments(final List<Binary> attachments) {
+        firePropertyChange("attachments", getAttachments(), Collections.unmodifiableList(this.attachments = new ArrayList<Binary>(attachments)));
+    }
+
     public void sync(final Person other) {
         super.sync(other);
+        setAttachments(other.getAttachments());
         setName(other.getName());
         setDescription(other.getDescription());
         setGender(other.getGender());

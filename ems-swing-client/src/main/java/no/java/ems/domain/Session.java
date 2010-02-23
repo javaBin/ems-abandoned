@@ -29,7 +29,7 @@ import java.net.URI;
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
-public class Session extends AbstractEntity implements Comparable<Session>, Iterable<Speaker> {
+public class Session extends AbstractEntity implements Comparable<Session>, Iterable<Speaker>, AttachmentHolder {
 
     public enum State {
         Pending,
@@ -66,6 +66,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
     private Language language;
     private List<String> keywords = new ArrayList<String>();
     private List<Speaker> speakers = new ArrayList<Speaker>();
+    private List<Binary> attachments = new ArrayList<Binary>();
     private boolean published;
     /***
      * Fields wanted by the SubmitIT gang.
@@ -284,6 +285,15 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
         this.feedback = feedback;
     }
 
+
+    public List<Binary> getAttachments() {
+        return Collections.unmodifiableList(attachments);
+    }
+
+    public void setAttachments(final List<Binary> attachments) {
+        firePropertyChange("attachments", getAttachments(), Collections.unmodifiableList(this.attachments = new ArrayList<Binary>(attachments)));
+    }
+
     /**
      * Compares based on the sessions name.
      */
@@ -297,6 +307,7 @@ public class Session extends AbstractEntity implements Comparable<Session>, Iter
 
     public void sync(final Session other) {
         super.sync(other);
+        setAttachments(other.getAttachments());
         setEventHandle(other.getEventHandle());
         setTimeslot(other.getTimeslot());
         setState(other.getState());

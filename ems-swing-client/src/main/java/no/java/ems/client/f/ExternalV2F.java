@@ -132,7 +132,6 @@ public class ExternalV2F {
             speaker.setDescription(speakerV2.getDescription());
             URIBinaryV2 photo = speakerV2.getPhoto();
             speaker.setPhoto(fromNull(photo).map(uriBinary).orSome((Binary)null));            
-            speaker.setModified(false);
             return speaker;
         }
     };

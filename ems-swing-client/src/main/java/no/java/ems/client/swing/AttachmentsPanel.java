@@ -18,10 +18,7 @@ package no.java.ems.client.swing;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import no.java.ems.domain.AbstractEntity;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.ByteArrayBinary;
-import no.java.ems.domain.URIBinary;
+import no.java.ems.domain.*;
 import no.java.swing.*;
 import org.apache.commons.io.FileUtils;
 import org.jdesktop.application.Application;
@@ -46,17 +43,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class AttachementsPanel extends DefaultPanel {
+public class AttachmentsPanel extends DefaultPanel {
 
-    private final AbstractEntity entity;
+    private final AttachmentHolder entity;
     private JList attachementsList;
     private Action browseAction;
     private Action saveAction;
     private Action openAction;
     private Action deleteAction;
-    private JListBinding<Binary, AbstractEntity, JList> binding;
+    private JListBinding<Binary, AttachmentHolder, JList> binding;
 
-    public AttachementsPanel(final AbstractEntity entity) {
+    public AttachmentsPanel(final AttachmentHolder entity) {
         this.entity = entity;
         initialize();
     }
@@ -98,7 +95,7 @@ public class AttachementsPanel extends DefaultPanel {
         binding = SwingBindings.createJListBinding(
                 AutoBinding.UpdateStrategy.READ_WRITE,
                 entity,
-                BeanProperty.<AbstractEntity, List<Binary>>create("attachements"),
+                BeanProperty.<AttachmentHolder, List<Binary>>create("attachments"),
                 attachementsList
         );
         binding.bind();
@@ -377,14 +374,14 @@ public class AttachementsPanel extends DefaultPanel {
             if (value instanceof Binary) {
                 Binary binary = (Binary)value;
                 setText(
-                        AttachementsPanel.this.getString(
+                        AttachmentsPanel.this.getString(
                                 "attachementText",
                                 binary.getFileName(),
                                 FileUtils.byteCountToDisplaySize(binary.getSize())
                         )
                 );
                 setToolTipText(
-                        AttachementsPanel.this.getString(
+                        AttachmentsPanel.this.getString(
                                 "attachementToolTip",
                                 binary.getFileName(),
                                 FileUtils.byteCountToDisplaySize(binary.getSize()),
