@@ -109,7 +109,7 @@ public class Entities extends HashSet<AbstractEntity> {
                 if (sessions.contains(entity)) {
                     sessions.remove(entity);
                 }
-                EmsClient.getInstance().close(entity);
+                EmsClient.getInstance().getRootPanel().close(entity);
             }
             return wasRemoved;
         }

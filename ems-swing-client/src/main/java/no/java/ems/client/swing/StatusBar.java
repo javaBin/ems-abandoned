@@ -29,6 +29,7 @@ import java.awt.*;
 public class StatusBar extends DefaultPanel {
 
     private TaskServiceMonitor taskServiceMonitor;
+    private boolean authenticated;
 
     public StatusBar() {
         initialize();
@@ -74,5 +75,10 @@ public class StatusBar extends DefaultPanel {
 
     public void setCurrentPrincipal(String message) {
         taskServiceMonitor.setCurrentPrincipal(message);
+        authenticated = message != null;
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
     }
 }

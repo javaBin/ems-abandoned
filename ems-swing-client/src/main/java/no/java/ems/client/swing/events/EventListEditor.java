@@ -91,7 +91,7 @@ public class EventListEditor extends EntityListEditor<Event> {
                         protected void succeeded(final Event event) {
                             super.succeeded(event);
                             Entities.getInstance().add(event);
-                            EmsClient.getInstance().edit(event);
+                            EmsClient.getInstance().getRootPanel().edit(event);
                         }
                     }
             );

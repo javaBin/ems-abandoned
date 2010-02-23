@@ -20,6 +20,7 @@ import no.java.ems.client.RESTEmsService;
 import org.jdesktop.beansbinding.BindingGroup;
 
 import javax.swing.*;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
@@ -27,7 +28,7 @@ import javax.swing.*;
 public abstract class AbstractEditor extends DefaultPanel {
 
     private final BindingGroup bindingGroup = new BindingGroup();
-    private String id;
+    private URI id;
     private String title;
     private Icon icon;
 
@@ -38,11 +39,11 @@ public abstract class AbstractEditor extends DefaultPanel {
         super(key);
     }
 
-    public String getId() {
+    public URI getId() {
         return id;
     }
 
-    public void setId(final String id) {
+    public void setId(final URI id) {
         firePropertyChange("id", this.id, this.id = id);
     }
 

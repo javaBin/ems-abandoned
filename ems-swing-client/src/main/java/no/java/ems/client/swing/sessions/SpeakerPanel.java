@@ -188,7 +188,7 @@ public class SpeakerPanel extends DefaultPanel {
         @Override
         public void mouseClicked(final MouseEvent event) {
             if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2 && event.getModifiersEx() == 0) {
-                EmsClient.getInstance().edit(Entities.getInstance().getContact(speaker.getHandle()));
+                EmsClient.getInstance().getRootPanel().edit(Entities.getInstance().getContact(speaker.getHandle()));
             }
         }
 

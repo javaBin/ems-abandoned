@@ -45,7 +45,7 @@ class CreateEntityUndoableEdit extends AbstractUndoableEdit {
     public void redo() throws CannotRedoException {
         super.redo();
         Entities.getInstance().add(entity);
-        Application.getInstance(EmsClient.class).edit(entity);
+        EmsClient.getInstance().getRootPanel().edit(entity);
     }
 
     @Override

@@ -230,7 +230,7 @@ public class SpeakersPanel extends DefaultPanel implements ComponentList.Compone
             speaker.setDescription(person.getDescription());
             speaker.setPhoto(person.getPhoto());
             session.addSpeaker(speaker);
-            EmsClient.getInstance().edit(person);
+            EmsClient.getInstance().getRootPanel().edit(person);
             super.succeeded(person);
         }
 

@@ -112,5 +112,4 @@ public class TabComponent extends JComponent implements PropertyChangeListener {
         abstractEditor.removePropertyChangeListener("title", this);
         abstractEditor.removePropertyChangeListener("icon", this);
     }
-
 }

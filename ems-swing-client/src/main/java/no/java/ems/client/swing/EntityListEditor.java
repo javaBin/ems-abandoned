@@ -175,7 +175,7 @@ public abstract class EntityListEditor<T extends AbstractEntity> extends Abstrac
                             int columnIndex = table.columnAtPoint(event.getPoint());
                             if (rowIndex != -1 && columnIndex != -1) {
                                 if (!table.isCellEditable(rowIndex, columnIndex)) {
-                                    EmsClient.getInstance().edit(getEntityList().get(table.convertRowIndexToModel(rowIndex)));
+                                    EmsClient.getInstance().getRootPanel().edit(getEntityList().get(table.convertRowIndexToModel(rowIndex)));
                                 }
                             }
                         }
@@ -329,7 +329,7 @@ public abstract class EntityListEditor<T extends AbstractEntity> extends Abstrac
             final T entity = createEntity();
             if (entity != null) {
                 Entities.getInstance().add(entity);
-                Application.getInstance(EmsClient.class).edit(entity);
+                Application.getInstance(EmsClient.class).getRootPanel().edit(entity);
                 DefaultUndoManager.getInstance(null).addEdit(new CreateEntityUndoableEdit(entity));
             }
         }
@@ -345,7 +345,7 @@ public abstract class EntityListEditor<T extends AbstractEntity> extends Abstrac
         @Override
         public void actionPerformed(final ActionEvent event) {
             for (T entity : getSelected()) {
-                Application.getInstance(EmsClient.class).edit(entity);
+                Application.getInstance(EmsClient.class).getRootPanel().edit(entity);
             }
         }
     }
