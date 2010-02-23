@@ -15,7 +15,7 @@
 
 package no.java.ems.cli;
 
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.Options;
 
 /**
@@ -41,7 +41,7 @@ public class GetSessions extends AbstractCli {
     public void work() throws Exception {
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
 
-        for (SessionV1 session : getEms().getSessions(eventId).getSession()) {
+        for (SessionV2 session : getEms().getSessions(eventId).getSession()) {
             PrintUtil.print(getCommandLine(), session);
         }
     }

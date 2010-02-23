@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.external.v1;
+package no.java.ems.external.v2;
 
 import fj.F;
 import fj.F2;
@@ -31,7 +31,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class EmsV1F {
+public class EmsV2F {
     private static final ObjectFactory objectFactory = new ObjectFactory();
     private static final DatatypeFactory datatypeFactory;
 
@@ -47,24 +47,24 @@ public class EmsV1F {
     // Date tools
     // -----------------------------------------------------------------------
 
-    public static final F<IntervalV1, Interval> toInterval = new F<IntervalV1, Interval>() {
-        public Interval f(IntervalV1 intervalV1) {
-            XMLGregorianCalendar c = intervalV1.start;
+    public static final F<IntervalV2, Interval> toInterval = new F<IntervalV2, Interval>() {
+        public Interval f(IntervalV2 intervalV2) {
+            XMLGregorianCalendar c = intervalV2.start;
 
             DateTimeZone timeZone = DateTimeZone.forTimeZone(c.getTimeZone(FIELD_UNDEFINED));
             ReadableInstant start = new DateTime(c.getYear(), c.getMonth(), c.getDay(), c.getHour(), c.getMinute(),
                     c.getSecond(), c.getMillisecond(), timeZone);
 
-            return new Interval(start, Minutes.minutes(intervalV1.duration).toStandardDuration());
+            return new Interval(start, Minutes.minutes(intervalV2.duration).toStandardDuration());
         }
     };
 
-    public static final F<Interval, IntervalV1> toIntervalV1 = new F<Interval, IntervalV1>() {
-        public IntervalV1 f(Interval interval) {
-            IntervalV1 intervalV1 = objectFactory.createIntervalV1();
-            intervalV1.setStart(toXmlGregorianCalendarFromDateTime.f(interval.getStart()));
-            intervalV1.setDuration(Minutes.minutesIn(interval).getMinutes());
-            return intervalV1;
+    public static final F<Interval, IntervalV2> toIntervalV2 = new F<Interval, IntervalV2>() {
+        public IntervalV2 f(Interval interval) {
+            IntervalV2 intervalV2 = objectFactory.createIntervalV2();
+            intervalV2.setStart(toXmlGregorianCalendarFromDateTime.f(interval.getStart()));
+            intervalV2.setDuration(Minutes.minutesIn(interval).getMinutes());
+            return intervalV2;
         }
     };
 
@@ -106,9 +106,9 @@ public class EmsV1F {
         }
     };
 
-    public static final F2<EventV1, XMLGregorianCalendar, Unit> setDate = new F2<EventV1, XMLGregorianCalendar, Unit>() {
-        public Unit f(EventV1 eventV1, XMLGregorianCalendar xmlGregorianCalendar) {
-            eventV1.setDate(xmlGregorianCalendar);
+    public static final F2<EventV2, XMLGregorianCalendar, Unit> setDate = new F2<EventV2, XMLGregorianCalendar, Unit>() {
+        public Unit f(EventV2 eventV2, XMLGregorianCalendar xmlGregorianCalendar) {
+            eventV2.setDate(xmlGregorianCalendar);
             return Unit.unit();
         }
     };
@@ -117,51 +117,51 @@ public class EmsV1F {
     // JaxbElement creators
     // -----------------------------------------------------------------------
 
-    public static final F<EventV1, JAXBElement<EventV1>> eventJaxbElement = new F<EventV1, JAXBElement<EventV1>>() {
-        public JAXBElement<EventV1> f(EventV1 eventV1) {
-            return objectFactory.createEvent(eventV1);
+    public static final F<EventV2, JAXBElement<EventV2>> eventJaxbElement = new F<EventV2, JAXBElement<EventV2>>() {
+        public JAXBElement<EventV2> f(EventV2 eventV2) {
+            return objectFactory.createEvent(eventV2);
         }
     };
 
-    public static final F<EventListV1, JAXBElement<EventListV1>> eventListJaxbElement = new F<EventListV1, JAXBElement<EventListV1>>() {
-        public JAXBElement<EventListV1> f(EventListV1 eventListV1) {
-            return objectFactory.createEvents(eventListV1);
+    public static final F<EventListV2, JAXBElement<EventListV2>> eventListJaxbElement = new F<EventListV2, JAXBElement<EventListV2>>() {
+        public JAXBElement<EventListV2> f(EventListV2 eventListV2) {
+            return objectFactory.createEvents(eventListV2);
         }
     };
 
-    public static final F<PersonV1, JAXBElement<PersonV1>> personJaxbElement = new F<PersonV1, JAXBElement<PersonV1>>() {
-        public JAXBElement<PersonV1> f(PersonV1 personV1) {
-            return objectFactory.createPerson(personV1);
+    public static final F<PersonV2, JAXBElement<PersonV2>> personJaxbElement = new F<PersonV2, JAXBElement<PersonV2>>() {
+        public JAXBElement<PersonV2> f(PersonV2 personV2) {
+            return objectFactory.createPerson(personV2);
         }
     };
 
-    public static final F<PersonListV1, JAXBElement<PersonListV1>> personListJaxbElement = new F<PersonListV1, JAXBElement<PersonListV1>>() {
-        public JAXBElement<PersonListV1> f(PersonListV1 personListV1) {
-            return objectFactory.createPeople(personListV1);
+    public static final F<PersonListV2, JAXBElement<PersonListV2>> personListJaxbElement = new F<PersonListV2, JAXBElement<PersonListV2>>() {
+        public JAXBElement<PersonListV2> f(PersonListV2 personListV2) {
+            return objectFactory.createPeople(personListV2);
         }
     };
 
-    public static final F<RoomV1, JAXBElement<RoomV1>> roomJaxbElement = new F<RoomV1, JAXBElement<RoomV1>>() {
-        public JAXBElement<RoomV1> f(RoomV1 eventV1) {
-            return objectFactory.createRoom(eventV1);
+    public static final F<RoomV2, JAXBElement<RoomV2>> roomJaxbElement = new F<RoomV2, JAXBElement<RoomV2>>() {
+        public JAXBElement<RoomV2> f(RoomV2 eventV2) {
+            return objectFactory.createRoom(eventV2);
         }
     };
 
-    public static final F<RoomListV1, JAXBElement<RoomListV1>> roomListJaxbElement = new F<RoomListV1, JAXBElement<RoomListV1>>() {
-        public JAXBElement<RoomListV1> f(RoomListV1 roomListV1) {
-            return objectFactory.createRooms(roomListV1);
+    public static final F<RoomListV2, JAXBElement<RoomListV2>> roomListJaxbElement = new F<RoomListV2, JAXBElement<RoomListV2>>() {
+        public JAXBElement<RoomListV2> f(RoomListV2 roomListV2) {
+            return objectFactory.createRooms(roomListV2);
         }
     };
 
-    public static final F<SessionV1, JAXBElement<SessionV1>> sessionJaxbElement = new F<SessionV1, JAXBElement<SessionV1>>() {
-        public JAXBElement<SessionV1> f(SessionV1 sessionV1) {
-            return objectFactory.createSession(sessionV1);
+    public static final F<SessionV2, JAXBElement<SessionV2>> sessionJaxbElement = new F<SessionV2, JAXBElement<SessionV2>>() {
+        public JAXBElement<SessionV2> f(SessionV2 sessionV2) {
+            return objectFactory.createSession(sessionV2);
         }
     };
 
-    public static F<SessionListV1, JAXBElement<SessionListV1>> sessionListJaxbElement = new F<SessionListV1, JAXBElement<SessionListV1>>() {
-        public JAXBElement<SessionListV1> f(SessionListV1 sessionListV1) {
-            return objectFactory.createSessions(sessionListV1);
+    public static F<SessionListV2, JAXBElement<SessionListV2>> sessionListJaxbElement = new F<SessionListV2, JAXBElement<SessionListV2>>() {
+        public JAXBElement<SessionListV2> f(SessionListV2 sessionListV2) {
+            return objectFactory.createSessions(sessionListV2);
         }
     };
 

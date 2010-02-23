@@ -22,14 +22,11 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import no.java.ems.external.v1.SessionV1;
-import no.java.ems.external.v1.SessionState;
-import no.java.ems.external.v1.SessionFormat;
-import no.java.ems.external.v1.SessionLevel;
-import no.java.ems.external.v1.EmsV1F;
-import static no.java.ems.external.v1.EmsV1F.throwException;
-
-import java.net.URI;
+import no.java.ems.external.v2.SessionV2;
+import no.java.ems.external.v2.SessionState;
+import no.java.ems.external.v2.SessionFormat;
+import no.java.ems.external.v2.SessionLevel;
+import no.java.ems.external.v2.EmsV2F;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -84,9 +81,9 @@ public class CreateSession extends AbstractCli {
 
         Interval timeslot = new Interval(date.toDateTime(), Minutes.minutes(60));
         
-        SessionV1 session = new SessionV1();
+        SessionV2 session = new SessionV2();
         session.setEventUuid(eventId);
-        session.setTimeslot(EmsV1F.toIntervalV1.f(timeslot));
+        session.setTimeslot(EmsV2F.toIntervalV2.f(timeslot));
         session.setState(SessionState.PENDING);
         session.setFormat(SessionFormat.PRESENTATION);
         session.setLevel(SessionLevel.INTERMEDIATE);

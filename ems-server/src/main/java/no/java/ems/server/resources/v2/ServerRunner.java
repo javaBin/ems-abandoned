@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.DerbyService;

@@ -1,10 +1,10 @@
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import com.sun.syndication.feed.atom.*;
 import com.sun.syndication.feed.synd.*;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
-import no.java.ems.external.v1.MIMETypes;
+import no.java.ems.external.v2.MIMETypes;
 import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.ObjectType;
 import no.java.ems.server.search.SearchRequest;

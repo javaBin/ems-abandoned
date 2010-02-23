@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.server.domain.Binary;
@@ -25,7 +25,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Context;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;

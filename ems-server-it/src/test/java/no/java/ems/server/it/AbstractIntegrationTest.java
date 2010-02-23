@@ -18,7 +18,7 @@ package no.java.ems.server.it;
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.external.v1.RestletEmsV1Client;
+import no.java.ems.external.v2.RestletEmsV2Client;
 import no.java.ems.server.DerbyService;
 import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.domain.Room;
@@ -61,7 +61,7 @@ public abstract class AbstractIntegrationTest {
 
     private static EmsSrcEmbedder embedder;
     protected static String baseUri;
-    protected static RestletEmsV1Client ems;
+    protected static RestletEmsV2Client ems;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -77,7 +77,7 @@ public abstract class AbstractIntegrationTest {
         embedder.getBean(DerbyService.class).maybeCreateTables(false);
         baseUri = embedder.getBaseUri();
 
-        ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri);
+        ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri);
     }
 
     @AfterClass

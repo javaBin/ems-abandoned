@@ -13,18 +13,18 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import fj.F2;
 import fj.data.List;
 import fj.data.Option;
+import no.java.ems.external.v2.EmsV2F;
 import no.java.ems.server.domain.Room;
-import no.java.ems.external.v1.EmsV1F;
-import no.java.ems.external.v1.RoomListV1;
-import no.java.ems.external.v1.RoomV1;
-import no.java.ems.external.v1.MIMETypes;
+import no.java.ems.external.v2.RoomListV2;
+import no.java.ems.external.v2.RoomV2;
+import no.java.ems.external.v2.MIMETypes;
 import no.java.ems.server.domain.EmsServer;
-import static no.java.ems.server.f.ExternalV1F.roomV1;
+import static no.java.ems.server.f.ExternalV2F.roomV2;
 import org.apache.commons.lang.Validate;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +43,10 @@ import java.util.ArrayList;
 @Consumes(MIMETypes.ROOM_MIME_TYPE)
 public class RoomResource {
 
-    F2<RoomListV1, RoomV1, RoomListV1> aggregator = new F2<RoomListV1, RoomV1, RoomListV1>() {
-        public RoomListV1 f(RoomListV1 listV1, RoomV1 roomV1) {
-            listV1.getRoom().add(roomV1);
-            return listV1;
+    F2<RoomListV2, RoomV2, RoomListV2> aggregator = new F2<RoomListV2, RoomV2, RoomListV2>() {
+        public RoomListV2 f(RoomListV2 listV2, RoomV2 roomV2) {
+            listV2.getRoom().add(roomV2);
+            return listV2;
         }
     };
 
@@ -61,22 +61,22 @@ public class RoomResource {
 
     @GET
     @Produces(MIMETypes.ROOM_LIST_MIME_TYPE)
-    public JAXBElement<RoomListV1> getRooms() {
+    public JAXBElement<RoomListV2> getRooms() {
         List<Room> rooms = List.iterableList(new ArrayList<Room>());
-        Option<JAXBElement<RoomListV1>> option = Option.some(rooms.map(roomV1).
-                foldLeft(aggregator, new RoomListV1())).
-                map(EmsV1F.roomListJaxbElement);        
+        Option<JAXBElement<RoomListV2>> option = Option.some(rooms.map(roomV2).
+                foldLeft(aggregator, new RoomListV2())).
+                map(EmsV2F.roomListJaxbElement);
         return option.some();
     }
 
     @GET
     @Path("{roomId}")
     @Produces(MIMETypes.ROOM_MIME_TYPE)
-    public JAXBElement<RoomV1> getRoom(@PathParam("roomId") String roomId) {
+    public JAXBElement<RoomV2> getRoom(@PathParam("roomId") String roomId) {
         Room room = new Room();
-        Option<JAXBElement<RoomV1>> option = Option.some(room).
-                map(roomV1).
-                map(EmsV1F.roomJaxbElement);
+        Option<JAXBElement<RoomV2>> option = Option.some(room).
+                map(roomV2).
+                map(EmsV2F.roomJaxbElement);
         if (option.isSome()) {
             return option.some();
         }
@@ -84,13 +84,13 @@ public class RoomResource {
     }
 
     @POST
-    public void addRoom(RoomV1 entity) {
+    public void addRoom(RoomV2 entity) {
         //return Response.created(URI.create(entity.getId())).build();
     }
 
     @PUT
     @Path("{roomId}")
-    public void saveRoom(@PathParam("roomId") String roomId, RoomV1 entity) {
+    public void saveRoom(@PathParam("roomId") String roomId, RoomV2 entity) {
 
     }
 }

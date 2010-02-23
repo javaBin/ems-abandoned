@@ -23,9 +23,9 @@ import static fj.Unit.unit;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
-import static no.java.ems.external.v1.EmsV1F.toLocalDate;
-import static no.java.ems.external.v1.EmsV1F.toXmlGregorianCalendar;
-import no.java.ems.external.v1.*;
+import static no.java.ems.external.v2.EmsV2F.toLocalDate;
+import static no.java.ems.external.v2.EmsV2F.toXmlGregorianCalendar;
+import no.java.ems.external.v2.*;
 import no.java.ems.server.domain.*;
 import org.joda.time.LocalDate;
 import org.joda.time.Interval;
@@ -33,7 +33,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.ws.rs.core.UriBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Collection;
@@ -45,13 +44,13 @@ import java.math.BigInteger;
  *
  * @version $Id$
  */
-public class ExternalV1F {
+public class ExternalV2F {
 
     private static final ObjectFactory objectFactory = new ObjectFactory();
 
 
-    private static TagsV1 convertTags(AbstractEntity entity) {
-        TagsV1 tags = new TagsV1();
+    private static TagsV2 convertTags(AbstractEntity entity) {
+        TagsV2 tags = new TagsV2();
         tags.getTag().addAll(entity.getTags());
         return tags;
     }
@@ -60,38 +59,38 @@ public class ExternalV1F {
     // Session
     // -----------------------------------------------------------------------
 
-    public static final F<Session, SessionV1> sessionV1 = new F<Session, SessionV1>() {
-        public SessionV1 f(Session session) {
-            SessionV1 sessionV1 = objectFactory.createSessionV1();
-            sessionV1.setUuid(session.getId());
-            sessionV1.setEventUuid(session.getEventId());
-            sessionV1.setTitle(session.getTitle());
-            sessionV1.setBody(cleanString("session", session.getId(), session.getBody()));
-            sessionV1.setNotes(session.getNotes());
-            sessionV1.setEquipment(session.getEquipment());
-            sessionV1.setExpectedAudience(session.getExpectedAudience());
+    public static final F<Session, SessionV2> sessionV2 = new F<Session, SessionV2>() {
+        public SessionV2 f(Session session) {
+            SessionV2 sessionV2 = objectFactory.createSessionV2();
+            sessionV2.setUuid(session.getId());
+            sessionV2.setEventUuid(session.getEventId());
+            sessionV2.setTitle(session.getTitle());
+            sessionV2.setBody(cleanString("session", session.getId(), session.getBody()));
+            sessionV2.setNotes(session.getNotes());
+            sessionV2.setEquipment(session.getEquipment());
+            sessionV2.setExpectedAudience(session.getExpectedAudience());
             if (session.getLanguage() != null) {
-                sessionV1.setLanguage(session.getLanguage().getIsoCode());
+                sessionV2.setLanguage(session.getLanguage().getIsoCode());
             }
-            sessionV1.setFeedback(session.getFeedback());            
-            sessionV1.setFormat(sessionFormatV1.f(session.getFormat()).orSome((SessionFormat) null));
-            sessionV1.setState(sessionStateV1.f(session.getState()).orSome((SessionState) null));
-            sessionV1.setLevel(sessionLevelV1.f(session.getLevel()).orSome((SessionLevel) null));
-            KeywordsV1 keywords = new KeywordsV1();
+            sessionV2.setFeedback(session.getFeedback());            
+            sessionV2.setFormat(sessionFormatV2.f(session.getFormat()).orSome((SessionFormat) null));
+            sessionV2.setState(sessionStateV2.f(session.getState()).orSome((SessionState) null));
+            sessionV2.setLevel(sessionLevelV2.f(session.getLevel()).orSome((SessionLevel) null));
+            KeywordsV2 keywords = new KeywordsV2();
             keywords.getKeyword().addAll(session.getKeywords());
-            sessionV1.setKeywords(keywords);
-            sessionV1.setTags(convertTags(session));
-            sessionV1.setTimeslot(session.getTimeslot().map(EmsV1F.toIntervalV1).orSome((IntervalV1) null));
-            sessionV1.setSpeakers(new SpeakerListV1());
-            sessionV1.getSpeakers().getSpeaker().addAll(List.iterableList(session.getSpeakers()).map(speakerV1).toCollection());
-            sessionV1.setAttachments(new BinaryListV1());
-            sessionV1.getAttachments().getBinary().addAll(List.iterableList(session.getAttachments()).map(binaryV1).toCollection());
-            return sessionV1;
+            sessionV2.setKeywords(keywords);
+            sessionV2.setTags(convertTags(session));
+            sessionV2.setTimeslot(session.getTimeslot().map(EmsV2F.toIntervalV2).orSome((IntervalV2) null));
+            sessionV2.setSpeakers(new SpeakerListV2());
+            sessionV2.getSpeakers().getSpeaker().addAll(List.iterableList(session.getSpeakers()).map(speakerV2).toCollection());
+            sessionV2.setAttachments(new BinaryListV2());
+            sessionV2.getAttachments().getBinary().addAll(List.iterableList(session.getAttachments()).map(binaryV2).toCollection());
+            return sessionV2;
         }
     };
 
-    public static final F<SessionV1, Session> session = new F<SessionV1, Session>() {
-        public Session f(SessionV1 session) {
+    public static final F<SessionV2, Session> session = new F<SessionV2, Session>() {
+        public Session f(SessionV2 session) {
             Session newSession = new Session();
             newSession.setEventId(session.getEventUuid());
             newSession.setTitle(session.getTitle());
@@ -108,7 +107,7 @@ public class ExternalV1F {
             newSession.setLevel(sessionLevel.f(session.getLevel()).orSome(Session.Level.Introductory));
             newSession.setKeywords(session.getKeywords() == null ? Collections.<String>emptyList() : new ArrayList<String>(session.getKeywords().getKeyword()));
             newSession.setTags(session.getTags() == null ? Collections.<String>emptyList() : new ArrayList<String>(session.getTags().getTag()));
-            newSession.setTimeslot(fromNull(session.getTimeslot()).map(EmsV1F.toInterval));
+            newSession.setTimeslot(fromNull(session.getTimeslot()).map(EmsV2F.toInterval));
             if (session.getSpeakers() != null) {
                 List<Speaker> list = List.iterableList(session.getSpeakers().getSpeaker()).map(speaker);
                 newSession.setSpeakers(new ArrayList<Speaker>(list.toCollection()));
@@ -117,28 +116,28 @@ public class ExternalV1F {
         }
     };
 
-    private static F<SpeakerV1, Speaker> speaker = new F<SpeakerV1, Speaker>() {
-        public Speaker f(SpeakerV1 speakerV1) {
-            Speaker speaker = new Speaker(speakerV1.getPersonUuid(), speakerV1.getName());
-            speaker.setDescription(speakerV1.getDescription());            
+    private static F<SpeakerV2, Speaker> speaker = new F<SpeakerV2, Speaker>() {
+        public Speaker f(SpeakerV2 speakerV2) {
+            Speaker speaker = new Speaker(speakerV2.getPersonUuid(), speakerV2.getName());
+            speaker.setDescription(speakerV2.getDescription());            
             return speaker;
         }
     };
 
-    private static F<Speaker, SpeakerV1> speakerV1 = new F<Speaker, SpeakerV1>() {
-        public SpeakerV1 f(Speaker speaker) {
-            SpeakerV1 speakerV1 = objectFactory.createSpeakerV1();
-            speakerV1.setName(speaker.getName());
-            speakerV1.setPersonUuid(speaker.getPersonId());
+    private static F<Speaker, SpeakerV2> speakerV2 = new F<Speaker, SpeakerV2>() {
+        public SpeakerV2 f(Speaker speaker) {
+            SpeakerV2 speakerV2 = objectFactory.createSpeakerV2();
+            speakerV2.setName(speaker.getName());
+            speakerV2.setPersonUuid(speaker.getPersonId());
             if (speaker.getPhoto() != null) {
-                speakerV1.setPhoto(convertBinary(speaker.getPhoto()));
+                speakerV2.setPhoto(convertBinary(speaker.getPhoto()));
             }
-            speakerV1.setDescription(cleanString("speaker", speaker.getId(), speaker.getDescription()));
-            return speakerV1;
+            speakerV2.setDescription(cleanString("speaker", speaker.getId(), speaker.getDescription()));
+            return speakerV2;
         }
     };
 
-    public static final F<Session.Format, Option<SessionFormat>> sessionFormatV1 = new F<Session.Format, Option<SessionFormat>>() {
+    public static final F<Session.Format, Option<SessionFormat>> sessionFormatV2 = new F<Session.Format, Option<SessionFormat>>() {
         public Option<SessionFormat> f(Session.Format format) {
             return fromNull(format).map(new F<Session.Format, SessionFormat>() {
                 public SessionFormat f(Session.Format format) {
@@ -185,7 +184,7 @@ public class ExternalV1F {
     };
 
 
-    public static final F<Session.State, Option<SessionState>> sessionStateV1 = new F<Session.State, Option<SessionState>>() {
+    public static final F<Session.State, Option<SessionState>> sessionStateV2 = new F<Session.State, Option<SessionState>>() {
         public Option<SessionState> f(Session.State state) {
             return fromNull(state).map(new F<Session.State, SessionState>() {
                 public SessionState f(Session.State state) {
@@ -220,7 +219,7 @@ public class ExternalV1F {
                 }
             });
         }
-    };public static final F<Session.Level, Option<SessionLevel>> sessionLevelV1 = new F<Session.Level, Option<SessionLevel>>() {
+    };public static final F<Session.Level, Option<SessionLevel>> sessionLevelV2 = new F<Session.Level, Option<SessionLevel>>() {
         public Option<SessionLevel> f(Session.Level level) {
             return fromNull(level).map(new F<Session.Level, SessionLevel>() {
                 public SessionLevel f(Session.Level level) {
@@ -271,34 +270,34 @@ public class ExternalV1F {
     // Person
     // -----------------------------------------------------------------------
 
-    public static F<Person, PersonV1> personV1 = new F<Person, PersonV1>() {
-        public PersonV1 f(Person person) {
-            PersonV1 personV1 = objectFactory.createPersonV1();
-            personV1.setUuid(person.getId());
-            personV1.setName(person.getName());
+    public static F<Person, PersonV2> personV2 = new F<Person, PersonV2>() {
+        public PersonV2 f(Person person) {
+            PersonV2 personV2 = objectFactory.createPersonV2();
+            personV2.setUuid(person.getId());
+            personV2.setName(person.getName());
             if (person.getLanguage() != null) {
-                personV1.setLanguage(person.getLanguage().getIsoCode());
+                personV2.setLanguage(person.getLanguage().getIsoCode());
             }
             if (person.getNationality() != null) {
-                personV1.setNationality(person.getNationality().getIsoCode());
+                personV2.setNationality(person.getNationality().getIsoCode());
             }                        
-            personV1.setDescription(person.getDescription());
-            personV1.setTags(convertTags(person));
-            EmailAddressListV1 emails = new EmailAddressListV1();
+            personV2.setDescription(person.getDescription());
+            personV2.setTags(convertTags(person));
+            EmailAddressListV2 emails = new EmailAddressListV2();
             for (EmailAddress address : person.getEmailAddresses()) {
                 emails.getEmailAddress().add(address.getEmailAddress());
             }
-            personV1.setEmailAddresses(emails);
+            personV2.setEmailAddresses(emails);
             Binary photo = person.getPhoto();
             if (photo != null) {
-                personV1.setPhoto(convertBinary(photo));
+                personV2.setPhoto(convertBinary(photo));
             }
-            return personV1;
+            return personV2;
         }
     };
 
-    private static URIBinaryV1 convertBinary(Binary photo) {
-        URIBinaryV1 uriBinary = objectFactory.createURIBinaryV1();
+    private static URIBinaryV2 convertBinary(Binary photo) {
+        URIBinaryV2 uriBinary = objectFactory.createURIBinaryV2();
         uriBinary.setFilename(photo.getFileName());
         uriBinary.setMimeType(photo.getMimeType());
         uriBinary.setSize(BigInteger.valueOf(photo.getSize()));
@@ -307,21 +306,21 @@ public class ExternalV1F {
     }
 
 /*
-    public static F<URIBinaryV1, Binary> binary = new F<URIBinaryV1, Binary>() {
-        public Binary f(URIBinaryV1 binaryV1) {
+    public static F<URIBinaryV2, Binary> binary = new F<URIBinaryV2, Binary>() {
+        public Binary f(URIBinaryV2 binaryV2) {
             UriBinary binary = new UriBinary(); 
-            uriBinary.setFilename(binaryV1.getFileName());
-            uriBinary.setMimeType(binaryV1.getMimeType());
-            uriBinary.setSize(BigInteger.valueOf(binaryV1.getSize()));
-            uriBinary.setUri(binaryV1.getId());
+            uriBinary.setFilename(binaryV2.getFileName());
+            uriBinary.setMimeType(binaryV2.getMimeType());
+            uriBinary.setSize(BigInteger.valueOf(binaryV2.getSize()));
+            uriBinary.setUri(binaryV2.getId());
             return null;
         }
     };
 */
 
-    public static F<Binary, URIBinaryV1> binaryV1 = new F<Binary, URIBinaryV1>() {
-        public URIBinaryV1 f(Binary binary) {
-            URIBinaryV1 uriBinary = objectFactory.createURIBinaryV1();
+    public static F<Binary, URIBinaryV2> binaryV2 = new F<Binary, URIBinaryV2>() {
+        public URIBinaryV2 f(Binary binary) {
+            URIBinaryV2 uriBinary = objectFactory.createURIBinaryV2();
             uriBinary.setFilename(binary.getFileName());
             uriBinary.setMimeType(binary.getMimeType());
             uriBinary.setSize(BigInteger.valueOf(binary.getSize()));
@@ -330,21 +329,21 @@ public class ExternalV1F {
         }
     };
 
-    public static F<PersonV1, Person> person = new F<PersonV1, Person>() {
-        public Person f(PersonV1 personV1) {
+    public static F<PersonV2, Person> person = new F<PersonV2, Person>() {
+        public Person f(PersonV2 personV2) {
             Person person = new Person();
-            person.setId(personV1.getUuid());
-            person.setName(personV1.getName());
-            if (personV1.getLanguage() != null) {
-                person.setLanguage(new Language(personV1.getLanguage()));
+            person.setId(personV2.getUuid());
+            person.setName(personV2.getName());
+            if (personV2.getLanguage() != null) {
+                person.setLanguage(new Language(personV2.getLanguage()));
             }
-            if (personV1.getNationality() != null) {
-                person.setNationality(new Nationality(personV1.getNationality()));
+            if (personV2.getNationality() != null) {
+                person.setNationality(new Nationality(personV2.getNationality()));
             }
-            person.setDescription(personV1.getDescription());
-            //person.setNotes(personV1.getNotes());
-            person.setTags(new ArrayList<String>(personV1.getTags().getTag()));
-            EmailAddressListV1 addresses = personV1.getEmailAddresses();
+            person.setDescription(personV2.getDescription());
+            //person.setNotes(personV2.getNotes());
+            person.setTags(new ArrayList<String>(personV2.getTags().getTag()));
+            EmailAddressListV2 addresses = personV2.getEmailAddresses();
             if (addresses != null) {
                 Collection<EmailAddress> addressCollection = List.iterableList(addresses.getEmailAddress()).map(new F<String, EmailAddress>() {
                     public EmailAddress f(String address) {
@@ -361,52 +360,52 @@ public class ExternalV1F {
     // Event
     // -----------------------------------------------------------------------
 
-    public static final F<Event, EventV1> eventV1 = new F<Event, EventV1>() {
-        public EventV1 f(Event event) {
-            EventV1 e = objectFactory.createEventV1();
+    public static final F<Event, EventV2> eventV2 = new F<Event, EventV2>() {
+        public EventV2 f(Event event) {
+            EventV2 e = objectFactory.createEventV2();
             e.setUuid(event.getId());
             e.setName(event.getName());
             e.setDate(fromNull(event.getDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
-            e.setTimeslots(objectFactory.createTimeslotListV1());
+            e.setTimeslots(objectFactory.createTimeslotListV2());
             List.<Interval>iterableList(event.getTimeslots()).
-                    map(EmsV1F.toIntervalV1).
-                    map(curry(ExternalV1F.<IntervalV1>add(), e.getTimeslots().getTimeslot()));
-            RoomListV1 roomList = objectFactory.createRoomListV1();
+                    map(EmsV2F.toIntervalV2).
+                    map(curry(ExternalV2F.<IntervalV2>add(), e.getTimeslots().getTimeslot()));
+            RoomListV2 roomList = objectFactory.createRoomListV2();
             List.<Room>iterableList(event.getRooms()).
-                    map(roomV1).
-                    foreach(curry(ExternalV1F.<RoomV1>add(), roomList.getRoom()));
+                    map(roomV2).
+                    foreach(curry(ExternalV2F.<RoomV2>add(), roomList.getRoom()));
             e.setRooms(roomList);
             e.setTags(convertTags(event));
             return e;
         }
     };
 
-    public static final F<EventV1, Event> event = new F<EventV1, Event>() {
-        public Event f(EventV1 event) {
+    public static final F<EventV2, Event> event = new F<EventV2, Event>() {
+        public Event f(EventV2 event) {
             Event e = new Event(event.getName());            
             e.setDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
             e.setTags(new ArrayList<String>(event.getTags().getTag()));
-            List<Interval> intervalList = List.<IntervalV1>iterableList(event.getTimeslots().getTimeslot()).map(EmsV1F.toInterval);
+            List<Interval> intervalList = List.<IntervalV2>iterableList(event.getTimeslots().getTimeslot()).map(EmsV2F.toInterval);
             e.setTimeslots(new ArrayList<Interval>(intervalList.toCollection()));
-            RoomListV1 listV1 = event.getRooms();
-            e.setRooms(new ArrayList<Room>(List.<RoomV1>iterableList(listV1.getRoom()).map(room).toCollection()));
+            RoomListV2 listV2 = event.getRooms();
+            e.setRooms(new ArrayList<Room>(List.<RoomV2>iterableList(listV2.getRoom()).map(room).toCollection()));
             return e;
         }
     };    
 
-    public static final F<Room, RoomV1> roomV1 = new F<Room, RoomV1>() {
-        public RoomV1 f(Room room) {
-            System.out.println("ExternalV1F.roomV1");
-            RoomV1 roomV1 = new RoomV1();
-            roomV1.setUuid(room.getId());            
-            roomV1.setName(room.getName());
-            roomV1.setDescription(room.getDescription());
-            return roomV1;
+    public static final F<Room, RoomV2> roomV2 = new F<Room, RoomV2>() {
+        public RoomV2 f(Room room) {
+            System.out.println("ExternalV2F.roomV2");
+            RoomV2 roomV2 = new RoomV2();
+            roomV2.setUuid(room.getId());            
+            roomV2.setName(room.getName());
+            roomV2.setDescription(room.getDescription());
+            return roomV2;
         }
     };
 
-    public static final F<RoomV1, Room> room = new F<RoomV1, Room>() {
-        public Room f(RoomV1 externalRoom) {
+    public static final F<RoomV2, Room> room = new F<RoomV2, Room>() {
+        public Room f(RoomV2 externalRoom) {
             Room room = new Room();
             room.setName(externalRoom.getName());
             room.setDescription(externalRoom.getDescription());
@@ -447,7 +446,7 @@ public class ExternalV1F {
     private static <A> F2<java.util.List<A>, A, Unit> add() {
         return new F2<java.util.List<A>, A, Unit>() {
             public Unit f(java.util.List<A> list, A a) {
-                System.out.println("ExternalV1F.add");
+                System.out.println("ExternalV2F.add");
                 list.add(a);
                 return unit();
             }

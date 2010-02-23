@@ -17,7 +17,7 @@ package no.java.ems.cli;
 
 import fj.P;
 import static fj.data.Option.some;
-import no.java.ems.external.v1.RestletEmsV1Client;
+import no.java.ems.external.v2.RestletEmsV2Client;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -49,7 +49,7 @@ public abstract class AbstractCli {
 
     private CommandLine commandLine;
 
-    private RestletEmsV1Client ems;
+    private RestletEmsV2Client ems;
 
     // Standard options
     private static final String OPTION_HELP = "help";
@@ -105,7 +105,7 @@ public abstract class AbstractCli {
     // Services
     // -----------------------------------------------------------------------
 
-    public RestletEmsV1Client getEms() {
+    public RestletEmsV2Client getEms() {
         return ems;
     }
 
@@ -207,10 +207,10 @@ public abstract class AbstractCli {
         password = commandLine.getOptionValue(OPTION_PASSWORD, password);
 
         if (commandLine.hasOption(OPTION_USERNAME)) {
-            ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri, some(P.p(username, password)));
+            ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri, some(P.p(username, password)));
         }
         else {
-            ems = new RestletEmsV1Client(new InMemoryHttpCache(), baseUri);
+            ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri);
         }
 
         work();

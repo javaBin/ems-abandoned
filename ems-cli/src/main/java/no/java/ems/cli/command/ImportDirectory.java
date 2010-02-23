@@ -21,15 +21,14 @@ import fj.F2;
 import fj.Function;
 import fj.data.List;
 import no.java.ems.client.ResourceHandle;
-import no.java.ems.external.v1.RestletEmsV1Client;
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.RestletEmsV2Client;
+import no.java.ems.external.v2.SessionV2;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -37,17 +36,17 @@ import java.net.URI;
  */
 public class ImportDirectory implements Runnable {
 
-    private final RestletEmsV1Client ems;
+    private final RestletEmsV2Client ems;
     private final File dir;
     private final String eventId;
-    private final F<InputStream, SessionV1> unmarshallSession;
+    private final F<InputStream, SessionV2> unmarshallSession;
 
-    public ImportDirectory(RestletEmsV1Client ems, String eventId, File dir) {
+    public ImportDirectory(RestletEmsV2Client ems, String eventId, File dir) {
         this.ems = ems;
         this.eventId = eventId;
         this.dir = dir;
 
-        unmarshallSession = ems.unmarshallInputStream(SessionV1.class);
+        unmarshallSession = ems.unmarshallInputStream(SessionV2.class);
     }
 
     public void run() {
@@ -59,7 +58,7 @@ public class ImportDirectory implements Runnable {
 
         System.err.println("Importing " + files.length() + " sessions from " + dir.getAbsolutePath() + "...");
 
-        List<SessionV1> sessions = files.
+        List<SessionV2> sessions = files.
             map(Function.curry(readSession, eventId));
 
         System.err.println("Adding " + sessions.length() + " objects...");
@@ -69,10 +68,10 @@ public class ImportDirectory implements Runnable {
         System.err.println("Import complete");
     }
 
-    private F2<String, File, SessionV1> readSession = new F2<String, File, SessionV1>() {
-        public SessionV1 f(String eventId, File file) {
+    private F2<String, File, SessionV2> readSession = new F2<String, File, SessionV2>() {
+        public SessionV2 f(String eventId, File file) {
             try {
-                SessionV1 session = unmarshallSession.f(new FileInputStream(file));
+                SessionV2 session = unmarshallSession.f(new FileInputStream(file));
                 session.setEventUuid(eventId);
                 return session;
             } catch (FileNotFoundException e) {
@@ -81,8 +80,8 @@ public class ImportDirectory implements Runnable {
         }
     };
 
-    private Effect<SessionV1> addSession = new Effect<SessionV1>() {
-        public void e(SessionV1 session) {
+    private Effect<SessionV2> addSession = new Effect<SessionV2>() {
+        public void e(SessionV2 session) {
             ResourceHandle uri = ems.addSession(session);
 
             System.err.println("URI: " + uri);

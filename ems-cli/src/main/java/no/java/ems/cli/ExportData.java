@@ -22,8 +22,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import no.java.ems.external.v1.SessionV1;
-import static no.java.ems.external.v1.EmsV1F.throwException;
+import no.java.ems.external.v2.SessionV2;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -56,11 +55,11 @@ public class ExportData extends AbstractCli {
         String eventId = getDefaultEventId();
         dir = new File(getCommandLine().getOptionValue(OPTION_DIRECTORY));
 
-        List<SessionV1> sessions = getEms().getSessions(eventId).getSession();
+        List<SessionV2> sessions = getEms().getSessions(eventId).getSession();
 
         OutputStream outputStream = null;
         try {
-            for (SessionV1 session : sessions) {
+            for (SessionV2 session : sessions) {
                 outputStream = new FileOutputStream(new File(dir, session.getUuid()));
             }
         } finally {

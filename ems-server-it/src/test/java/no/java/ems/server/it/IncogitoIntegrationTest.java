@@ -20,8 +20,8 @@ import static junit.framework.Assert.assertEquals;
 import no.java.ems.cli.command.ImportDirectory;
 import no.java.ems.server.domain.Event;
 import no.java.ems.server.domain.Session;
-import no.java.ems.external.v1.SessionListV1;
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.SessionListV2;
+import no.java.ems.external.v2.SessionV2;
 import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
@@ -48,21 +48,21 @@ public class IncogitoIntegrationTest extends AbstractIntegrationTest {
 
         loadData("incogito");
 
-        for (SessionV1 session : ems.getSessions(eventId).getSession()) {
+        for (SessionV2 session : ems.getSessions(eventId).getSession()) {
             System.out.println("session = " + session);
         }
 
-        SessionListV1 sessionsByDate = ems.findSessionsByDate(eventId, sep12);
+        SessionListV2 sessionsByDate = ems.findSessionsByDate(eventId, sep12);
 
-        for (SessionV1 session : sessionsByDate.getSession()) {
+        for (SessionV2 session : sessionsByDate.getSession()) {
             assertNotNull("Session was null", session);
         }
 
         String title = "Implementing external DSLs in Java";
-        SessionListV1 ids = ems.findSessionsByTitle(eventId, title);
+        SessionListV2 ids = ems.findSessionsByTitle(eventId, title);
         assertNotNull(ids);
         // uhm, slight issue with duplicate sessions on import
-        for (SessionV1 session : ids.getSession()) {
+        for (SessionV2 session : ids.getSession()) {
             assertEquals(title, session.getTitle());
         }
     }

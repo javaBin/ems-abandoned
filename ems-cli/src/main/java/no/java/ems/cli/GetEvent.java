@@ -16,7 +16,7 @@
 package no.java.ems.cli;
 
 import fj.data.Option;
-import no.java.ems.external.v1.EventV1;
+import no.java.ems.external.v2.EventV2;
 import org.apache.commons.cli.Options;
 
 /**
@@ -41,14 +41,14 @@ public class GetEvent extends AbstractCli {
     }
 
     public void work() throws Exception {
-        Option<EventV1> option = getEms().getEvent(getCommandLine().getOptionValue(OPTION_ID));
+        Option<EventV2> option = getEms().getEvent(getCommandLine().getOptionValue(OPTION_ID));
 
         if (option.isNone()) {
             System.err.println("No such event.");
             return;
         }
 
-        EventV1 event = option.some();
+        EventV2 event = option.some();
 
         System.err.println("Id: " + event.getUuid());
         System.err.println("Name: " + event.getName());

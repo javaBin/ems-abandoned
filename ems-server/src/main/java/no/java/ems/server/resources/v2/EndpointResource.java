@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import no.java.ems.server.URIBuilder;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.GET;
 
-import no.java.ems.external.v1.MIMETypes;
+import no.java.ems.external.v2.MIMETypes;
 
 import java.net.URI;
 

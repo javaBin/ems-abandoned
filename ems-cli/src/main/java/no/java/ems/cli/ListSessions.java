@@ -16,8 +16,7 @@
 package no.java.ems.cli;
 
 import static no.java.ems.cli.PrintUtil.print;
-import no.java.ems.external.v1.SessionV1;
-import no.java.ems.external.v1.EmsV1F;
+import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.Options;
 
 import java.util.List;
@@ -50,9 +49,9 @@ public class ListSessions extends AbstractCli {
 
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
 
-        List<SessionV1> sessions = getEms().getSessions(eventId).getSession();
+        List<SessionV2> sessions = getEms().getSessions(eventId).getSession();
 
-        for (SessionV1 session : sessions) {
+        for (SessionV2 session : sessions) {
             print(getCommandLine(), session);
         }
     }

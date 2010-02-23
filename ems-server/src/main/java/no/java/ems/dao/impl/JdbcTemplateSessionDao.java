@@ -22,7 +22,7 @@ import no.java.ems.server.domain.Binary;
 import no.java.ems.server.domain.Language;
 import no.java.ems.server.domain.Session;
 import no.java.ems.server.domain.Speaker;
-import static no.java.ems.server.f.ExternalV1F.*;
+import static no.java.ems.server.f.ExternalV2F.*;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,4 +1,4 @@
-package no.java.ems.external.v1;
+package no.java.ems.external.v2;
 
 /**
  * @author <a href="mailto:erlend@escenic.com">Erlend Hamnaberg</a>

@@ -17,7 +17,7 @@ package no.java.ems.cli;
 
 import fj.data.Option;
 import no.java.ems.cli.command.ImportDirectory;
-import no.java.ems.external.v1.EventV1;
+import no.java.ems.external.v2.EventV2;
 import org.apache.commons.cli.Options;
 
 import java.io.File;
@@ -56,7 +56,7 @@ public class ImportData extends AbstractCli {
             System.exit(-1);
         }
 
-        Option<EventV1> eventOption = getEms().getEvent(eventId);
+        Option<EventV2> eventOption = getEms().getEvent(eventId);
         if (eventOption.isNone()) {
             System.err.println("No such event: " + eventId);
         }

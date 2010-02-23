@@ -15,9 +15,9 @@
 
 package no.java.ems.client;
 
-import no.java.ems.external.v1.*;
+import no.java.ems.external.v2.*;
 import no.java.ems.domain.*;
-import no.java.ems.client.f.ExternalV1F;
+import no.java.ems.client.f.ExternalV2F;
 
 import java.util.List;
 import java.util.Collection;
@@ -42,7 +42,7 @@ import fj.P2;
  * @version $Id $
  */
 public class RESTEmsService {
-    private EmsV1Client client;
+    private EmsV2Client client;
     private final HTTPCache cache;
     private final String baseURI;
 
@@ -54,12 +54,12 @@ public class RESTEmsService {
         client = createEmsClient(username, password);
     }
 
-    private RestletEmsV1Client createEmsClient(String username, String password) {
+    private RestletEmsV2Client createEmsClient(String username, String password) {
         Option<P2<String,String>> credentials =  Option.none();
         if (username != null && password != null) {
             credentials = Option.some(P.p(username, password));
         }
-        return new RestletEmsV1Client(cache, this.baseURI, credentials);
+        return new RestletEmsV2Client(cache, this.baseURI, credentials);
     }
 
     public RESTEmsService(String baseURI) {
@@ -67,13 +67,13 @@ public class RESTEmsService {
     }
 
     public synchronized List<Person> getContacts() {
-        PersonListV1 people = client.getPeople();       
-        Collection<Person> persons = fj.data.List.iterableList(people.getPerson()).map(ExternalV1F.person).toCollection();
+        PersonListV2 people = client.getPeople();       
+        Collection<Person> persons = fj.data.List.iterableList(people.getPerson()).map(ExternalV2F.person).toCollection();
         return new ArrayList<Person>(persons);
     }
 
     public synchronized Person getContact(String id) {
-        Option<Person> person = client.getPerson(id).map(ExternalV1F.person);
+        Option<Person> person = client.getPerson(id).map(ExternalV2F.person);
         if (person.isSome()) {
             return person.some();
         }
@@ -81,7 +81,7 @@ public class RESTEmsService {
     }
 
     public synchronized Person saveContact(Person person) {
-        Option<PersonV1> option = Option.some(person).map(ExternalV1F.personV1);
+        Option<PersonV2> option = Option.some(person).map(ExternalV2F.personV2);
         if (person.getHandle() == null) {
             ResourceHandle handle = client.addPerson(option.some());                       
             person.setHandle(handle);
@@ -98,15 +98,15 @@ public class RESTEmsService {
     }
 
     public synchronized List<Event> getEvents() {
-        EventListV1 either = client.getEvents();        
-        Collection<Event> events = fj.data.List.iterableList(either.getEvent()).map(ExternalV1F.event).toCollection();
+        EventListV2 either = client.getEvents();        
+        Collection<Event> events = fj.data.List.iterableList(either.getEvent()).map(ExternalV2F.event).toCollection();
         return new ArrayList<Event>(events);
     }
 
     public synchronized Event getEvent(ResourceHandle id) {
         String path = getUUID(id.getURI());
         Option<Event> event = client.getEvent(path)
-                .map(ExternalV1F.event);
+                .map(ExternalV2F.event);
 
         if (event.isSome()) {
             return event.some();
@@ -115,7 +115,7 @@ public class RESTEmsService {
     }
 
     public synchronized Event saveEvent(Event event) {
-        Option<EventV1> eventToSave = Option.some(event).map(ExternalV1F.eventV1);
+        Option<EventV2> eventToSave = Option.some(event).map(ExternalV2F.eventV2);
         throw new UnsupportedOperationException("Not implemented yet...");
         /*if (event.getHandle() == null) {
             ResourceHandle handle = client.addEvent(eventToSave.some());
@@ -130,8 +130,8 @@ public class RESTEmsService {
     }
 
     public synchronized List<Session> getSessions(Event event) {
-        SessionListV1 sessions = client.getSessions(event.getDisplayID());
-        Collection<Session> list = fj.data.List.iterableList(sessions.getSession()).map(ExternalV1F.session).toCollection();
+        SessionListV2 sessions = client.getSessions(event.getDisplayID());
+        Collection<Session> list = fj.data.List.iterableList(sessions.getSession()).map(ExternalV2F.session).toCollection();
         return new ArrayList<Session>(list);
     }
 
@@ -147,7 +147,7 @@ public class RESTEmsService {
 
     public synchronized Session getSession(String eventId, String sessionId) {
         Option<Session> option = client.getSession(eventId, sessionId).
-                map(ExternalV1F.session);
+                map(ExternalV2F.session);
         if (option.isSome()) {
             return option.some();
         }
@@ -155,7 +155,7 @@ public class RESTEmsService {
     }
 
     public synchronized Session saveSession(Session session) {
-        Option<SessionV1> option = Option.some(session).map(ExternalV1F.sessionV1);
+        Option<SessionV2> option = Option.some(session).map(ExternalV2F.sessionV2);
         if (option.isSome()) {
             if (session.getHandle() == null) {
                 ResourceHandle handle = client.addSession(option.some());
@@ -165,7 +165,7 @@ public class RESTEmsService {
             else {
                 client.updateSession(option.some());
                 option = client.getSession(getUUID(session.getEventHandle().getURI()), session.getDisplayID());//TODO: EVIL: go away, should be session.getURI()
-                Option<Session> sessionOption = option.map(ExternalV1F.session);
+                Option<Session> sessionOption = option.map(ExternalV2F.session);
                 if (sessionOption.isSome()) {
                     session.sync(sessionOption.some());
                 }

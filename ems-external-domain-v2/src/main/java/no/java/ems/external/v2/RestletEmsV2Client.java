@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.external.v1;
+package no.java.ems.external.v2;
 
 import fj.*;
 
@@ -66,9 +66,9 @@ import java.util.List;
 //TODO: we should get the WADL and analyze that for POST URIS.
 //TODO: Each resource should then add a Link header for discovering how they can be used.
 //TODO: Each resource should also tell the client what can be used with it (the available methods... PUT/POST/DELETE/GET)
-public class RestletEmsV1Client implements EmsV1Client {
+public class RestletEmsV2Client implements EmsV2Client {
 
-    private static final String contextPath = EventV1.class.getPackage().getName();
+    private static final String contextPath = EventV2.class.getPackage().getName();
 
     public final Option<Challenge> challenge;
     public final String baseUri;
@@ -88,11 +88,11 @@ public class RestletEmsV1Client implements EmsV1Client {
     private final Marshaller marshaller;
     public final Unmarshaller unmarshaller;
 
-    public RestletEmsV1Client(final HTTPCache client, final String baseUri) {
+    public RestletEmsV2Client(final HTTPCache client, final String baseUri) {
         this(client, baseUri, Option.<P2<String, String>>none());
     }
 
-    public RestletEmsV1Client(final HTTPCache client, final String baseUri, Option<P2<String, String>> credentials) {
+    public RestletEmsV2Client(final HTTPCache client, final String baseUri, Option<P2<String, String>> credentials) {
         Validate.noNullElements(new Object[]{client, baseUri, credentials});
         this.client = client;
         this.baseUri = baseUri;
@@ -128,47 +128,47 @@ public class RestletEmsV1Client implements EmsV1Client {
     }
 
     // -----------------------------------------------------------------------
-    // EmsV1Client Implementation
+    // EmsV2Client Implementation
     // -----------------------------------------------------------------------
 
 
-    public Option<EventV1> getEvent(String eventId) {
+    public Option<EventV2> getEvent(String eventId) {
         return defaultGetRequest(eventUnmarshaller, GET, getEventUrl, eventId);
     }
 
-    public ResourceHandle addEvent(EventV1 event) {
+    public ResourceHandle addEvent(EventV2 event) {
         return request(doCachedRequest,
-            compose(curry(setBody(EventV1.class, "event"), event, MIMEType.valueOf(MIMETypes.EVENT_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(EventV2.class, "event"), event, MIMEType.valueOf(MIMETypes.EVENT_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, getEventUrl);
     }
 
-    public EventListV1 getEvents() {
+    public EventListV2 getEvents() {
         return defaultGetListRequest(eventListUnmarshaller, GET, getEventsUrl);
     }
 
-    public SessionListV1 getSessions(String eventId) {
+    public SessionListV2 getSessions(String eventId) {
         return defaultGetListRequest(sessionListUnmarshaller, GET, eventsSessionsUrl, eventId);
     }
 
-    public Option<SessionV1> getSession(String eventId, String sessionId) {
+    public Option<SessionV2> getSession(String eventId, String sessionId) {
         return defaultGetRequest(sessionUnmarshaller, GET, getSessionUrl, eventId, sessionId);
     }
 
-    public SessionListV1 findSessionsByDate(String eventId, LocalDate date) {
+    public SessionListV2 findSessionsByDate(String eventId, LocalDate date) {
         return defaultGetListRequest(sessionListUnmarshaller, GET, findSessionsByDateUrl, eventId, dateFormatter.print(date));
     }
 
-    public SessionListV1 findSessionsByTitle(String eventId, String title) {
+    public SessionListV2 findSessionsByTitle(String eventId, String title) {
         return defaultGetListRequest(sessionListUnmarshaller, GET, findSessionsByTitleUrl, eventId, encode(title));
     }
 
-    public SessionListV1 getSessionsByTitle(String eventId, String title) {
+    public SessionListV2 getSessionsByTitle(String eventId, String title) {
         return defaultGetListRequest(sessionListUnmarshaller, GET, getSessionUrl, eventId, title);
     }
 
-    public SessionListV1 searchForSessions(String eventId, String query) {
+    public SessionListV2 searchForSessions(String eventId, String query) {
         List<Parameter> parameters = new ArrayList<Parameter>();
         parameters.add(new Parameter("q", query));
 
@@ -179,49 +179,49 @@ public class RestletEmsV1Client implements EmsV1Client {
             GET, searchSessionsUrl, eventId);
     }
 
-    public ResourceHandle addSession(SessionV1 session) {
+    public ResourceHandle addSession(SessionV2 session) {
         return request(doCachedRequest,
-            compose(curry(setBody(SessionV1.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)),defaultProcessRequestForAdd),
+            compose(curry(setBody(SessionV2.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, eventsSessionsUrl, session.getEventUuid());
     }
 
-    public Unit updateSession(SessionV1 session) {
+    public Unit updateSession(SessionV2 session) {
         return request(doCachedRequest,
-            compose(curry(setBody(SessionV1.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(SessionV2.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForPUT,
             responseForPut,
             PUT, getSessionUrl, session.getEventUuid(), session.getUuid());
     }
 
-    public ResourceHandle addRoom(String eventId, RoomV1 room) {
+    public ResourceHandle addRoom(String eventId, RoomV2 room) {
         return request(doCachedRequest,
-            compose(curry(setBody(RoomV1.class, "room"), room, MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE)),defaultProcessRequestForAdd),
+            compose(curry(setBody(RoomV2.class, "room"), room, MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE)),defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, eventsRoomsUrl, eventId);
     }
 
-    public PersonListV1 getPeople() {
+    public PersonListV2 getPeople() {
         return defaultGetListRequest(personListUnmarshaller, GET, getPeopleUrl);
     }
 
-    public Option<PersonV1> getPerson(String personId) {
+    public Option<PersonV2> getPerson(String personId) {
         return defaultGetRequest(personUnmarshaller, GET, getPersonUrl, personId);
     }
 
-    public ResourceHandle addPerson(PersonV1 person) {
+    public ResourceHandle addPerson(PersonV2 person) {
         return request(doCachedRequest,
-            compose(curry(setBody(PersonV1.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(PersonV2.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseToUri,
             POST, getPeopleUrl);
     }
 
-    public Unit updatePerson(PersonV1 person) {
+    public Unit updatePerson(PersonV2 person) {
         return request(doCachedRequest,
-            compose(curry(setBody(PersonV1.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(PersonV2.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
             defaultProcessResponseForAdd,
             responseForPut,
             PUT, getPersonUrl, person.getUuid());
@@ -231,12 +231,12 @@ public class RestletEmsV1Client implements EmsV1Client {
     // Marshallers and unmarshallers
     // -----------------------------------------------------------------------
 
-    public final F<HTTPResponse, Option<EventV1>> eventUnmarshaller = unmarshallToOption(EventV1.class);
-    public final F<HTTPResponse, EventListV1> eventListUnmarshaller = unmarshall(EventListV1.class);
-    public final F<HTTPResponse, Option<SessionV1>> sessionUnmarshaller = unmarshallToOption(SessionV1.class);
-    public final F<HTTPResponse, SessionListV1> sessionListUnmarshaller = unmarshall(SessionListV1.class);
-    public final F<HTTPResponse, Option<PersonV1>> personUnmarshaller = unmarshallToOption(PersonV1.class);
-    public final F<HTTPResponse, PersonListV1> personListUnmarshaller = unmarshall(PersonListV1.class);
+    public final F<HTTPResponse, Option<EventV2>> eventUnmarshaller = unmarshallToOption(EventV2.class);
+    public final F<HTTPResponse, EventListV2> eventListUnmarshaller = unmarshall(EventListV2.class);
+    public final F<HTTPResponse, Option<SessionV2>> sessionUnmarshaller = unmarshallToOption(SessionV2.class);
+    public final F<HTTPResponse, SessionListV2> sessionListUnmarshaller = unmarshall(SessionListV2.class);
+    public final F<HTTPResponse, Option<PersonV2>> personUnmarshaller = unmarshallToOption(PersonV2.class);
+    public final F<HTTPResponse, PersonListV2> personListUnmarshaller = unmarshall(PersonListV2.class);
 
     // -----------------------------------------------------------------------
     // Misc strategies used for with request()

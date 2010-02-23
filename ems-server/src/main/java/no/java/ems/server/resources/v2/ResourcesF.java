@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import fj.*;
 import fj.data.List;

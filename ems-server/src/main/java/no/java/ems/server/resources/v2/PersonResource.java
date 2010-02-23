@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import fj.F;
 import fj.F2;
@@ -21,12 +21,13 @@ import static fj.Function.curry;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.some;
-import no.java.ems.external.v1.*;
+import no.java.ems.external.v2.*;
 import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.*;
-import no.java.ems.server.f.ExternalV1F;
-import static no.java.ems.server.f.ExternalV1F.personV1;
-import static no.java.ems.server.resources.v1.ResourcesF.getEntity;
+import no.java.ems.server.f.ExternalV2F;
+import static no.java.ems.server.f.ExternalV2F.personV2;
+import static no.java.ems.server.resources.v2.ResourcesF.getEntity;
+
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,10 +47,10 @@ import java.net.URI;
 @Consumes(MIMETypes.PERSON_MIME_TYPE)
 public class PersonResource {
 
-    F2<PersonListV1, PersonV1, PersonListV1> aggregator = new F2<PersonListV1, PersonV1, PersonListV1>() {
-        public PersonListV1 f(PersonListV1 listV1, PersonV1 personV1) {
-            listV1.getPerson().add(personV1);
-            return listV1;
+    F2<PersonListV2, PersonV2, PersonListV2> aggregator = new F2<PersonListV2, PersonV2, PersonListV2>() {
+        public PersonListV2 f(PersonListV2 listV2, PersonV2 personV2) {
+            listV2.getPerson().add(personV2);
+            return listV2;
         }
     };
     private URIBuilder uriBuilder;
@@ -76,11 +77,11 @@ public class PersonResource {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         List<Person> people = emsServer.getPeople();
         return some(people.
-                map(personV1).
-                map(personURIsV1).
-                foldLeft(aggregator, new PersonListV1())).
-                map(EmsV1F.personListJaxbElement).
-                map(curry(ResourcesF.<PersonListV1, Person>multipleOkResponseBuilder(), people)).
+                map(personV2).
+                map(personURIsV2).
+                foldLeft(aggregator, new PersonListV2())).
+                map(EmsV2F.personListJaxbElement).
+                map(curry(ResourcesF.<PersonListV2, Person>multipleOkResponseBuilder(), people)).
                 orSome(ResourcesF.notFound).build();
     }
 
@@ -91,18 +92,18 @@ public class PersonResource {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         final Option<Person> personOption = emsServer.getPerson(personId);
         return personOption.
-                map(personV1).
-                map(personURIsV1).
-                map(EmsV1F.personJaxbElement).
-                map(curry(ResourcesF.<PersonV1>singleResponseBuilderWithTagChecking(), personOption, request)).
+                map(personV2).
+                map(personURIsV2).
+                map(EmsV2F.personJaxbElement).
+                map(curry(ResourcesF.<PersonV2>singleResponseBuilderWithTagChecking(), personOption, request)).
                 map(curry(photoAlternateURI, personId)).
                 orSome(ResourcesF.notFound).build();
     }
 
     @POST
-    public Response addPerson(@Context UriInfo info, PersonV1 entity) {
+    public Response addPerson(@Context UriInfo info, PersonV2 entity) {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
-        Option<Person> personOption = some(entity).map(ExternalV1F.person);
+        Option<Person> personOption = some(entity).map(ExternalV2F.person);
         if (personOption.isSome()) {
             Person person = personOption.some();
             emsServer.savePerson(person);
@@ -143,13 +144,13 @@ public class PersonResource {
             @Context UriInfo info,
             @PathParam("personId") String personId,
             @Context HttpHeaders headers,
-            PersonV1 entity) {
+            PersonV2 entity) {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Option<Person> option = emsServer.getPerson(personId);
         if (option.isSome()) {
             Person person = option.some();
             if (ResourcesF.matches(person, headers)) {
-                Option<Person> personOption = some(entity).map(ExternalV1F.person);
+                Option<Person> personOption = some(entity).map(ExternalV2F.person);
                 person.sync(personOption.some());
                 emsServer.savePerson(person);
                 return Response.ok().build();
@@ -164,14 +165,14 @@ public class PersonResource {
     }
 
 
-    F<PersonV1, PersonV1> personURIsV1 = new F<PersonV1, PersonV1>() {
-        public PersonV1 f(PersonV1 personV1) {
-            personV1.setUri(uriBuilder.people().person(personV1.getUuid()).toString());
-            URIBinaryV1 photo = personV1.getPhoto();
+    F<PersonV2, PersonV2> personURIsV2 = new F<PersonV2, PersonV2>() {
+        public PersonV2 f(PersonV2 personV2) {
+            personV2.setUri(uriBuilder.people().person(personV2.getUuid()).toString());
+            URIBinaryV2 photo = personV2.getPhoto();
             if (photo != null) {
                 photo.setUri(uriBuilder.binaries().binary(photo.getUri()).toString());
             }            
-            return personV1;
+            return personV2;
         }
     };
 

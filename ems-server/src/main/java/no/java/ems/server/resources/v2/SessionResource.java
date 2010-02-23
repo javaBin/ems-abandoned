@@ -13,13 +13,13 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.*;
-import static no.java.ems.server.f.ExternalV1F.sessionV1;
-import no.java.ems.server.f.ExternalV1F;
-import no.java.ems.external.v1.*;
+import static no.java.ems.server.f.ExternalV2F.sessionV2;
+import no.java.ems.server.f.ExternalV2F;
+import no.java.ems.external.v2.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -53,13 +53,13 @@ public class SessionResource {
     public Response getSessions(@PathParam("eventId") String eventId) {
         List<Session> sessions = emsServer.getSessions(eventId);
         return some(sessions.
-                map(sessionV1).
-                map(sessionEventIdV1).
-                map(sessionPersonIdV1).
-                map(curry(sessionIdV1, eventId)).
-                foldLeft(sessionAggregator, new SessionListV1())).
-                map(EmsV1F.sessionListJaxbElement).
-                map(curry(ResourcesF.<SessionListV1, Session>multipleOkResponseBuilder(), sessions)).
+                map(sessionV2).
+                map(sessionEventIdV2).
+                map(sessionPersonIdV2).
+                map(curry(sessionIdV2, eventId)).
+                foldLeft(sessionAggregator, new SessionListV2())).
+                map(EmsV2F.sessionListJaxbElement).
+                map(curry(ResourcesF.<SessionListV2, Session>multipleOkResponseBuilder(), sessions)).
                 orSome(ResourcesF.notFound).build();
     }
     @GET
@@ -79,13 +79,13 @@ public class SessionResource {
     public Response getSessionsByDate(@PathParam("eventId") String eventId, @PathParam("year") int year, @PathParam("month") int month, @PathParam("day") int day) {
         List<Session> sessions = emsServer.getSessionsByDate(eventId, new LocalDate(year, month, day));
         return some(sessions.
-                map(sessionV1).
-                map(sessionEventIdV1).
-                map(sessionPersonIdV1).
-                map(curry(sessionIdV1, eventId)).
-                foldLeft(sessionAggregator, new SessionListV1())).
-                map(EmsV1F.sessionListJaxbElement).
-                map(curry(ResourcesF.<SessionListV1, Session>multipleOkResponseBuilder(), sessions)).
+                map(sessionV2).
+                map(sessionEventIdV2).
+                map(sessionPersonIdV2).
+                map(curry(sessionIdV2, eventId)).
+                foldLeft(sessionAggregator, new SessionListV2())).
+                map(EmsV2F.sessionListJaxbElement).
+                map(curry(ResourcesF.<SessionListV2, Session>multipleOkResponseBuilder(), sessions)).
                 orSome(ResourcesF.notFound).build();
 
     }
@@ -96,13 +96,13 @@ public class SessionResource {
     public Response getSessionsByTitle(@PathParam("eventId") String eventId, @PathParam("title") String title) {
         List<Session> sessions = emsServer.getSessionsByTitle(eventId, title);
         return some(sessions.
-                map(sessionV1).
-                map(sessionEventIdV1).
-                map(sessionPersonIdV1).
-                map(curry(sessionIdV1, eventId)).
-                foldLeft(sessionAggregator, new SessionListV1())).
-                map(EmsV1F.sessionListJaxbElement).
-                map(curry(ResourcesF.<SessionListV1, Session>multipleOkResponseBuilder(), sessions)).
+                map(sessionV2).
+                map(sessionEventIdV2).
+                map(sessionPersonIdV2).
+                map(curry(sessionIdV2, eventId)).
+                foldLeft(sessionAggregator, new SessionListV2())).
+                map(EmsV2F.sessionListJaxbElement).
+                map(curry(ResourcesF.<SessionListV2, Session>multipleOkResponseBuilder(), sessions)).
                 orSome(ResourcesF.notFound).build();
     }
 
@@ -115,22 +115,22 @@ public class SessionResource {
 
         Option<Session> sessionOption = emsServer.getSession(eventId, sessionId);        
         return sessionOption.
-                map(sessionV1).
-                map(sessionEventIdV1).
-                map(sessionPersonIdV1).
-                map(curry(sessionIdV1, eventId)).
-                map(EmsV1F.sessionJaxbElement).
-                map(curry(ResourcesF.<SessionV1>singleResponseBuilderWithTagChecking(), sessionOption, request)).
+                map(sessionV2).
+                map(sessionEventIdV2).
+                map(sessionPersonIdV2).
+                map(curry(sessionIdV2, eventId)).
+                map(EmsV2F.sessionJaxbElement).
+                map(curry(ResourcesF.<SessionV2>singleResponseBuilderWithTagChecking(), sessionOption, request)).
                 orSome(ResourcesF.notFound).build();
     }
 
     @POST
     @Consumes(MIMETypes.SESSION_MIME_TYPE)
     @Produces(MIMETypes.SESSION_MIME_TYPE)
-    public Response addSession(@PathParam("eventId") String id, SessionV1 entity) {
+    public Response addSession(@PathParam("eventId") String id, SessionV2 entity) {
         Session input = Option.some(entity).
                 map(personURItoId).
-                map(ExternalV1F.session).some();
+                map(ExternalV2F.session).some();
 
         emsServer.saveSession(id, input);
 
@@ -171,7 +171,7 @@ public class SessionResource {
             @PathParam("eventId") String eventId,
             @PathParam("sessionId") String sessionId,
             @Context HttpHeaders headers,
-            SessionV1 entity) {
+            SessionV2 entity) {
         Response.ResponseBuilder response;
         Option<Session> sessionOption = emsServer.getSession(eventId, sessionId);
         if (sessionOption.isSome()) {
@@ -179,7 +179,7 @@ public class SessionResource {
             if (ResourcesF.matches(original, headers)) {
                 Session input = Option.some(entity).
                         map(personURItoId).
-                        map(ExternalV1F.session).some();
+                        map(ExternalV2F.session).some();
                 original.sync(input);
                 emsServer.saveSession(eventId, original);
                 response = Response.ok();
@@ -232,38 +232,38 @@ public class SessionResource {
         return Response.created(uriBuilder.binaries().binary(binary.getId())).build();
     }
 
-    private F2<SessionListV1, SessionV1, SessionListV1> sessionAggregator = new F2<SessionListV1, SessionV1, SessionListV1>() {
-        public SessionListV1 f(SessionListV1 sessionListV1, SessionV1 sessionV1) {
-            sessionListV1.getSession().add(sessionV1);
-            return sessionListV1;
+    private F2<SessionListV2, SessionV2, SessionListV2> sessionAggregator = new F2<SessionListV2, SessionV2, SessionListV2>() {
+        public SessionListV2 f(SessionListV2 sessionListV2, SessionV2 sessionV2) {
+            sessionListV2.getSession().add(sessionV2);
+            return sessionListV2;
         }
     };
 
-    private F2<String, SessionV1, SessionV1> sessionIdV1 = new F2<String, SessionV1, SessionV1>() {
-        public SessionV1 f(String eventId, SessionV1 sessionV1) {
-            URI uri = uriBuilder.forObject(eventId, sessionV1.getUuid(), ObjectType.session);
-            sessionV1.setEventUuid(eventId);
-            sessionV1.setUri(uri.toString());
-            for (URIBinaryV1 binaryV1 : sessionV1.getAttachments().getBinary()) {
-                binaryV1.setUri(uriBuilder.binaries().binary(binaryV1.getUri()).toString());
+    private F2<String, SessionV2, SessionV2> sessionIdV2 = new F2<String, SessionV2, SessionV2>() {
+        public SessionV2 f(String eventId, SessionV2 sessionV2) {
+            URI uri = uriBuilder.forObject(eventId, sessionV2.getUuid(), ObjectType.session);
+            sessionV2.setEventUuid(eventId);
+            sessionV2.setUri(uri.toString());
+            for (URIBinaryV2 binaryV2 : sessionV2.getAttachments().getBinary()) {
+                binaryV2.setUri(uriBuilder.binaries().binary(binaryV2.getUri()).toString());
             }
-            return sessionV1;
+            return sessionV2;
         }
     };
 
-    private F<SessionV1, SessionV1> sessionEventIdV1 = new F<SessionV1, SessionV1>() {
-        public SessionV1 f(SessionV1 session) {
+    private F<SessionV2, SessionV2> sessionEventIdV2 = new F<SessionV2, SessionV2>() {
+        public SessionV2 f(SessionV2 session) {
             session.setEventUri(uriBuilder.events().eventUri(session.getEventUuid()).toString());
             return session;
         }
     };
 
-    private F<SessionV1, SessionV1> sessionPersonIdV1 = new F<SessionV1, SessionV1>() {
-        public SessionV1 f(SessionV1 session) {
+    private F<SessionV2, SessionV2> sessionPersonIdV2 = new F<SessionV2, SessionV2>() {
+        public SessionV2 f(SessionV2 session) {
             if (session.getSpeakers() != null) {
-                for (SpeakerV1 speakerV1 : session.getSpeakers().getSpeaker()) {
-                    speakerV1.setPersonUri(uriBuilder.forObject(null, speakerV1.getPersonUuid(), ObjectType.person).toString());
-                    URIBinaryV1 photo = speakerV1.getPhoto();
+                for (SpeakerV2 speakerV2 : session.getSpeakers().getSpeaker()) {
+                    speakerV2.setPersonUri(uriBuilder.forObject(null, speakerV2.getPersonUuid(), ObjectType.person).toString());
+                    URIBinaryV2 photo = speakerV2.getPhoto();
                     if (photo != null) {
                         photo.setUri(uriBuilder.binaries().binary(photo.getUri()).toString());
                     }
@@ -273,10 +273,10 @@ public class SessionResource {
         }
     };
 
-    private F<SessionV1, SessionV1> personURItoId = new F<SessionV1, SessionV1>() {
-        public SessionV1 f(SessionV1 session) {
+    private F<SessionV2, SessionV2> personURItoId = new F<SessionV2, SessionV2>() {
+        public SessionV2 f(SessionV2 session) {
             if (session.getSpeakers() != null) {
-                for (SpeakerV1 speaker : session.getSpeakers().getSpeaker()) {
+                for (SpeakerV2 speaker : session.getSpeakers().getSpeaker()) {
                     URI personURI = uriBuilder.people().people();
                     URI uri = personURI.relativize(URI.create(speaker.getPersonUri()));
                     speaker.setPersonUuid(uri.toString());

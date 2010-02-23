@@ -15,7 +15,7 @@
 
 package no.java.ems.cli;
 
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.Options;
 
 import java.util.List;
@@ -50,9 +50,9 @@ public class Search extends AbstractCli {
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
         String query = getCommandLine().getOptionValue(OPTION_QUERY);
 
-        List<SessionV1> sessions = getEms().searchForSessions(eventId, query).getSession();
+        List<SessionV2> sessions = getEms().searchForSessions(eventId, query).getSession();
 
-        for (SessionV1 session : sessions) {
+        for (SessionV2 session : sessions) {
             System.out.println(session);
         }
     }

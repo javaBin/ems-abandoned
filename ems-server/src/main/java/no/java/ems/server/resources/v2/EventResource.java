@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.server.resources.v1;
+package no.java.ems.server.resources.v2;
 
 import fj.F2;
 import fj.F;
@@ -21,11 +21,12 @@ import static fj.Function.curry;
 import fj.data.Option;
 import fj.data.List;
 import static fj.data.Option.some;
-import no.java.ems.external.v1.*;
+import no.java.ems.external.v2.*;
 import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.*;
-import no.java.ems.server.f.ExternalV1F;
-import static no.java.ems.server.f.ExternalV1F.eventV1;
+import no.java.ems.server.f.ExternalV2F;
+import static no.java.ems.server.f.ExternalV2F.eventV2;
+
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,12 +62,12 @@ public class EventResource {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         List<Event> list = emsServer.getEvents();
         return some(list.
-                map(eventV1).
-                map(eventIdV1).
-                map(eventRoomURLV1).
-                foldLeft(aggregator, new EventListV1())).
-                map(EmsV1F.eventListJaxbElement).
-                map(curry(ResourcesF.<EventListV1, Event>multipleOkResponseBuilder(), list)).
+                map(eventV2).
+                map(eventIdV2).
+                map(eventRoomURLV2).
+                foldLeft(aggregator, new EventListV2())).
+                map(EmsV2F.eventListJaxbElement).
+                map(curry(ResourcesF.<EventListV2, Event>multipleOkResponseBuilder(), list)).
                 orSome(ResourcesF.notFound).build();
     }
 
@@ -76,20 +77,20 @@ public class EventResource {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Option<Event> event = emsServer.getEventOption(id);
         Response.ResponseBuilder builder = event.
-                map(eventV1).
-                map(eventIdV1).
-                map(eventRoomURLV1).
-                map(EmsV1F.eventJaxbElement).
-                map(curry(ResourcesF.<EventV1>singleResponseBuilderWithTagChecking(), event, request)).
+                map(eventV2).
+                map(eventIdV2).
+                map(eventRoomURLV2).
+                map(EmsV2F.eventJaxbElement).
+                map(curry(ResourcesF.<EventV2>singleResponseBuilderWithTagChecking(), event, request)).
                 some();
         builder = builder.header("Link", String.format("<%s>;rel=sessions", uriBuilder.sessions().sessions(id)));
         return builder.build();
     }
 
     @POST
-    public Response addEvent(@Context UriInfo info, EventV1 entity) {
+    public Response addEvent(@Context UriInfo info, EventV2 entity) {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
-        Event input = ExternalV1F.event.f(entity);
+        Event input = ExternalV2F.event.f(entity);
         emsServer.saveEvent(input);
         return Response.created(uriBuilder.forObject(input)).build();
     }
@@ -100,7 +101,7 @@ public class EventResource {
             @Context UriInfo info,
             @PathParam("eventId") String id,
             @Context HttpHeaders headers,
-            EventV1 entity) {
+            EventV2 entity) {
         uriBuilder = new URIBuilder(info.getBaseUriBuilder());
         Response.ResponseBuilder response;
         Option<Event> eventOption = emsServer.getEventOption(id);
@@ -111,7 +112,7 @@ public class EventResource {
             }
             Event input = some(entity).
                     map(eventRoomID).
-                    map(ExternalV1F.event).some(); 
+                    map(ExternalV2F.event).some();
 
             original.sync(input);
             emsServer.saveEvent(original);
@@ -134,41 +135,41 @@ public class EventResource {
     // -----------------------------------------------------------------------
     // Helpers
 
-    F2<EventListV1, EventV1, EventListV1> aggregator = new F2<EventListV1, EventV1, EventListV1>() {
-        public EventListV1 f(EventListV1 eventListV1, EventV1 eventV1) {
-            eventListV1.getEvent().add(eventV1);
-            return eventListV1;
+    F2<EventListV2, EventV2, EventListV2> aggregator = new F2<EventListV2, EventV2, EventListV2>() {
+        public EventListV2 f(EventListV2 eventListV2, EventV2 eventV2) {
+            eventListV2.getEvent().add(eventV2);
+            return eventListV2;
         }
     };
 
-    private F<EventV1, EventV1> eventIdV1 = new F<EventV1, EventV1>() {
-        public EventV1 f(EventV1 eventV1) {
-            eventV1.setUri(uriBuilder.events().eventUri(eventV1.getUuid()).toString());
-            return eventV1;
+    private F<EventV2, EventV2> eventIdV2 = new F<EventV2, EventV2>() {
+        public EventV2 f(EventV2 eventV2) {
+            eventV2.setUri(uriBuilder.events().eventUri(eventV2.getUuid()).toString());
+            return eventV2;
         }
     };
   
-    private F<EventV1, EventV1> eventRoomURLV1 = new F<EventV1, EventV1>() {
-        public EventV1 f(EventV1 eventV1) {
-            if (eventV1.getRooms() != null) {
-                for (RoomV1 roomV1 : eventV1.getRooms().getRoom()) {
-                    roomV1.setUri(uriBuilder.rooms().room(roomV1.getUuid()).toString());
+    private F<EventV2, EventV2> eventRoomURLV2 = new F<EventV2, EventV2>() {
+        public EventV2 f(EventV2 eventV2) {
+            if (eventV2.getRooms() != null) {
+                for (RoomV2 roomV2 : eventV2.getRooms().getRoom()) {
+                    roomV2.setUri(uriBuilder.rooms().room(roomV2.getUuid()).toString());
                 }
             }
-            return eventV1;
+            return eventV2;
         }
     };
 
-    private F<EventV1 , EventV1> eventRoomID = new F<EventV1, EventV1>() {
-        public EventV1 f(EventV1 eventV1) {
-            if (eventV1.getRooms() != null) {
-                for (RoomV1 roomV1 : eventV1.getRooms().getRoom()) {
+    private F<EventV2 , EventV2> eventRoomID = new F<EventV2, EventV2>() {
+        public EventV2 f(EventV2 eventV2) {
+            if (eventV2.getRooms() != null) {
+                for (RoomV2 roomV2 : eventV2.getRooms().getRoom()) {
                     URI roomURI = uriBuilder.rooms().rooms();
-                    URI uri = roomURI.relativize(URI.create(roomV1.getUri()));
-                    roomV1.setUuid(uri.toString());
+                    URI uri = roomURI.relativize(URI.create(roomV2.getUri()));
+                    roomV2.setUuid(uri.toString());
                 }
             }
-            return eventV1;
+            return eventV2;
         }
     };
 }

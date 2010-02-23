@@ -15,9 +15,9 @@
 
 package no.java.ems.server.it;
 
-import no.java.ems.external.v1.EmsV1Client;
-import no.java.ems.external.v1.EventListV1;
-import no.java.ems.external.v1.RestletEmsV1Client;
+import no.java.ems.external.v2.EmsV2Client;
+import no.java.ems.external.v2.EventListV2;
+import no.java.ems.external.v2.RestletEmsV2Client;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.junit.Test;
 
@@ -28,15 +28,15 @@ import static org.junit.Assert.assertTrue;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class ExternalV1Test extends AbstractIntegrationTest {
+public class ExternalV2Test extends AbstractIntegrationTest {
 
     @Test
     public void testGetEvents() throws Exception {
         HTTPCache cache = new InMemoryHttpCache();
 
-        EmsV1Client client = new RestletEmsV1Client(cache, IncogitoIntegrationTest.baseUri);
+        EmsV2Client client = new RestletEmsV2Client(cache, IncogitoIntegrationTest.baseUri);
 
-        EventListV1 events = client.getEvents();
+        EventListV2 events = client.getEvents();
 
         assertNotNull(events);
         assertTrue(events.getEvent().size() > 0);

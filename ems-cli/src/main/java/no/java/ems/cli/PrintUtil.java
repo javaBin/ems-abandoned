@@ -15,8 +15,8 @@
 
 package no.java.ems.cli;
 
-import no.java.ems.external.v1.EmsV1F;
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.EmsV2F;
+import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.CommandLine;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -26,10 +26,10 @@ import org.joda.time.format.DateTimeFormatter;
  * @author Trygve Laugstol
  */
 public class PrintUtil {
-    public static void print(CommandLine commandLine, SessionV1 session) {
+    public static void print(CommandLine commandLine, SessionV2 session) {
         boolean parseable = commandLine.hasOption(AbstractCli.OPTION_PARSABLE);
 
-        LocalDateTime start = EmsV1F.toLocalDateTime.f(session.getTimeslot().getStart());
+        LocalDateTime start = EmsV2F.toLocalDateTime.f(session.getTimeslot().getStart());
 
         if(parseable) {
             System.err.println(session.getUuid() + ":" + formatDate(start) + ":" + session.getTitle());

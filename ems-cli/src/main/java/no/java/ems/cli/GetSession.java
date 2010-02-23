@@ -16,7 +16,7 @@
 package no.java.ems.cli;
 
 import fj.data.Option;
-import no.java.ems.external.v1.SessionV1;
+import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.Options;
 
 /**
@@ -42,7 +42,7 @@ public class GetSession extends AbstractCli {
 
     public void work() throws Exception {
         String sessionId = getCommandLine().getOptionValue(OPTION_SESSION_ID);
-        Option<SessionV1> option = getEms().getSession(getDefaultEventId(), sessionId);
+        Option<SessionV2> option = getEms().getSession(getDefaultEventId(), sessionId);
 
         if (option.isNone()) {
             System.err.println("No such session.");

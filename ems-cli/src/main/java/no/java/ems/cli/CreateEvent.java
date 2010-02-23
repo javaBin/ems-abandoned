@@ -16,7 +16,7 @@
 package no.java.ems.cli;
 
 import org.apache.commons.cli.Options;
-import no.java.ems.external.v1.EventV1;
+import no.java.ems.external.v2.EventV2;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -40,7 +40,7 @@ public class CreateEvent extends AbstractCli {
     }
 
     protected void work() throws Exception {
-        EventV1 event = new EventV1();
+        EventV2 event = new EventV2();
         event.setName(getCommandLine().getOptionValue(OPTION_EVENT_NAME));
         getEms().addEvent(event);
         System.err.println("event.getId() = " + event.getUuid());

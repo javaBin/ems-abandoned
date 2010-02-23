@@ -13,7 +13,7 @@
  *   limitations under the License.
  */
 
-package no.java.ems.external.v1;
+package no.java.ems.external.v2;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
