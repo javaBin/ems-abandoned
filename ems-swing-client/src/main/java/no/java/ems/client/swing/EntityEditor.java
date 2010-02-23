@@ -25,6 +25,8 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
@@ -44,6 +46,20 @@ public abstract class EntityEditor<T extends AbstractEntity> extends AbstractEdi
         Validate.notNull(titleProperty, "Title property may not be null");
         this.entity = entity;
         this.titleProperty = titleProperty;
+        if (entity.getHandle() != null) {
+            setId(entity.getHandle().getURI());
+        }
+        else {
+            entity.addPropertyChangeListener("handle", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getNewValue() != null) {
+                        setId(entity.getHandle().getURI());
+                    }
+                    entity.removePropertyChangeListener(this);
+                }
+            });
+        }
         addComponentListener(
                 new ComponentAdapter() {
                     @Override
