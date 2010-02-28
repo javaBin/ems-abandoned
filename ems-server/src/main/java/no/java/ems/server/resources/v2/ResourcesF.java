@@ -89,8 +89,12 @@ public class ResourcesF {
     static boolean matches(AbstractEntity original, HttpHeaders headers) {
         java.util.List<String> IfMatch = headers.getRequestHeader("If-Match");
         if (IfMatch != null && !IfMatch.isEmpty()) {
-            EntityTag match = EntityTag.valueOf(IfMatch.get(0));
-            if (new EntityTag(Integer.toHexString(original.getRevision())).equals(match) || EntityTag.valueOf("*").equals(match)) {
+            String value = IfMatch.get(0);
+            if ("*".equals(value)) {
+                return true;
+            }
+            EntityTag match = EntityTag.valueOf(value);
+            if (new EntityTag(Integer.toHexString(original.getRevision())).equals(match)) {
                 return true;
             }
         }

@@ -189,7 +189,7 @@ public class RestletEmsV2Client implements EmsV2Client {
 
     public Unit updateSession(SessionV2 session) {
         return request(doCachedRequest,
-            compose(curry(setBody(SessionV2.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(SessionV2.class, "session"), session, MIMEType.valueOf(MIMETypes.SESSION_MIME_TYPE)), defaultProcessRequestForUpdate),
             defaultProcessResponseForPUT,
             responseForPut,
             PUT, getSessionUrl, session.getEventUuid(), session.getUuid());
@@ -221,7 +221,7 @@ public class RestletEmsV2Client implements EmsV2Client {
 
     public Unit updatePerson(PersonV2 person) {
         return request(doCachedRequest,
-            compose(curry(setBody(PersonV2.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForAdd),
+            compose(curry(setBody(PersonV2.class, "person"), person, MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE)), defaultProcessRequestForUpdate),
             defaultProcessResponseForAdd,
             responseForPut,
             PUT, getPersonUrl, person.getUuid());
@@ -253,6 +253,12 @@ public class RestletEmsV2Client implements EmsV2Client {
         public HTTPResponse f(HTTPResponse request) {
             // TODO: assert 201 CREATED
             return request;
+        }
+    };
+
+    private F<HTTPRequest, HTTPRequest> defaultProcessRequestForUpdate = new F<HTTPRequest, HTTPRequest>() {
+        public HTTPRequest f(HTTPRequest request) {
+            return request.conditionals(new Conditionals().addIfMatch(Tag.ALL));
         }
     };
 
