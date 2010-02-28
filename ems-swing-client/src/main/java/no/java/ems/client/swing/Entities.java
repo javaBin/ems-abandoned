@@ -33,6 +33,7 @@ import java.util.*;
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
  */
+//TODO: GET RID OF THIS!
 public class Entities extends HashSet<AbstractEntity> {
 
     private static final Entities INSTANCE = new Entities();
