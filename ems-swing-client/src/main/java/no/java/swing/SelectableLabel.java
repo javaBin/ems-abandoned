@@ -16,6 +16,7 @@
 package no.java.swing;
 
 import com.jgoodies.forms.factories.Borders;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -34,10 +35,14 @@ public class SelectableLabel extends JLabel {
     private final JTextComponent textComponent;
 
     public SelectableLabel() {
-        this(false);
+        this("", false);
     }
-    
+
     public SelectableLabel(boolean multiline) {
+        this("", multiline);
+    }
+
+    public SelectableLabel(String text, boolean multiline) {
         Border border = UIManager.getBorder("Label.border");
         setBorder(border != null ? border : Borders.EMPTY_BORDER);
         setLayout(new BorderLayout());
@@ -68,6 +73,9 @@ public class SelectableLabel extends JLabel {
         textComponent.setDropTarget(null);
         textComponent.setBorder(Borders.EMPTY_BORDER);
         add(textComponent);
+        if (!StringUtils.isBlank(text)) {
+            setText(text);
+        }
     }
 
     @Override

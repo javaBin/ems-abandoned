@@ -69,7 +69,7 @@ public class RESTfulEmsV2Client implements EmsV2Client2 {
     /**
      * Login. Get the endpoint and populate the endpioint map.
      *
-     * @param endpoint the uri of the "1" webservice, e.g http://localhost:3000/ems/1
+     * @param endpoint the uri of the "2" webservice, e.g http://localhost:3000/ems/2
      */
     public void login(URI endpoint) {
         Map<String, EndpointParser.Endpoint> endpoints = new EndpointParser(client).parse(endpoint);
