@@ -4,6 +4,8 @@ import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import no.java.ems.domain.search.ObjectType;
+import no.java.swing.DefaultPanel;
 import no.java.swing.InitSequence;
 import no.java.swing.SwingHelper;
 import org.apache.commons.lang.SystemUtils;
@@ -15,11 +17,11 @@ import javax.swing.*;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: $
  */
-public class SearchField implements InitSequence {
+public class SearchField extends DefaultPanel {
     private JButton searchButton;
     private JTextField searchField;
+    private ObjectType type = ObjectType.session;
     private final Action searchAction;
-    private JPanel root;
 
     SearchField(Action searchAction) {
         this.searchAction = searchAction;
@@ -37,7 +39,6 @@ public class SearchField implements InitSequence {
 
     @Override
     public void initComponents() {
-        root = new JPanel();
         searchButton = new JXButton(searchAction);
         decorateButton(searchButton);
         searchField = new JTextField(40);
@@ -54,25 +55,14 @@ public class SearchField implements InitSequence {
 
     @Override
     public void initLayout() {
-        ButtonBarBuilder builder = new ButtonBarBuilder(root);
+        ButtonBarBuilder builder = new ButtonBarBuilder(this);
         builder.addFixed(searchField);
         builder.addUnrelatedGap();
         builder.addGridded(searchButton);
-        //builder.setBorder(Borders.DLU2_BORDER);
-        /*CellConstraints cc = new CellConstraints();
-        root.setLayout(new FormLayout("p, p", "f:p"));
-        root.add(searchField, cc.xy(1, 1));
-        root.add(searchButton, cc.xy(2, 1));
-        root.setBorder(Borders.DLU2_BORDER);*/
     }
 
     @Override
     public void initState() {
-    }
-
-    @Override
-    public JComponent getComponent() {
-        return root;
     }
 
     private JComponent decorateButton(JButton searchButton) {
@@ -85,4 +75,11 @@ public class SearchField implements InitSequence {
         return searchButton;
     }
 
+    public String getSearchText() {
+        return searchField.getText();
+    }
+
+    public ObjectType getType() {
+        return type;
+    }
 }

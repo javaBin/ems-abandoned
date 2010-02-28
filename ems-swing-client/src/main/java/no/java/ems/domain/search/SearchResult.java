@@ -1,4 +1,4 @@
-package no.java.ems.client.swing.search;
+package no.java.ems.domain.search;
 
 import java.net.URI;
 

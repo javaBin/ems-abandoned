@@ -15,6 +15,8 @@
 
 package no.java.ems.client;
 
+import no.java.ems.domain.search.ObjectType;
+import no.java.ems.domain.search.SearchResult;
 import no.java.ems.external.v2.*;
 import no.java.ems.domain.*;
 import no.java.ems.client.f.ExternalV2F;
@@ -212,5 +214,13 @@ public class RESTEmsService {
 
     public synchronized List<Room> getRooms() {
         throw new UnsupportedOperationException("Not implemented yet...");
+    }
+
+    public List<SearchResult> search(String query, ObjectType type) {
+        List<SearchResult> list = new ArrayList<SearchResult>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new SearchResult(URI.create("" + i), "Title" + i, type, "Summary" + i));
+        }
+        return list;
     }
 }
