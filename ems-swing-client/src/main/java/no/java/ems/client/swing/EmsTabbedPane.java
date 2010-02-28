@@ -23,15 +23,64 @@ import org.jdesktop.application.SessionStorage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
+ * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  */
 class EmsTabbedPane extends JTabbedPane {
 
     public EmsTabbedPane() {
         setName("root.tabs");
         setBorder(Borders.TABBED_DIALOG_BORDER);
+    }
+
+    public void addTab(AbstractEditor editor) {
+        addTab(editor, getTabCount());
+    }
+    
+    public void addTab(AbstractEditor editor, int index) {
+        insertTab(editor.getTitle(), editor.getIcon(), editor, null, index);
+        setTabComponentAt(index, new TabComponent(editor, this));
+    }
+
+    public AbstractEditor selectEditor(URI uri) {
+        for (int index = 0; index < getTabCount(); index++) {
+            Component component = getTabComponentAt(index);
+            if (component instanceof TabComponent) {
+                TabComponent tabComponent = (TabComponent)component;
+                URI id = tabComponent.getTab().getId();
+                if (id != null && id.equals(uri)) {
+                    setSelectedIndex(index);
+                    return tabComponent.getTab();
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addSelectedTab(AbstractEditor editor) {
+        int index = getTabCount();
+        addTab(editor, index);
+        setSelectedIndex(index);
+    }
+
+    public List<AbstractEditor> getEditorsWithChanges() {
+        List<AbstractEditor> editors = new ArrayList<AbstractEditor>();
+        int tabs = getTabCount();
+        for (int i = 0; i < tabs; i++) {
+            TabComponent componentAt = getTabComponentAt(i);
+            if (componentAt != null) {
+                AbstractEditor editor = componentAt.getTab();
+                if (editor.isChanged()) {
+                    editors.add(editor);
+                }
+            }
+        }
+        return editors;
     }
 
     @Override
@@ -57,6 +106,22 @@ class EmsTabbedPane extends JTabbedPane {
         super.insertTab(title, icon, component, tip, index);
     }
 
+    @Override
+    public TabComponent getTabComponentAt(int index) {
+        return (TabComponent) super.getTabComponentAt(index);
+    }
+
+    @Override
+    public void setTabComponentAt(int index, Component component) {
+        if (component instanceof TabComponent || component == null) {
+            super.setTabComponentAt(index, component);
+            return;
+        }
+        throw new IllegalArgumentException("Component must be a TabComponent");
+
+    }
+
+/*
     static {
         Application.getInstance().getContext().getSessionStorage().putProperty(
                 EmsTabbedPane.class,
@@ -83,5 +148,5 @@ class EmsTabbedPane extends JTabbedPane {
                 }
         );
     }
-
+*/
 }

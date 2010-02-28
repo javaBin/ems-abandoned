@@ -24,6 +24,7 @@ import java.net.URI;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
+ * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  */
 public abstract class AbstractEditor extends DefaultPanel {
 
@@ -31,6 +32,7 @@ public abstract class AbstractEditor extends DefaultPanel {
     private URI id;
     private String title;
     private Icon icon;
+    private boolean changed;
 
     protected AbstractEditor() {
     }
@@ -61,6 +63,14 @@ public abstract class AbstractEditor extends DefaultPanel {
 
     public void setIcon(final Icon icon) {
         firePropertyChange("icon", this.icon, this.icon = icon);
+    }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
+    protected void setChanged(boolean changed) {
+        firePropertyChange("changed", this.changed, this.changed = changed);
     }
 
     public BindingGroup getBindingGroup() {

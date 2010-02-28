@@ -6,6 +6,7 @@ import no.java.ems.client.swing.contacts.ContactEditor;
 import no.java.ems.client.swing.contacts.ContactListEditor;
 import no.java.ems.client.swing.events.EventEditor;
 import no.java.ems.client.swing.events.EventListEditor;
+import no.java.ems.client.swing.search.SearchPanel;
 import no.java.ems.client.swing.sessions.SessionEditor;
 import no.java.ems.domain.AbstractEntity;
 import no.java.ems.domain.Person;
@@ -28,10 +29,11 @@ import java.net.URI;
  * @version $Revision: $
  */
 public class EmsRootPanel implements InitSequence {
-    private JTabbedPane tabs;
+    private EmsTabbedPane tabs;
     private StatusBar statusBar;
     private ContactListEditor contactListEditor;
     private EventListEditor eventListEditor;
+    private SearchPanel searchComponent;
     private Action saveAction;
     private Action exitAction;
     private Action undoAction;
@@ -49,17 +51,13 @@ public class EmsRootPanel implements InitSequence {
     public void edit(final AbstractEntity entity) {
         Validate.notNull(entity, "Entity may not be null");
         AbstractEditor editor;
-        for (int index = 0; index < tabs.getTabCount(); index++) {
-            Component component = tabs.getTabComponentAt(index);
-            if (component instanceof TabComponent) {
-                TabComponent tabComponent = (TabComponent)component;
-                URI id = tabComponent.getTab().getId();
-                if (id != null && id.equals(entity.getHandle().getURI())) {
-                    tabs.setSelectedIndex(index);
-                    return;
-                }
+        if (entity.getHandle() != null) {
+            editor = tabs.selectEditor(entity.getHandle().getURI());
+            if (editor != null) {
+                return;
             }
         }
+
         if (entity instanceof Person) {
             editor = new ContactEditor((Person)entity);
         } else if (entity instanceof no.java.ems.domain.Event) {
@@ -69,10 +67,7 @@ public class EmsRootPanel implements InitSequence {
         } else {
             throw new IllegalArgumentException("Unable to create an editor for entity type: " + entity.getClass().getName());
         }
-        int index = tabs.getTabCount();
-        tabs.insertTab(editor.getTitle() == null || editor.getTitle().isEmpty() ? "<Untitled>" : editor.getTitle(), editor.getIcon(), editor, null, index);
-        tabs.setTabComponentAt(index, new TabComponent(editor, tabs));
-        tabs.setSelectedIndex(index);
+        tabs.addSelectedTab(editor);
     }
 
 
@@ -98,14 +93,7 @@ public class EmsRootPanel implements InitSequence {
     public StatusBar getStatusBar() {
         return statusBar;
     }
-
-    public ContactListEditor getContactsPanel() {
-        return contactListEditor;
-    }
-
-    public EventListEditor getSessionsPanel() {
-        return eventListEditor;
-    }
+    
     public void initModels() {
     }
 
@@ -124,12 +112,12 @@ public class EmsRootPanel implements InitSequence {
     public void initComponents() {
         contactListEditor = new ContactListEditor();
         eventListEditor = new EventListEditor();
+        searchComponent = new SearchPanel();
         statusBar = new StatusBar();
         tabs = new EmsTabbedPane();
-        tabs.insertTab(contactListEditor.getTitle(), contactListEditor.getIcon(), contactListEditor, null, 0);
-        tabs.insertTab(eventListEditor.getTitle(), eventListEditor.getIcon(), eventListEditor, null, 1);
-        tabs.setTabComponentAt(0, new TabComponent(contactListEditor, tabs));
-        tabs.setTabComponentAt(1, new TabComponent(eventListEditor, tabs));
+        tabs.addTab(searchComponent);
+        tabs.addTab(contactListEditor);
+        tabs.addTab(eventListEditor);
         tabs.getActionMap().put("undo", DefaultUndoManager.getInstance(null).getUndoAction());
         tabs.getActionMap().put("redo", DefaultUndoManager.getInstance(null).getRedoAction());
 
