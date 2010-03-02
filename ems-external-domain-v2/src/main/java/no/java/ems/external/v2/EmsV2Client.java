@@ -17,42 +17,40 @@ package no.java.ems.external.v2;
 
 import fj.data.Option;
 import fj.Unit;
-import no.java.ems.client.ResourceHandle;
-import org.joda.time.LocalDate;
 
+
+import no.java.ems.client.ResourceHandle;
+
+import java.net.URI;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
+ * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
 public interface EmsV2Client {
-    Option<EventV2> getEvent(String eventId);
+    Option<EventV2> getEvent(ResourceHandle handle);
 
     ResourceHandle addEvent(EventV2 event);
 
     EventListV2 getEvents();
 
-    SessionListV2 getSessions(String eventId);
+    SessionListV2 getSessions(ResourceHandle handle);
 
-    Option<SessionV2> getSession(String eventId, String sessionId);
+    Option<SessionV2> getSession(ResourceHandle handle);
 
-    SessionListV2 findSessionsByDate(String eventId, LocalDate date);
+    SessionListV2 findSessions(ResourceHandle handle, String json);
 
-    SessionListV2 findSessionsByTitle(String eventId, String title);
+    ResourceHandle addSession(ResourceHandle handle, SessionV2 session);
 
-    SessionListV2 getSessionsByTitle(String eventId, String title);
-
-    SessionListV2 searchForSessions(String eventId, String query);
-
-    ResourceHandle addSession(SessionV2 session);
-
-    Unit updateSession(SessionV2 session);
+    Unit updateSession(ResourceHandle handle, SessionV2 session);
 
     PersonListV2 getPeople();
 
-    Option<PersonV2> getPerson(String personId);
+    Option<PersonV2> getPerson(ResourceHandle handle);
 
     ResourceHandle addPerson(PersonV2 personV1);
 
     Unit updatePerson(PersonV2 personV1);
+
+    void login(URI endpoint);
 }

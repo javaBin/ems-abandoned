@@ -41,7 +41,7 @@ import no.java.ems.client.*;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
-public class RESTfulEmsV2Client implements EmsV2Client2 {
+public class RESTfulEmsV2Client implements EmsV2Client {
 
     private static final String CONTEXT_PATH = EventV2.class.getPackage().getName();
 

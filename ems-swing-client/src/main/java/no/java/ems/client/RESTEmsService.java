@@ -36,15 +36,13 @@ import org.codehaus.httpcache4j.Status;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import fj.data.Option;
-import fj.P;
-import fj.P2;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Id $
  */
 public class RESTEmsService {
-    private EmsV2Client2 client;
+    private EmsV2Client client;
     private final HTTPCache cache;
 
     public RESTEmsService(String baseURI, String username, String password) {
