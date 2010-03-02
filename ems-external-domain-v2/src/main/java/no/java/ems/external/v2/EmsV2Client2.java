@@ -21,6 +21,8 @@ import fj.Unit;
 
 import no.java.ems.client.ResourceHandle;
 
+import java.net.URI;
+
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
@@ -49,4 +51,6 @@ public interface EmsV2Client2 {
     ResourceHandle addPerson(PersonV2 personV1);
 
     Unit updatePerson(PersonV2 personV1);
+
+    void login(URI endpoint);
 }

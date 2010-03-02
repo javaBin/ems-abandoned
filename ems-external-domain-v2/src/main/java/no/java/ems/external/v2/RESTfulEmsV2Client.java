@@ -59,10 +59,14 @@ public class RESTfulEmsV2Client implements EmsV2Client2 {
     private static final MIMEType ROOM = MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE);
 
 
-    public RESTfulEmsV2Client(HTTPCache cache, String username, String password) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
-        marshaller = context.createMarshaller();
-        client = new MyRESTfulClient(cache, context, username, password);
+    public RESTfulEmsV2Client(HTTPCache cache, String username, String password) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
+            marshaller = context.createMarshaller();
+            client = new MyRESTfulClient(cache, context, username, password);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -183,13 +187,15 @@ public class RESTfulEmsV2Client implements EmsV2Client2 {
     }
 
     private static class MyRESTfulClient extends RESTfulClient {
-        public MyRESTfulClient(HTTPCache cache, JAXBContext context, String username, String password) throws Exception {
+        public MyRESTfulClient(HTTPCache cache, JAXBContext context, String username, String password) throws JAXBException {
             super(cache, username, password);
+            registerHandler(new JAXBHandler(context, PersonV2.class, PERSON));
             registerHandler(new JAXBHandler(context, EventV2.class, EVENT));
             registerHandler(new JAXBHandler(context, SessionV2.class, SESSION));
             registerHandler(new JAXBHandler(context, RoomV2.class, ROOM));
             registerHandler(new JAXBHandler(context, EventListV2.class, EVENT_LIST));
             registerHandler(new JAXBHandler(context, SessionListV2.class, SESSION_LIST));
+            registerHandler(new JAXBHandler(context, PersonListV2.class, PERSON_LIST));
             registerHandler(new JAXBHandler(context, RoomListV2.class, ROOM_LIST));
             registerHandler(new DefaultHandler());
             registerHandler(new URIListHandler());

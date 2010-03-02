@@ -44,37 +44,32 @@ import fj.P2;
  * @version $Id $
  */
 public class RESTEmsService {
-    private EmsV2Client client;
+    private EmsV2Client2 client;
     private final HTTPCache cache;
-    private final String baseURI;
 
     public RESTEmsService(String baseURI, String username, String password) {
         cache = new HTTPCache(
                 new MemoryCacheStorage(),
                 new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager())));
-        this.baseURI = baseURI;
         client = createEmsClient(username, password);
+        client.login(URI.create(baseURI));
     }
 
-    private RestletEmsV2Client createEmsClient(String username, String password) {
-        Option<P2<String,String>> credentials =  Option.none();
-        if (username != null && password != null) {
-            credentials = Option.some(P.p(username, password));
-        }
-        return new RestletEmsV2Client(cache, this.baseURI, credentials);
+    private RESTfulEmsV2Client createEmsClient(String username, String password) {
+        return new RESTfulEmsV2Client(cache, username, password);
     }
 
     public RESTEmsService(String baseURI) {
         this(baseURI, null, null);
     }
 
-    public synchronized List<Person> getContacts() {
+    public List<Person> getContacts() {
         PersonListV2 people = client.getPeople();       
         Collection<Person> persons = fj.data.List.iterableList(people.getPerson()).map(ExternalV2F.person).toCollection();
         return new ArrayList<Person>(persons);
     }
 
-    public synchronized Person getContact(String id) {
+    public Person getContact(ResourceHandle id) {
         Option<Person> person = client.getPerson(id).map(ExternalV2F.person);
         if (person.isSome()) {
             return person.some();
@@ -82,7 +77,7 @@ public class RESTEmsService {
         return null;
     }
 
-    public synchronized Person saveContact(Person person) {
+    public Person saveContact(Person person) {
         Option<PersonV2> option = Option.some(person).map(ExternalV2F.personV2);
         if (person.getHandle() == null) {
             ResourceHandle handle = client.addPerson(option.some());                       
@@ -94,20 +89,19 @@ public class RESTEmsService {
         return person;
     }
 
-    public synchronized void deleteContact(ResourceHandle person) {
+    public void deleteContact(ResourceHandle person) {
         //client.removePerson(person.getURI());
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
-    public synchronized List<Event> getEvents() {
+    public List<Event> getEvents() {
         EventListV2 either = client.getEvents();        
         Collection<Event> events = fj.data.List.iterableList(either.getEvent()).map(ExternalV2F.event).toCollection();
         return new ArrayList<Event>(events);
     }
 
-    public synchronized Event getEvent(ResourceHandle id) {
-        String path = getUUID(id.getURI());
-        Option<Event> event = client.getEvent(path)
+    public Event getEvent(ResourceHandle id) {
+        Option<Event> event = client.getEvent(id)
                 .map(ExternalV2F.event);
 
         if (event.isSome()) {
@@ -116,7 +110,7 @@ public class RESTEmsService {
         return null;
     }
 
-    public synchronized Event saveEvent(Event event) {
+    public Event saveEvent(Event event) {
         Option<EventV2> eventToSave = Option.some(event).map(ExternalV2F.eventV2);
         throw new UnsupportedOperationException("Not implemented yet...");
         /*if (event.getHandle() == null) {
@@ -127,46 +121,35 @@ public class RESTEmsService {
         }*/
     }
 
-    public synchronized void deleteEvent(ResourceHandle id) {
+    public void deleteEvent(ResourceHandle id) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
-    public synchronized List<Session> getSessions(Event event) {
-        SessionListV2 sessions = client.getSessions(event.getDisplayID());
+    public List<Session> getSessions(Event event) {
+        SessionListV2 sessions = client.getSessions(new ResourceHandle(event.getSessionURI()));
         Collection<Session> list = fj.data.List.iterableList(sessions.getSession()).map(ExternalV2F.session).toCollection();
         return new ArrayList<Session>(list);
     }
 
-    //TODO: throw away this!!!!
-    private String getUUID(URI uri) {
-        if (uri.toString().contains("/")) {
-            String path = uri.getPath();
-            int index = path.lastIndexOf("/");
-            return path.substring(index + 1, path.length());
-        }
-        return uri.toString();
-    }
-
-    public synchronized Session getSession(String eventId, String sessionId) {
-        Option<Session> option = client.getSession(eventId, sessionId).
-                map(ExternalV2F.session);
+    public Session getSession(ResourceHandle uri) {
+        Option<Session> option = client.getSession(uri).map(ExternalV2F.session);
         if (option.isSome()) {
             return option.some();
         }
         return null;
     }
 
-    public synchronized Session saveSession(Session session) {
+    public Session saveSession(Session session) {
         Option<SessionV2> option = Option.some(session).map(ExternalV2F.sessionV2);
         if (option.isSome()) {
             if (session.getHandle() == null) {
-                ResourceHandle handle = client.addSession(option.some());
+                ResourceHandle handle = client.addSession(session.getEventHandle(), option.some());
                 session.setHandle(handle);
                 return session;
             }
             else {
-                client.updateSession(option.some());
-                option = client.getSession(getUUID(session.getEventHandle().getURI()), session.getDisplayID());//TODO: EVIL: go away, should be session.getURI()
+                client.updateSession(session.getHandle(), option.some());
+                option = client.getSession(session.getHandle().toUnconditional());
                 Option<Session> sessionOption = option.map(ExternalV2F.session);
                 if (sessionOption.isSome()) {
                     session.sync(sessionOption.some());
@@ -177,11 +160,11 @@ public class RESTEmsService {
         throw new IllegalArgumentException("Unable to save session");
     }
     
-    public synchronized void deleteSession(ResourceHandle handle) {
+    public void deleteSession(ResourceHandle handle) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
-    public synchronized InputStream readBinary(Binary binary) {
+    public InputStream readBinary(Binary binary) {
         if (binary instanceof URIBinary) {
             URIBinary URIBinary = (URIBinary) binary;
             HTTPRequest request = new HTTPRequest(URIBinary.getURI());
@@ -194,16 +177,15 @@ public class RESTEmsService {
             ByteArrayBinary array = (ByteArrayBinary) binary;
             return array.getDataStream();
         }
-        //return binaryClient.getBinary(binaryId);
         throw new IllegalArgumentException("Uknown binary...");
     }
 
-    public synchronized Binary saveBinary(Binary binary) {
+    public Binary saveBinary(Binary binary) {
         // Always create the binary, no update at this point
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
-    public synchronized void deleteBinary(URI binaryURI) {
+    public void deleteBinary(URI binaryURI) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
     
@@ -212,7 +194,7 @@ public class RESTEmsService {
     // -----------------------------------------------------------------------
 
 
-    public synchronized List<Room> getRooms() {
+    public List<Room> getRooms() {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 

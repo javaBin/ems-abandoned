@@ -94,4 +94,8 @@ public class ResourceHandle {
     public String toString() {
         return uri.toString();
     }
+
+    public ResourceHandle toUnconditional() {
+        return new ResourceHandle(uri);
+    }
 }

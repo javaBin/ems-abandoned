@@ -59,7 +59,7 @@ public class EmsClient extends SingleFrameApplication {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private String connectionURI;
-    private static final String EMS_DEFAULT_URI = "http://localhost:3000/ems";
+    private static final String EMS_DEFAULT_URI = "http://localhost:3000/ems/2";
     private EmsRootPanel rootPanel;
     private RESTEmsService emsClient;
 

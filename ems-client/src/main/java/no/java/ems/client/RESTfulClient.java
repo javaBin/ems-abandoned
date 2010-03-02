@@ -37,7 +37,7 @@ import java.net.URI;
  */
 public abstract class RESTfulClient {
     private final HTTPCache cache;
-    private final Set<Handler> handlers = new HashSet<Handler>();
+    private final List<Handler> handlers = new ArrayList<Handler>();
     private final Challenge challenge;
 
     protected RESTfulClient(HTTPCache cache, String username, String password) {
@@ -50,7 +50,7 @@ public abstract class RESTfulClient {
         handlers.add(handler);
     }
 
-    protected Set<Handler> getHandlers() {
+    protected List<Handler> getHandlers() {
         return handlers;
     }
 
