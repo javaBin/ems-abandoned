@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
-* @author <a href="mailto:erlend@escenic.com">Erlend Hamnaberg</a>
+* @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
 * @version $Revision: $
 */
 public class Form {

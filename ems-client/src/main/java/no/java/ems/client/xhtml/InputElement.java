@@ -1,7 +1,7 @@
 package no.java.ems.client.xhtml;
 
 /**
-* @author <a href="mailto:erlend@escenic.com">Erlend Hamnaberg</a>
+* @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
 * @version $Revision: $
 */
 public class InputElement<T> {
