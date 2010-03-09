@@ -1,8 +1,5 @@
 package no.java.ems.client.xhtml;
 
-import no.java.ems.client.xhtml.Form;
-import no.java.ems.client.xhtml.Options;
-import no.java.ems.client.xhtml.TextElement;
 import org.codehaus.httpcache4j.HTTPMethod;
 import org.codehaus.httpcache4j.payload.Payload;
 
@@ -15,8 +12,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -30,50 +26,44 @@ public class XHTMLFormParser {
         this.payload = payload;
     }
 
-    public Form parse() throws XMLStreamException {
+    public List<Form> parse() throws XMLStreamException {
         InputStream stream = payload.getInputStream();
         XMLEventReader reader = factory.createXMLEventReader(stream);
+        List<Form> forms = new ArrayList<Form>();
         try {
             while(reader.hasNext()) {
                 XMLEvent event = reader.nextEvent();
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
                     if ("form".equals(start.getName().getLocalPart())) {
-                        return parseForm(start, reader);
+                        forms.add(parseForm(start, reader));
                     }
                 }
             }
         } finally {
             reader.close();            
         }
-        throw new XMLStreamException("Payload did not contain a form, unable to parse");
+        if (forms.isEmpty()) {
+            throw new XMLStreamException("Payload did not contain a form, unable to parse");
+        }
+        return Collections.unmodifiableList(forms);
     }
 
     private Form parseForm(StartElement formElement, XMLEventReader reader) throws XMLStreamException {
         Attribute method = formElement.getAttributeByName(new QName("method"));
         Form form;
         if (method == null) {
-            form = new Form();
+            form = new Form("search");
         }
         else {
             String methodValue = method.getValue().toUpperCase();
-            form = new Form(HTTPMethod.valueOf(methodValue));
+            form = new Form(findId(formElement), HTTPMethod.valueOf(methodValue));
         }
         while(reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
-                String name = null;
-                Attribute nameAttribute = element.getAttributeByName(new QName("name"));
-                if (nameAttribute != null) {
-                    name = nameAttribute.getValue();
-                }
-                else {
-                    nameAttribute = element.getAttributeByName(new QName("id"));
-                    if (nameAttribute != null) {
-                        name = nameAttribute.getValue();
-                    }
-                }
+                String name = findId(element);
                 if ("input".equals(element.getName().getLocalPart())) {
                     if (name != null) {
                         Attribute typeAttribute = element.getAttributeByName(new QName("type"));
@@ -90,6 +80,21 @@ public class XHTMLFormParser {
             }
         }
         return form;
+    }
+
+    private String findId(StartElement element) {
+        String name = null;
+        Attribute nameAttribute = element.getAttributeByName(new QName("name"));
+        if (nameAttribute != null) {
+            name = nameAttribute.getValue();
+        }
+        else {
+            nameAttribute = element.getAttributeByName(new QName("id"));
+            if (nameAttribute != null) {
+                name = nameAttribute.getValue();
+            }
+        }
+        return name;
     }
 
     private Options parseSelect(XMLEventReader reader) throws XMLStreamException {

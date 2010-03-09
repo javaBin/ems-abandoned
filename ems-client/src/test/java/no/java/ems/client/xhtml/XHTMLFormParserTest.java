@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -19,8 +20,8 @@ public class XHTMLFormParserTest {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
         XHTMLFormParser parser = new XHTMLFormParser(new InputStreamPayload(stream, MIMEType.valueOf("application/xhtml+xml")));
-        Form form = parser.parse();
-        assertForm(form, 2);
+        List<Form> form = parser.parse();
+        assertForms(form, 2);
     }
 
     @Test
@@ -28,12 +29,14 @@ public class XHTMLFormParserTest {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
         XHTMLFormParser parser = new XHTMLFormParser(new InputStreamPayload(stream, MIMEType.valueOf("application/xhtml+xml")));
-        Form form = parser.parse();
-        assertForm(form, 2);
+        List<Form> form = parser.parse();
+        assertForms(form, 2);
     }
 
-    private void assertForm(Form form, final int expected) {
-        assertNotNull("Form was not parsed correctly", form);
+    private void assertForms(List<Form> forms, final int expected) {
+        assertNotNull("Form was not parsed correctly", forms);
+        assertEquals("Form was not parsed correctly", 1, forms.size());
+        Form form = forms.get(0);
         assertEquals(expected, form.getForm().size());
         Options options = form.getOptions("type");
         assertNotNull("No options available", options);

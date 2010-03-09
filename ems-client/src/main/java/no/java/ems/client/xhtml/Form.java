@@ -1,5 +1,6 @@
 package no.java.ems.client.xhtml;
 
+import org.apache.commons.lang.Validate;
 import org.codehaus.httpcache4j.HTTPMethod;
 
 import java.util.Collections;
@@ -11,19 +12,27 @@ import java.util.Map;
 * @version $Revision: $
 */
 public class Form {
+    private final String id;
     private final HTTPMethod method;
     private final Map<String, InputElement<?>> form = new LinkedHashMap<String, InputElement<?>>();
 
-    public Form() {
-        this(HTTPMethod.GET);
+    public Form(String id) {
+        this(id, HTTPMethod.GET);
     }
 
-    public Form(HTTPMethod method) {
+    public Form(String id, HTTPMethod method) {
+        Validate.notNull(id, "Id may not be null");
+        Validate.notNull(method, "Method may not be null");
+        this.id = id;
         this.method = method;
     }
 
     public void add(String name, InputElement element) {
         form.put(name, element);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public HTTPMethod getMethod() {
