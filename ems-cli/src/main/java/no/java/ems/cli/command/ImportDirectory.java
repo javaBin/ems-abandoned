@@ -23,15 +23,10 @@ import fj.data.List;
 import no.java.ems.client.ResourceHandle;
 import no.java.ems.external.v2.*;
 import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.InputStreamPayload;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -54,7 +49,7 @@ public class ImportDirectory implements Runnable {
             final JAXBHandler<SessionV2> handler = JAXBHandler.create(context, SessionV2.class, mimeType);
             unmarshallSession = new F<InputStream, SessionV2>() {
                 public SessionV2 f(InputStream inputStream) {
-                    return handler.handle(new InputStreamPayload(inputStream, mimeType));
+                    return handler.handle(inputStream);
                 }
             };
 
