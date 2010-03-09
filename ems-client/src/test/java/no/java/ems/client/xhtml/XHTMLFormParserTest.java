@@ -1,14 +1,13 @@
 package no.java.ems.client.xhtml;
 
-import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.InputStreamPayload;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author <a href="mailto:erlend@escenic.com">Erlend Hamnaberg</a>
@@ -19,7 +18,7 @@ public class XHTMLFormParserTest {
     public void testParseCorrectForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(new InputStreamPayload(stream, MIMEType.valueOf("application/xhtml+xml")));
+        XHTMLFormParser parser = new XHTMLFormParser(stream);
         List<Form> form = parser.parse();
         assertForms(form, 2);
     }
@@ -28,7 +27,7 @@ public class XHTMLFormParserTest {
     public void testParseCorrectNestedForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(new InputStreamPayload(stream, MIMEType.valueOf("application/xhtml+xml")));
+        XHTMLFormParser parser = new XHTMLFormParser(stream);
         List<Form> form = parser.parse();
         assertForms(form, 2);
     }
@@ -47,7 +46,7 @@ public class XHTMLFormParserTest {
     public void testParseWithNoForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form-failed.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(new InputStreamPayload(stream, MIMEType.valueOf("application/xhtml+xml")));
+        XHTMLFormParser parser = new XHTMLFormParser(stream);
         parser.parse();
     }
 }

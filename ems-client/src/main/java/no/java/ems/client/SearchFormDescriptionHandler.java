@@ -2,9 +2,9 @@ package no.java.ems.client;
 
 import no.java.ems.client.xhtml.XHTMLFormParser;
 import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.Payload;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -17,7 +17,7 @@ public class SearchFormDescriptionHandler implements Handler {
         return mimeType.equals(type);
     }
 
-    public Object handle(Payload payload) {
+    public Object handle(InputStream payload) {
         XHTMLFormParser form = new XHTMLFormParser(payload);
         try {
             return form.parse();

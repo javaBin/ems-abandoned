@@ -2,13 +2,13 @@ package no.java.ems.external.v2;
 
 import no.java.ems.client.Handler;
 import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.Payload;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.io.InputStream;
 
 /**
 * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -30,9 +30,9 @@ public class JAXBHandler<T> implements Handler {
     }
 
     @SuppressWarnings({"unchecked"})
-    public T handle(Payload payload) {
+    public T handle(InputStream payload) {
         try {
-            Source source = new StreamSource(payload.getInputStream());
+            Source source = new StreamSource(payload);
             return unmarshaller.unmarshal(source, type).getValue();
         } catch (JAXBException e) {
             throw new RuntimeException("Unable to unmarshall.", e);

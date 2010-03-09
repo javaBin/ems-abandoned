@@ -15,6 +15,7 @@
 
 package no.java.ems.client;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.payload.Payload;
 import org.codehaus.httpcache4j.*;
@@ -27,6 +28,7 @@ import org.codehaus.httpcache4j.preference.Preferences;
 
 import static fj.Unit.unit;
 
+import java.io.InputStream;
 import java.util.*;
 import java.net.URI;
 
@@ -156,7 +158,13 @@ public abstract class RESTfulClient {
         if (response.hasPayload()) {
             for (Handler handler : getHandlers()) {
                 if (handler.supports(response.getPayload().getMimeType())) {
-                    return Option.<Resource>some(new DefaultResource(handle, response.getHeaders(), handler.handle(response.getPayload())));
+                    InputStream payload = response.getPayload().getInputStream();
+                    try {
+                        return Option.<Resource>some(new DefaultResource(handle, response.getHeaders(), handler.handle(payload)));
+                    } finally {
+                        IOUtils.closeQuietly(payload);
+                    }
+
                 }
             }
         }

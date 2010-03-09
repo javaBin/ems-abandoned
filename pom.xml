@@ -299,8 +299,14 @@
       </dependency>
       <dependency>
         <groupId>org.apache.abdera</groupId>
-        <artifactId>abdera-core</artifactId>
+        <artifactId>abdera-client</artifactId>
         <version>0.4.0-incubating</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+          </exclusion>
+        </exclusions>        
       </dependency>
 
       <dependency>

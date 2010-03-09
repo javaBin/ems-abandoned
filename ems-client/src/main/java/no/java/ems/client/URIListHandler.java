@@ -16,7 +16,6 @@
 package no.java.ems.client;
 
 import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.Payload;
 import org.apache.commons.io.IOUtils;
 
 import java.net.URI;
@@ -36,11 +35,10 @@ public class URIListHandler implements Handler{
         return URI_LIST.includes(type);
     }
 
-    public Object handle(Payload payload) {
+    public Object handle(InputStream payload) {
         List<URI> uris = new ArrayList<URI>();
-        InputStream stream = payload.getInputStream();
         try {
-            String value = IOUtils.toString(stream);
+            String value = IOUtils.toString(payload);
             String[] list = value.split("\r\n");
             for (String uri : list) {
                 if (uri.charAt(0) == '#') {
@@ -50,8 +48,6 @@ public class URIListHandler implements Handler{
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(stream);
         }
         return uris;
     }

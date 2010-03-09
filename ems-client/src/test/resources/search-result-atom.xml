@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title>1 hit(s)</title>
+  <link rel="search" type="application/xhtml+xml" href="http://localhost:3000/ems/2/search/form"/>
+  <link rel="self" type="application/atom+xml" href="http://localhost:3000/ems/2/search?q&amp;type=session&amp;pw=1"/>
+  <author>
+    <name>EMS</name>
+  </author>
+  <id>http://localhost:3000/ems/2/search?q&amp;type=session&amp;pw=1</id>
+  <entry>
+    <title>Screw you :)</title>
+    <link rel="edit" type="application/vnd.ems.session+xml"
+          href="http://localhost:3000/ems/2/events/dfad773d-fc82-4b46-8710-8919f1aff8c5/sessions/608222ad-d7d7-41d6-8216-f5b536403499"/>
+    <author>
+      <name>EMS</name>
+    </author>
+    <summary>null
+      * sadkad
+      ** sadasd
+      *** sadasdasdas
+      ** asdasdas
+      * asdasd
+    </summary>
+    <dc:creator>EMS</dc:creator>
+  </entry>
+</feed>

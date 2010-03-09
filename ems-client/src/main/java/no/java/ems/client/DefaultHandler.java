@@ -16,7 +16,8 @@
 package no.java.ems.client;
 
 import org.codehaus.httpcache4j.MIMEType;
-import org.codehaus.httpcache4j.payload.Payload;
+
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -27,7 +28,7 @@ public class DefaultHandler implements Handler {
         return MIMEType.ALL.includes(type);
     }
 
-    public Object handle(Payload payload) {
-        return payload.getInputStream();
+    public Object handle(InputStream payload) {
+        return payload;
     }
 }

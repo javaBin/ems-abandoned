@@ -1,7 +1,6 @@
 package no.java.ems.client.xhtml;
 
 import org.codehaus.httpcache4j.HTTPMethod;
-import org.codehaus.httpcache4j.payload.Payload;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -19,16 +18,15 @@ import java.util.*;
  * @version $Revision: $
  */
 public class XHTMLFormParser {
-    private final Payload payload;
+    private final InputStream payload;
     private final static XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public XHTMLFormParser(Payload payload) {
+    public XHTMLFormParser(InputStream payload) {
         this.payload = payload;
     }
 
     public List<Form> parse() throws XMLStreamException {
-        InputStream stream = payload.getInputStream();
-        XMLEventReader reader = factory.createXMLEventReader(stream);
+        XMLEventReader reader = factory.createXMLEventReader(payload);
         List<Form> forms = new ArrayList<Form>();
         try {
             while(reader.hasNext()) {
