@@ -36,9 +36,7 @@ public interface EmsV2Client {
 
     SessionListV2 getSessions(ResourceHandle handle);
 
-    Option<SessionV2> getSession(ResourceHandle handle);
-
-    SessionListV2 findSessions(ResourceHandle handle, String json);
+    Option<SessionV2> getSession(ResourceHandle handle);    
 
     ResourceHandle addSession(ResourceHandle handle, SessionV2 session);
 
@@ -51,6 +49,8 @@ public interface EmsV2Client {
     ResourceHandle addPerson(PersonV2 personV1);
 
     Unit updatePerson(PersonV2 personV1);
+
+    
 
     void login(URI endpoint);
 }

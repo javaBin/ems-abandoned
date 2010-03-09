@@ -36,24 +36,24 @@ public class Search extends AbstractCli {
     private static final String OPTION_QUERY = "query";
 
     protected Options addOptions(Options options) {
-        options.addOption(eventId);
+        options.addOption(eventUri);
         options.addOption(null, OPTION_QUERY, true, "The query");
         return options;
     }
 
     public void work() throws Exception {
-        if (!assertIsPresent(OPTION_EVENT_ID)) {
+        if (!assertIsPresent(OPTION_EVENT_URI)) {
             usage();
             return;
         }
 
-        String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
+        String eventId = getCommandLine().getOptionValue(OPTION_EVENT_URI);
         String query = getCommandLine().getOptionValue(OPTION_QUERY);
 
-        List<SessionV2> sessions = getEms().searchForSessions(eventId, query).getSession();
+        /*List<SessionV2> sessions = getEms().searchForSessions(eventId, query).getSession();
 
         for (SessionV2 session : sessions) {
             System.out.println(session);
-        }
+        }*/
     }
 }

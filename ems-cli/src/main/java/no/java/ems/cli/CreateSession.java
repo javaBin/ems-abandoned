@@ -28,6 +28,8 @@ import no.java.ems.external.v2.SessionFormat;
 import no.java.ems.external.v2.SessionLevel;
 import no.java.ems.external.v2.EmsV2F;
 
+import java.net.URI;
+
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -69,7 +71,7 @@ public class CreateSession extends AbstractCli {
             return;
         }
         
-        String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
+        URI eventId = getOptionAsURI(OPTION_EVENT_ID);
         String dateString = getCommandLine().getOptionValue(OPTION_DATE);
         String title = getCommandLine().getOptionValue(OPTION_TITLE);
         String lead = getCommandLine().getOptionValue(OPTION_LEAD);
@@ -82,7 +84,7 @@ public class CreateSession extends AbstractCli {
         Interval timeslot = new Interval(date.toDateTime(), Minutes.minutes(60));
         
         SessionV2 session = new SessionV2();
-        session.setEventUuid(eventId);
+        session.setEventUri(eventId.toString());
         session.setTimeslot(EmsV2F.toIntervalV2.f(timeslot));
         session.setState(SessionState.PENDING);
         session.setFormat(SessionFormat.PRESENTATION);
@@ -94,7 +96,7 @@ public class CreateSession extends AbstractCli {
 //        List<String> keywords = new ArrayList<String>();
 //        List<Speaker> speakers = new ArrayList<Speaker>();
 
-        ResourceHandle handle = getEms().addSession(session);
+        ResourceHandle handle = getEms().addSession(new ResourceHandle(eventId), session);
 
         System.err.println("Session created, id: " + handle.getURI().toURL().toExternalForm());
     }

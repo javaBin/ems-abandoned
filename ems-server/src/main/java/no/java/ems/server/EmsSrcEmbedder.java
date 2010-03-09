@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.io.File;
+import java.net.URI;
 
 /**
  * An easy way to embed EMS when running from a subversion checkout.
@@ -87,7 +88,7 @@ public class EmsSrcEmbedder {
         return klass.cast(applicationContext.getBean(strings[0], klass));
     }
 
-    public String getBaseUri() {
-        return "http://localhost:" + PORT + "/ems";
+    public URI getBaseUri() {
+        return URI.create("http://localhost:" + PORT + "/ems");
     }
 }

@@ -15,9 +15,10 @@
 
 package no.java.ems.cli;
 
-import fj.P;
-import static fj.data.Option.some;
-import no.java.ems.external.v2.RestletEmsV2Client;
+
+import no.java.ems.client.ResourceHandle;
+import no.java.ems.external.v2.EmsV2Client;
+import no.java.ems.external.v2.RESTfulEmsV2Client;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -28,18 +29,20 @@ import org.apache.commons.cli.PosixParser;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Id$
  */
 public abstract class AbstractCli {
 
     private final String name;
 
-    private static String baseUri = "http://localhost:3000/ems";
+    private static String baseUri = "http://localhost:3000/ems/2";
 
     private String username;
 
@@ -49,7 +52,7 @@ public abstract class AbstractCli {
 
     private CommandLine commandLine;
 
-    private RestletEmsV2Client ems;
+    private EmsV2Client ems;
 
     // Standard options
     private static final String OPTION_HELP = "help";
@@ -63,12 +66,12 @@ public abstract class AbstractCli {
     private Option passwordOption;
 
     // Per-tool options
-    protected static final String OPTION_EVENT_ID = "event-id";
-    protected static final String OPTION_SESSION_ID = "session-id";
+    protected static final String OPTION_EVENT_URI = "event-uri";
+    protected static final String OPTION_SESSION_URI = "session-uri";
     protected static final String OPTION_DIRECTORY = "directory";
     protected static final String OPTION_PARSABLE = "parsable";
 
-    protected Option eventId;
+    protected Option eventUri;
     protected Option file;
     protected Option parseable;
 
@@ -105,7 +108,7 @@ public abstract class AbstractCli {
     // Services
     // -----------------------------------------------------------------------
 
-    public RestletEmsV2Client getEms() {
+    public EmsV2Client getEms() {
         return ems;
     }
 
@@ -158,19 +161,6 @@ public abstract class AbstractCli {
         return false;
     }
 
-    protected String getDefaultEventId() {
-        String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
-
-        if (eventId != null) {
-            return eventId;
-        }
-
-//        eventId = getEms().getEvents().right().value().getEvent().get(0).getId();
-//        System.err.println("Event id: " + eventId);
-
-        return eventId;
-    }
-
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
@@ -207,11 +197,12 @@ public abstract class AbstractCli {
         password = commandLine.getOptionValue(OPTION_PASSWORD, password);
 
         if (commandLine.hasOption(OPTION_USERNAME)) {
-            ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri, some(P.p(username, password)));
+            ems = new RESTfulEmsV2Client(new InMemoryHttpCache(), username, password);
         }
         else {
-            ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri);
+            ems = new RESTfulEmsV2Client(new InMemoryHttpCache(), null, null);
         }
+        ems.login(URI.create(baseUri));
 
         work();
     }
@@ -222,7 +213,7 @@ public abstract class AbstractCli {
         usernameOption = new Option(null, OPTION_USERNAME, true, "Username");
         passwordOption = new Option(null, OPTION_PASSWORD, true, "Password");
 
-        eventId = new Option(null, OPTION_EVENT_ID, true, "The id of the event");
+        eventUri = new Option(null, OPTION_EVENT_URI, true, "The id of the event");
         parseable = new Option(null, OPTION_PARSABLE, false, "Request machine parsable output.");
     }
 
@@ -243,5 +234,21 @@ public abstract class AbstractCli {
         } catch (IOException e) {
             // ignore
         }
+    }
+
+    protected URI getOptionAsURI(final String pOptionId) {
+        String value = getCommandLine().getOptionValue(pOptionId);
+        if (value != null) {
+            return URI.create(value);
+        }
+        return null;
+    }
+
+    protected ResourceHandle getDefaultEventHandle() {
+        URI uri = getOptionAsURI(OPTION_EVENT_URI);
+        if (uri != null) {
+            return new ResourceHandle(uri);
+        }
+        return null;
     }
 }

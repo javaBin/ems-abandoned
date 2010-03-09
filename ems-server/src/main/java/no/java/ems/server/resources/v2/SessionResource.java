@@ -130,7 +130,8 @@ public class SessionResource {
     public Response addSession(@PathParam("eventId") String id, SessionV2 entity) {
         Session input = Option.some(entity).
                 map(personURItoId).
-                map(ExternalV2F.session).some();
+                map(ExternalV2F.session).
+                map(curry(ExternalV2F.eventId, id)).some();
 
         emsServer.saveSession(id, input);
 

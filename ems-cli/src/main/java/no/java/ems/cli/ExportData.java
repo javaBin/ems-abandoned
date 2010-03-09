@@ -15,11 +15,13 @@
 
 package no.java.ems.cli;
 
+import no.java.ems.client.ResourceHandle;
 import org.apache.commons.cli.Options;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.List;
 
 import no.java.ems.external.v2.SessionV2;
@@ -29,8 +31,9 @@ import no.java.ems.external.v2.SessionV2;
  * @version $Id$
  */
 public class ExportData extends AbstractCli {
-
+    public static String OPTION_SESSIONS_URI = "sessions-uri";
     File dir;
+
 
     protected ExportData() {
         super("export-data");
@@ -41,7 +44,7 @@ public class ExportData extends AbstractCli {
     }
 
     protected Options addOptions(Options options) {
-        options.addOption(eventId);
+        options.addOption(eventUri);
         options.addOption(null, OPTION_DIRECTORY, true, "The data to import");
         return options;
     }
@@ -52,10 +55,10 @@ public class ExportData extends AbstractCli {
             return;
         }
 
-        String eventId = getDefaultEventId();
+        URI sessionsURI = getOptionAsURI(OPTION_SESSIONS_URI);
         dir = new File(getCommandLine().getOptionValue(OPTION_DIRECTORY));
 
-        List<SessionV2> sessions = getEms().getSessions(eventId).getSession();
+        List<SessionV2> sessions = getEms().getSessions(new ResourceHandle(sessionsURI)).getSession();
 
         OutputStream outputStream = null;
         try {

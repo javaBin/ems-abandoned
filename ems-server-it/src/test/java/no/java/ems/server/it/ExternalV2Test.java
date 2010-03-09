@@ -17,7 +17,7 @@ package no.java.ems.server.it;
 
 import no.java.ems.external.v2.EmsV2Client;
 import no.java.ems.external.v2.EventListV2;
-import no.java.ems.external.v2.RestletEmsV2Client;
+import no.java.ems.external.v2.RESTfulEmsV2Client;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.junit.Test;
 
@@ -34,7 +34,8 @@ public class ExternalV2Test extends AbstractIntegrationTest {
     public void testGetEvents() throws Exception {
         HTTPCache cache = new InMemoryHttpCache();
 
-        EmsV2Client client = new RestletEmsV2Client(cache, IncogitoIntegrationTest.baseUri);
+        EmsV2Client client = new RESTfulEmsV2Client(cache, null, null);
+        client.login(baseUri);
 
         EventListV2 events = client.getEvents();
 

@@ -23,6 +23,14 @@ public class URIBuilder {
         this(fromUri(baseurl));
     }
 
+    public URIBuilder(URI baseurl) {
+        this(fromUri(baseurl));
+    }
+
+    public URI baseURI() {
+        return baseurl.clone().build();
+    }
+
     public EventsUri events() {
         return new EventsUri(baseurl.clone().segment("events"));
     }
@@ -168,7 +176,7 @@ public class URIBuilder {
         }
 
         public URI sessions(String eventid) {
-            return builder.segment(eventid).build();
+            return builder.segment(eventid, "sessions").build();
         }
 
         public URI session(String eventid, String sessionid) {

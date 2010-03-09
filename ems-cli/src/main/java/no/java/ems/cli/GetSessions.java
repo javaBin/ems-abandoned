@@ -15,6 +15,7 @@
 
 package no.java.ems.cli;
 
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.external.v2.SessionV2;
 import org.apache.commons.cli.Options;
 
@@ -32,16 +33,15 @@ public class GetSessions extends AbstractCli {
     }
 
     protected Options addOptions(Options options) {
-        options.addOption(null, OPTION_EVENT_ID, true, "The id of the event to show.");
+        options.addOption(null, OPTION_EVENT_URI, true, "The id of the event to show.");
         options.addOption(parseable);
 
         return options;
     }
 
     public void work() throws Exception {
-        String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
 
-        for (SessionV2 session : getEms().getSessions(eventId).getSession()) {
+        for (SessionV2 session : getEms().getSessions(getDefaultEventHandle()).getSession()) {
             PrintUtil.print(getCommandLine(), session);
         }
     }

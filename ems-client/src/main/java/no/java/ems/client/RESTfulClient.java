@@ -42,7 +42,12 @@ public abstract class RESTfulClient {
 
     protected RESTfulClient(HTTPCache cache, String username, String password) {
         Validate.notNull(cache, "Cache may not be null");
-        challenge = new UsernamePasswordChallenge(username, password);
+        if (username != null) {
+            challenge = new UsernamePasswordChallenge(username, password);
+        }
+        else {
+            challenge = null;
+        }
         this.cache = cache;
     }
 

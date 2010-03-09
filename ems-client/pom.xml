@@ -25,19 +25,13 @@
   <artifactId>ems-client</artifactId>
   <name>Event Management Suite :: Client</name>
   <dependencies>
-<!--
-    <dependency>
-      <groupId>no.java.ems</groupId>
-      <artifactId>ems-domain</artifactId>
-    </dependency>
--->
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.functionaljava</groupId>
       <artifactId>fj</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-core</artifactId>      
     </dependency>
     <dependency>
       <groupId>org.codehaus.httpcache4j</groupId>

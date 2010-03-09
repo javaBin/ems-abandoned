@@ -92,7 +92,6 @@ public class ExternalV2F {
     public static final F<SessionV2, Session> session = new F<SessionV2, Session>() {
         public Session f(SessionV2 session) {
             Session newSession = new Session();
-            newSession.setEventId(session.getEventUuid());
             newSession.setTitle(session.getTitle());
             newSession.setNotes(session.getNotes());
             newSession.setBody(session.getBody());
@@ -113,6 +112,13 @@ public class ExternalV2F {
                 newSession.setSpeakers(new ArrayList<Speaker>(list.toCollection()));
             }
             return newSession;
+        }
+    };
+
+    public static final F2<String, Session, Session> eventId = new F2<String, Session, Session>() {
+        public Session f(String eventId, Session session) {
+            session.setEventId(eventId);
+            return session;
         }
     };
 

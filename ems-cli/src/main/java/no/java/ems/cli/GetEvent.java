@@ -28,20 +28,18 @@ public class GetEvent extends AbstractCli {
         super("get-event");
     }
 
-    private static final String OPTION_ID = "id";
-
     public static void main(String[] args) throws Exception {
         new GetEvent().doMain(args);
     }
 
     protected Options addOptions(Options options) {
-        options.addOption(null, OPTION_ID, true, "The id of the event to show.");
+        options.addOption(null, OPTION_EVENT_URI, true, "The uri of the event to show.");
 
         return options;
     }
 
     public void work() throws Exception {
-        Option<EventV2> option = getEms().getEvent(getCommandLine().getOptionValue(OPTION_ID));
+        Option<EventV2> option = getEms().getEvent(getDefaultEventHandle());
 
         if (option.isNone()) {
             System.err.println("No such event.");

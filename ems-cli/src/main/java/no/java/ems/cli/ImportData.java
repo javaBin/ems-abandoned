@@ -17,10 +17,12 @@ package no.java.ems.cli;
 
 import fj.data.Option;
 import no.java.ems.cli.command.ImportDirectory;
+import no.java.ems.client.ResourceHandle;
 import no.java.ems.external.v2.EventV2;
 import org.apache.commons.cli.Options;
 
 import java.io.File;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -37,7 +39,7 @@ public class ImportData extends AbstractCli {
     }
 
     protected Options addOptions(Options options) {
-        options.addOption(null, OPTION_EVENT_ID, true, "The event to import data into");
+        options.addOption(null, OPTION_EVENT_URI, true, "The event to import data into");
         options.addOption(null, OPTION_DIRECTORY, true, "The data to import");
         return options;
     }
@@ -48,7 +50,7 @@ public class ImportData extends AbstractCli {
             return;
         }
 
-        String eventId = getDefaultEventId();
+        ResourceHandle eventId = getDefaultEventHandle();
         File dir = new File(getCommandLine().getOptionValue(OPTION_DIRECTORY));
 
         if (!dir.isDirectory()) {

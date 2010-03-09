@@ -54,7 +54,7 @@ public class CreateRoom extends AbstractCli {
         RoomV2 room = new RoomV2();
         room.setName(getCommandLine().getOptionValue(OPTION_ROOM_NAME));
         String eventId = getCommandLine().getOptionValue(OPTION_EVENT_ID);
-        ResourceHandle uri = getEms().addRoom(eventId, room);
-        System.err.println("room.getId() = " + uri);
+        //ResourceHandle uri = getEms().addRoom(eventId, room);
+        //System.err.println("room.getId() = " + uri);
     }
 }

@@ -25,8 +25,6 @@ import org.codehaus.httpcache4j.payload.InputStreamPayload;
 import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.*;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
 import java.io.IOException;
@@ -58,6 +56,10 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     private static final MIMEType ROOM_LIST = MIMEType.valueOf(MIMETypes.ROOM_LIST_MIME_TYPE);
     private static final MIMEType ROOM = MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE);
 
+
+    public RESTfulEmsV2Client(HTTPCache cache) {
+        this(cache, null, null);
+    }
 
     public RESTfulEmsV2Client(HTTPCache cache, String username, String password) {
         try {
@@ -160,43 +162,17 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return client.update(new ResourceHandle(URI.create(personV2.getUri())), createJAXBPayload("person", PersonV2.class, personV2, PERSON));
     }
 
-    private static class JAXBHandler implements Handler {
-        private final MIMEType mimeType;
-        private final Unmarshaller unmarshaller;
-        private final Class type;
-
-        public JAXBHandler(JAXBContext context, Class type, MIMEType mimeType) throws JAXBException {
-            this.mimeType = mimeType;
-            this.type = type;
-            unmarshaller = context.createUnmarshaller();
-        }
-
-        public boolean supports(MIMEType type) {
-            return mimeType.includes(type);
-        }
-
-        @SuppressWarnings({"unchecked"})
-        public Object handle(Payload payload) {
-            try {
-                Source source = new StreamSource(payload.getInputStream());
-                return unmarshaller.unmarshal(source, type).getValue();
-            } catch (JAXBException e) {
-                throw new RuntimeException("Unable to unmarshall.", e);
-            }
-        }
-    }
-
     private static class MyRESTfulClient extends RESTfulClient {
         public MyRESTfulClient(HTTPCache cache, JAXBContext context, String username, String password) throws JAXBException {
             super(cache, username, password);
-            registerHandler(new JAXBHandler(context, PersonV2.class, PERSON));
-            registerHandler(new JAXBHandler(context, EventV2.class, EVENT));
-            registerHandler(new JAXBHandler(context, SessionV2.class, SESSION));
-            registerHandler(new JAXBHandler(context, RoomV2.class, ROOM));
-            registerHandler(new JAXBHandler(context, EventListV2.class, EVENT_LIST));
-            registerHandler(new JAXBHandler(context, SessionListV2.class, SESSION_LIST));
-            registerHandler(new JAXBHandler(context, PersonListV2.class, PERSON_LIST));
-            registerHandler(new JAXBHandler(context, RoomListV2.class, ROOM_LIST));
+            registerHandler(JAXBHandler.create(context, PersonV2.class, PERSON));
+            registerHandler(JAXBHandler.create(context, EventV2.class, EVENT));
+            registerHandler(JAXBHandler.create(context, SessionV2.class, SESSION));
+            registerHandler(JAXBHandler.create(context, RoomV2.class, ROOM));
+            registerHandler(JAXBHandler.create(context, EventListV2.class, EVENT_LIST));
+            registerHandler(JAXBHandler.create(context, SessionListV2.class, SESSION_LIST));
+            registerHandler(JAXBHandler.create(context, PersonListV2.class, PERSON_LIST));
+            registerHandler(JAXBHandler.create(context, RoomListV2.class, ROOM_LIST));
             registerHandler(new DefaultHandler());
             registerHandler(new URIListHandler());
         }

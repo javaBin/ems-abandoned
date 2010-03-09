@@ -18,9 +18,11 @@ package no.java.ems.server.it;
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.external.v2.RestletEmsV2Client;
+import no.java.ems.external.v2.EmsV2Client;
+import no.java.ems.external.v2.RESTfulEmsV2Client;
 import no.java.ems.server.DerbyService;
 import no.java.ems.server.EmsSrcEmbedder;
+import no.java.ems.server.URIBuilder;
 import no.java.ems.server.domain.Room;
 import no.java.ems.util.TestHelper;
 import org.codehaus.plexus.PlexusTestCase;
@@ -33,6 +35,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 
 import java.io.File;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -60,8 +63,9 @@ public abstract class AbstractIntegrationTest {
     protected final Interval jz06sep13slot7 = new Interval(jz06sep131700.toDateTime(), Minutes.minutes(60));
 
     private static EmsSrcEmbedder embedder;
-    protected static String baseUri;
-    protected static RestletEmsV2Client ems;
+    protected static URI baseUri;
+    protected static EmsV2Client ems;
+    protected static URIBuilder uriBuilder;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -75,9 +79,11 @@ public abstract class AbstractIntegrationTest {
         embedder = new EmsSrcEmbedder(new File(baseDir + "/../ems-server/"), emsHome);
         embedder.start();
         embedder.getBean(DerbyService.class).maybeCreateTables(false);
-        baseUri = embedder.getBaseUri();
 
-        ems = new RestletEmsV2Client(new InMemoryHttpCache(), baseUri);
+        uriBuilder = new URIBuilder(embedder.getBaseUri());
+        ems = new RESTfulEmsV2Client(new InMemoryHttpCache(), null, null);
+        baseUri = uriBuilder.baseURI();
+        ems.login(baseUri);
     }
 
     @AfterClass

@@ -55,9 +55,9 @@
       </snapshots>
     </repository>
     <repository>
-      <id>maven-restlet</id>
-      <name>Public online Restlet repository</name>
-      <url>http://maven.restlet.org</url>
+      <id>apache-incubating</id>
+      <name>Apache incubating</name>
+      <url>http://people.apache.org/repo/m2-incubating-repository</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -297,6 +297,12 @@
         <artifactId>derbytools</artifactId>
         <version>${version.derby}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.abdera</groupId>
+        <artifactId>abdera-core</artifactId>
+        <version>0.4.0-incubating</version>
+      </dependency>
+
       <dependency>
         <groupId>dom4j</groupId>
         <artifactId>dom4j</artifactId>
