@@ -52,6 +52,13 @@ public class ExternalEmsDomainJavaF {
         }
     };
 
+    private static F<no.java.ems.domain.EmailAddress, EmailAddress> externalToEmailAddresses = new F<no.java.ems.domain.EmailAddress, EmailAddress>() {
+        public EmailAddress f(no.java.ems.domain.EmailAddress emailAddress) {
+            return new EmailAddress(emailAddress.getEmailAddress());
+        }
+    };
+
+
     public static F<Room, no.java.ems.domain.Room> roomToExternal = new F<Room, no.java.ems.domain.Room>() {
         public no.java.ems.domain.Room f(Room room) {
             no.java.ems.domain.Room externalRoom = copy(room, new no.java.ems.domain.Room(room.getName()));
@@ -106,6 +113,12 @@ public class ExternalEmsDomainJavaF {
         }
     };
 
+    private static F<no.java.ems.domain.Nationality, Nationality> externalToNationality = new F<no.java.ems.domain.Nationality, Nationality>() {
+        public Nationality f(no.java.ems.domain.Nationality nationality) {
+            return Nationality.valueOf(nationality.getIsoCode());
+        }
+    };
+    
     public static F<Speaker, no.java.ems.domain.Speaker> speakerToExternal = new F<Speaker, no.java.ems.domain.Speaker>() {
         public no.java.ems.domain.Speaker f(Speaker speaker) {
             no.java.ems.domain.Speaker s = new no.java.ems.domain.Speaker(speaker.getPersonId(), speaker.getName());
@@ -155,6 +168,20 @@ public class ExternalEmsDomainJavaF {
             externalPerson.setEmailAddresses(mapArrayList(person.getEmailAddresses(), emailAddressToExternal));
             externalPerson.setPhoto(fromNull(person.getPhoto()).map(binaryToExternal).orSome((no.java.ems.domain.Binary) null));
             return externalPerson;
+        }
+    };
+
+    public static F<no.java.ems.domain.Person, Person> externalToPerson = new F<no.java.ems.domain.Person, Person>() {
+        public Person f(no.java.ems.domain.Person person) {
+            Person internalPerson = copy(person, new Person(person.getName()));
+            internalPerson.setDescription(person.getDescription());
+            internalPerson.setGender(Person.Gender.valueOf(person.getGender().name()));
+            internalPerson.setBirthdate(person.getBirthdate());
+            internalPerson.setLanguage(fromNull(person.getLanguage()).map(externalTolanguage).orSome((Language) null));
+            internalPerson.setNationality(fromNull(person.getNationality()).map(externalToNationality).orSome((Nationality) null));
+            internalPerson.setEmailAddresses(mapArrayList(person.getEmailAddresses(), externalToEmailAddresses));
+            internalPerson.setPhoto(fromNull(person.getPhoto()).map(externalToBinary).orSome((Binary) null));
+            return internalPerson;
         }
     };
 

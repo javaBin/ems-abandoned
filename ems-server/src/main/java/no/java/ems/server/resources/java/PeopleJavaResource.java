@@ -1,11 +1,16 @@
 package no.java.ems.server.resources.java;
 
+import fj.data.Option;
 import no.java.ems.server.domain.*;
+
+import static fj.data.Option.some;
 import static no.java.ems.server.resources.ResourceUtil.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -26,13 +31,21 @@ public class PeopleJavaResource {
 
     @GET
     public Object getPeople() {
+        return new ArrayList<Object>(emsServer.getPeople().map(ExternalEmsDomainJavaF.personToExternal).toCollection());
+    }
 
-        List<Object> people = new ArrayList<Object>();
+    @POST
+    public Response create(no.java.ems.domain.Person person) {
+        Person personOption = some(person).map(ExternalEmsDomainJavaF.externalToPerson).some(); 
+        emsServer.savePerson(personOption);
+        return Response.created(URI.create(personOption.getId())).build();
+    }
 
-        for (Person person: emsServer.getPeople()) {
-            people.add(ExternalEmsDomainJavaF.personToExternal.f(person));
-        }
-
-        return people;
+    @PUT
+    @Path("{personId}")
+    public Response create(@PathParam("personId") String personId, no.java.ems.domain.Person person) {
+        Person personOption = some(person).map(ExternalEmsDomainJavaF.externalToPerson).some();
+        emsServer.savePerson(personOption);
+        return Response.ok().build();
     }
 }
