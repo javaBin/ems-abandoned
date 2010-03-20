@@ -1,7 +1,11 @@
 package no.java.ems.server.resources.java;
 
 import fj.*;
+
 import static fj.data.Option.*;
+
+import no.java.ems.domain.*;
+import no.java.ems.server.domain.*;
 import no.java.ems.server.domain.AbstractEntity;
 import no.java.ems.server.domain.Binary;
 import no.java.ems.server.domain.EmailAddress;
@@ -11,6 +15,7 @@ import no.java.ems.server.domain.Nationality;
 import no.java.ems.server.domain.Person;
 import no.java.ems.server.domain.Room;
 import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.Speaker;
 import no.java.ems.server.domain.UriBinary;
 import org.joda.time.Interval;
 
@@ -57,11 +62,11 @@ public class ExternalEmsDomainJavaF {
 
     public static F<Binary, no.java.ems.domain.Binary> binaryToExternal = new F<Binary, no.java.ems.domain.Binary>() {
         public no.java.ems.domain.Binary f(Binary binary) {
-            if(binary instanceof UriBinary) {
+            if (binary instanceof UriBinary) {
                 UriBinary uriBinary = (UriBinary) binary;
 
                 return new no.java.ems.domain.UriBinary(binary.getId(), binary.getFileName(),
-                        binary.getMimeType(), binary.getSize(), uriBinary.getUri());
+                                                        binary.getMimeType(), binary.getSize(), uriBinary.getUri());
             }
             else {
                 throw new RuntimeException("Can't convert binaries (I'm lazy): " + binary.getClass());
@@ -71,11 +76,11 @@ public class ExternalEmsDomainJavaF {
 
     public static F<no.java.ems.domain.Binary, Binary> externalToBinary = new F<no.java.ems.domain.Binary, Binary>() {
         public Binary f(no.java.ems.domain.Binary binary) {
-            if(binary instanceof no.java.ems.domain.UriBinary) {
+            if (binary instanceof no.java.ems.domain.UriBinary) {
                 no.java.ems.domain.UriBinary uriBinary = (no.java.ems.domain.UriBinary) binary;
 
                 return new UriBinary(binary.getId(), binary.getFileName(),
-                        binary.getMimeType(), binary.getSize(), uriBinary.getUri());
+                                     binary.getMimeType(), binary.getSize(), uriBinary.getUri());
             }
             else {
                 throw new RuntimeException("Can't convert binaries (I'm lazy): " + binary.getClass());
@@ -100,7 +105,27 @@ public class ExternalEmsDomainJavaF {
             return no.java.ems.domain.Nationality.valueOf(nationality.getIsoCode());
         }
     };
-    
+
+    public static F<Speaker, no.java.ems.domain.Speaker> speakerToExternal = new F<Speaker, no.java.ems.domain.Speaker>() {
+        public no.java.ems.domain.Speaker f(Speaker speaker) {
+            no.java.ems.domain.Speaker s = new no.java.ems.domain.Speaker(speaker.getPersonId(), speaker.getName());
+            copy(speaker, s);
+            s.setDescription(speaker.getDescription());
+            s.setPhoto(fromNull(speaker.getPhoto()).map(binaryToExternal).orSome((no.java.ems.domain.Binary) null));
+            return s;
+        }
+    };
+
+    public static F<no.java.ems.domain.Speaker, Speaker> externalToSpeaker = new F<no.java.ems.domain.Speaker, Speaker>() {
+        public Speaker f(no.java.ems.domain.Speaker speaker) {
+            Speaker s = new Speaker(speaker.getPersonId(), speaker.getName());
+            copy(speaker, s);
+            s.setDescription(speaker.getDescription());
+            s.setPhoto(fromNull(speaker.getPhoto()).map(externalToBinary).orSome((Binary) null));
+            return s;
+        }
+    };
+
     public static <A extends AbstractEntity, B extends no.java.ems.domain.AbstractEntity> B copy(A a, B b) {
         b.setId(a.getId());
         b.setRevision(a.getRevision());
@@ -126,7 +151,7 @@ public class ExternalEmsDomainJavaF {
             externalPerson.setGender(no.java.ems.domain.Person.Gender.valueOf(person.getGender().name()));
             externalPerson.setBirthdate(person.getBirthdate());
             externalPerson.setLanguage(fromNull(person.getLanguage()).map(languageToExternal).orSome((no.java.ems.domain.Language) null));
-            externalPerson.setNationality(fromNull(person.getNationality()).map(nationalityToExternal).orSome((no.java.ems.domain.Nationality)null));
+            externalPerson.setNationality(fromNull(person.getNationality()).map(nationalityToExternal).orSome((no.java.ems.domain.Nationality) null));
             externalPerson.setEmailAddresses(mapArrayList(person.getEmailAddresses(), emailAddressToExternal));
             externalPerson.setPhoto(fromNull(person.getPhoto()).map(binaryToExternal).orSome((no.java.ems.domain.Binary) null));
             return externalPerson;
@@ -140,6 +165,7 @@ public class ExternalEmsDomainJavaF {
             externalSession.setKeywords(session.getKeywords());
             externalSession.setBody(session.getBody());
             externalSession.setState(no.java.ems.domain.Session.State.valueOf(session.getState().name()));
+            externalSession.setLevel(no.java.ems.domain.Session.Level.valueOf(session.getLevel().name()));
             externalSession.setLanguage(fromNull(session.getLanguage()).map(languageToExternal).orSome((no.java.ems.domain.Language) null));
             externalSession.setExpectedAudience(session.getExpectedAudience());
             externalSession.setOutline(session.getOutline());
@@ -150,9 +176,10 @@ public class ExternalEmsDomainJavaF {
             externalSession.setNotes(session.getNotes());
             externalSession.setFormat(no.java.ems.domain.Session.Format.valueOf(session.getFormat().name()));
             externalSession.setPublished(session.isPublished());
+            externalSession.setSpeakers(mapArrayList(session.getSpeakers(), speakerToExternal));
             return externalSession;
         }
-    }; 
+    };
 
     public static F<no.java.ems.domain.Session, Session> externalToSession = new F<no.java.ems.domain.Session, Session>() {
         public Session f(no.java.ems.domain.Session session) {
@@ -161,6 +188,7 @@ public class ExternalEmsDomainJavaF {
             internalSession.setKeywords(session.getKeywords());
             internalSession.setBody(session.getBody());
             internalSession.setState(Session.State.valueOf(session.getState().name()));
+            internalSession.setLevel(Session.Level.valueOf(session.getLevel().name()));
             internalSession.setLanguage(fromNull(session.getLanguage()).map(externalTolanguage).orSome((Language) null));
             internalSession.setExpectedAudience(session.getExpectedAudience());
             internalSession.setOutline(session.getOutline());
@@ -171,6 +199,7 @@ public class ExternalEmsDomainJavaF {
             internalSession.setNotes(session.getNotes());
             internalSession.setFormat(Session.Format.valueOf(session.getFormat().name()));
             internalSession.setPublished(session.isPublished());
+            internalSession.setSpeakers(mapArrayList(session.getSpeakers(), externalToSpeaker));
             return internalSession;
         }
     };

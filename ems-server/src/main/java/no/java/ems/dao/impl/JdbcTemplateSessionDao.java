@@ -216,7 +216,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
         for (int position = 0; position < speakers.size(); position++) {
             Speaker speaker = speakers.get(position);
             jdbcTemplate.update(
-                    "insert into session_speaker values (?, ?, ?, ?, ?, ?)",
+                    "insert into session_speaker (sessionId, revision, personId, position, description, tags, photo) values (?, ?, ?, ?, ?, ?, ?)",
                     new Object[]{
                             session.getId(),
                             session.getRevision(),

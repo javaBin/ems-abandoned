@@ -56,7 +56,6 @@ public class SessionsJavaResource {
     }
 
     @POST
-    @Path("{sessionId}")
     public Response create(@PathParam("eventId") String eventId, no.java.ems.domain.Session session) {
         Option<Session> sess = Option.some(session).map(ExternalEmsDomainJavaF.externalToSession);
         if (sess.isSome()) {
