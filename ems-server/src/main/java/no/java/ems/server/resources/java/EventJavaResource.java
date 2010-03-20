@@ -32,7 +32,6 @@ public class EventJavaResource {
         List<Object> events = new ArrayList<Object>();
 
         for (Event event : emsServer.getEvents()) {
-            System.out.println("event.getId() = " + event.getId());
             events.add(ExternalEmsDomainJavaF.eventToExternal.f(event));
         }
 
