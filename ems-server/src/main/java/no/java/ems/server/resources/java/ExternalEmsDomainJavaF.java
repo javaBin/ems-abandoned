@@ -69,9 +69,29 @@ public class ExternalEmsDomainJavaF {
         }
     };
 
+    public static F<no.java.ems.domain.Binary, Binary> externalToBinary = new F<no.java.ems.domain.Binary, Binary>() {
+        public Binary f(no.java.ems.domain.Binary binary) {
+            if(binary instanceof no.java.ems.domain.UriBinary) {
+                no.java.ems.domain.UriBinary uriBinary = (no.java.ems.domain.UriBinary) binary;
+
+                return new UriBinary(binary.getId(), binary.getFileName(),
+                        binary.getMimeType(), binary.getSize(), uriBinary.getUri());
+            }
+            else {
+                throw new RuntimeException("Can't convert binaries (I'm lazy): " + binary.getClass());
+            }
+        }
+    };
+
     public static F<Language, no.java.ems.domain.Language> languageToExternal = new F<Language, no.java.ems.domain.Language>() {
         public no.java.ems.domain.Language f(Language language) {
             return no.java.ems.domain.Language.valueOf(language.getIsoCode());
+        }
+
+    };
+    public static F<no.java.ems.domain.Language, Language> externalTolanguage = new F<no.java.ems.domain.Language, Language>() {
+        public Language f(no.java.ems.domain.Language language) {
+            return Language.valueOf(language.getIsoCode());
         }
     };
 
@@ -87,6 +107,15 @@ public class ExternalEmsDomainJavaF {
         b.setNotes(a.getNotes());
         b.setTags(a.getTags());
         b.setAttachements(mapArrayList(a.getAttachments(), binaryToExternal));
+        return b;
+    }
+
+    public static <A extends no.java.ems.domain.AbstractEntity, B extends AbstractEntity> B copy(A a, B b) {
+        b.setId(a.getId());
+        b.setRevision(a.getRevision());
+        b.setNotes(a.getNotes());
+        b.setTags(a.getTags());
+        b.setAttachments(mapArrayList(a.getAttachements(), externalToBinary));
         return b;
     }
 
@@ -124,4 +153,25 @@ public class ExternalEmsDomainJavaF {
             return externalSession;
         }
     }; 
+
+    public static F<no.java.ems.domain.Session, Session> externalToSession = new F<no.java.ems.domain.Session, Session>() {
+        public Session f(no.java.ems.domain.Session session) {
+            Session internalSession = copy(session, new Session(session.getTitle()));
+
+            internalSession.setKeywords(session.getKeywords());
+            internalSession.setBody(session.getBody());
+            internalSession.setState(Session.State.valueOf(session.getState().name()));
+            internalSession.setLanguage(fromNull(session.getLanguage()).map(externalTolanguage).orSome((Language) null));
+            internalSession.setExpectedAudience(session.getExpectedAudience());
+            internalSession.setOutline(session.getOutline());
+            internalSession.setEventId(session.getEventId());
+            internalSession.setLead(session.getLead());
+            internalSession.setTimeslot(fromNull(session.getTimeslot()));
+            internalSession.setRevision(session.getRevision());
+            internalSession.setNotes(session.getNotes());
+            internalSession.setFormat(Session.Format.valueOf(session.getFormat().name()));
+            internalSession.setPublished(session.isPublished());
+            return internalSession;
+        }
+    };
 }

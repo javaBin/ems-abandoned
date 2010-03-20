@@ -5,6 +5,8 @@ import no.java.ems.server.domain.EmsServer;
 import no.java.ems.server.domain.Session;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +42,27 @@ public class SessionsJavaResource {
         throw new WebApplicationException(404);
     }
 
+    @PUT
+    @Path("{sessionId}")
+    public void update(@PathParam("eventId") String eventId, @PathParam("sessionId") String sessionId, no.java.ems.domain.Session session) {
+        Option<Session> sessionOption = emsServer.getSession(eventId, sessionId);
+        if (sessionOption.isNone()) {
+            throw new WebApplicationException(404);
+        }
+        Option<Session> sess = Option.some(session).map(ExternalEmsDomainJavaF.externalToSession);
+        if (sess.isSome()) {
+            emsServer.saveSession(eventId, sess.some());
+        }
+    }
 
+    @POST
+    @Path("{sessionId}")
+    public Response create(@PathParam("eventId") String eventId, no.java.ems.domain.Session session) {
+        Option<Session> sess = Option.some(session).map(ExternalEmsDomainJavaF.externalToSession);
+        if (sess.isSome()) {
+            emsServer.saveSession(eventId, sess.some());
+            return Response.created(URI.create(sess.some().getId())).build();
+        }
+        return Response.serverError().build();
+    }
 }
