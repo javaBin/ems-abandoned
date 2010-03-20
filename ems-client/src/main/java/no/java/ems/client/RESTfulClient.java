@@ -161,10 +161,10 @@ public abstract class RESTfulClient {
                     InputStream payload = response.getPayload().getInputStream();
                     try {
                         return Option.<Resource>some(new DefaultResource(handle, response.getHeaders(), handler.handle(payload)));
-                    } finally {
+                    } catch (RuntimeException e) {
                         IOUtils.closeQuietly(payload);
+                        throw e;
                     }
-
                 }
             }
         }

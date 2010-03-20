@@ -15,6 +15,7 @@
 
 package no.java.ems.external.v2;
 
+import no.java.ems.client.Handler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.codehaus.httpcache4j.*;
@@ -36,37 +37,33 @@ import fj.data.Option;
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
-public class EndpointParser {
-    private RESTfulClient client;
+public class EndpointParser implements Handler {
+    private final MIMEType mimeType = MIMEType.valueOf(MIMETypes.ENDPOINT_MIME_TYPE);
 
-    public EndpointParser(RESTfulClient client) {
-        Validate.notNull(client, "client may not be null");
-        this.client = client;
+    public EndpointParser() {
     }
 
+    public boolean supports(MIMEType type) {
+        return mimeType.includes(type);
+    }
 
-    public Map<String, Endpoint> parse(URI baseURI) {
-        Option<Resource> resourceOption = client.read(new ResourceHandle(baseURI), Collections.singletonList(MIMEType.ALL));
-        if (resourceOption.isSome()) {
-            InputStream data = resourceOption.some().getData(InputStream.class).some();
-            try {
-                String s = IOUtils.toString(data);
-                JSONObject endpointObject = new JSONObject(s);
-                Map<String, Endpoint> map = new HashMap<String, Endpoint>();
-                Iterator iterator = endpointObject.sortedKeys();
-                while (iterator.hasNext()) {
-                    String key = (String) iterator.next();
-                    JSONObject object = endpointObject.getJSONObject(key);
-                    map.put(key, new Endpoint(URI.create(object.getString("uri"))));
-                }
-                return map;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                IOUtils.closeQuietly(data);
+    public Object handle(InputStream payload) {
+        try {
+            String s = IOUtils.toString(payload);
+            JSONObject endpointObject = new JSONObject(s);
+            Map<String, Endpoint> map = new HashMap<String, Endpoint>();
+            Iterator iterator = endpointObject.sortedKeys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                JSONObject object = endpointObject.getJSONObject(key);
+                map.put(key, new Endpoint(URI.create(object.getString("uri"))));
             }
+            return map;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(payload);
         }
-        throw new IllegalStateException("Unable to parse Endpoint");
     }
 
     public static class Endpoint {

@@ -55,6 +55,7 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     private static final MIMEType PERSON = MIMEType.valueOf(MIMETypes.PERSON_MIME_TYPE);
     private static final MIMEType ROOM_LIST = MIMEType.valueOf(MIMETypes.ROOM_LIST_MIME_TYPE);
     private static final MIMEType ROOM = MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE);
+    private static final MIMEType ENDPOINT = MIMEType.valueOf(MIMETypes.ENDPOINT_MIME_TYPE);
 
 
     public RESTfulEmsV2Client(HTTPCache cache) {
@@ -78,8 +79,15 @@ public class RESTfulEmsV2Client implements EmsV2Client {
      * @param endpoint the uri of the "2" webservice, e.g http://localhost:3000/ems/2
      */
     public void login(URI endpoint) {
-        Map<String, EndpointParser.Endpoint> endpoints = new EndpointParser(client).parse(endpoint);
-        this.endpoints.putAll(endpoints);
+        Option<Resource> endpoints = client.read(new ResourceHandle(endpoint), Collections.singletonList(ENDPOINT));
+        if (endpoints.isSome()) {
+            Resource resource = endpoints.some();
+            Option<Map> data = resource.getData(Map.class);
+            if (data.isSome()) {
+                Map<String, EndpointParser.Endpoint> map = data.some();
+                this.endpoints.putAll(map);                
+            }
+        }
     }
 
     private <A> Payload createJAXBPayload(String tag, Class<A> type, A object, MIMEType mimeType) {
@@ -173,8 +181,9 @@ public class RESTfulEmsV2Client implements EmsV2Client {
             registerHandler(JAXBHandler.create(context, SessionListV2.class, SESSION_LIST));
             registerHandler(JAXBHandler.create(context, PersonListV2.class, PERSON_LIST));
             registerHandler(JAXBHandler.create(context, RoomListV2.class, ROOM_LIST));
-            registerHandler(new DefaultHandler());
             registerHandler(new URIListHandler());
+            registerHandler(new EndpointParser());
+            registerHandler(new DefaultHandler());
         }
     }
 }
