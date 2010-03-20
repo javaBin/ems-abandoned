@@ -1,6 +1,9 @@
 package no.java.ems.server.resources.java;
 
+import fj.data.Option;
+import no.java.ems.domain.*;
 import no.java.ems.server.domain.*;
+import no.java.ems.server.domain.Event;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -24,14 +27,30 @@ public class EventJavaResource {
     }
 
     @GET
-    public Object getEvent() {
+    public List<Object> getEvents() {
 
         List<Object> events = new ArrayList<Object>();
 
         for (Event event : emsServer.getEvents()) {
+            System.out.println("event.getId() = " + event.getId());
             events.add(ExternalEmsDomainJavaF.eventToExternal.f(event));
         }
 
         return events;
+    }
+
+    @GET
+    @Path("{eventId}")
+    public Object getEvent(@PathParam("eventId") String eventId) {
+        Option<no.java.ems.domain.Event> eventOption = emsServer.getEventOption(eventId).map(ExternalEmsDomainJavaF.eventToExternal);
+        if (eventOption.isSome()) {
+            return eventOption.some();
+        }
+        throw new WebApplicationException(404);
+    }
+
+    @Path("{eventId}/sessions")
+    public SessionsJavaResource getSessionResource() {
+        return new SessionsJavaResource(emsServer);
     }
 }

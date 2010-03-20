@@ -2,7 +2,17 @@ package no.java.ems.server.resources.java;
 
 import fj.*;
 import static fj.data.Option.*;
-import no.java.ems.server.domain.*;
+import no.java.ems.server.domain.AbstractEntity;
+import no.java.ems.server.domain.Binary;
+import no.java.ems.server.domain.EmailAddress;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Language;
+import no.java.ems.server.domain.Nationality;
+import no.java.ems.server.domain.Person;
+import no.java.ems.server.domain.Room;
+import no.java.ems.server.domain.Session;
+import no.java.ems.server.domain.UriBinary;
+import org.joda.time.Interval;
 
 import java.util.*;
 
@@ -93,4 +103,25 @@ public class ExternalEmsDomainJavaF {
             return externalPerson;
         }
     };
+
+    public static F<Session, no.java.ems.domain.Session> sessionToExternal = new F<Session, no.java.ems.domain.Session>() {
+        public no.java.ems.domain.Session f(Session session) {
+            no.java.ems.domain.Session externalSession = copy(session, new no.java.ems.domain.Session(session.getTitle()));
+
+            externalSession.setKeywords(session.getKeywords());
+            externalSession.setBody(session.getBody());
+            externalSession.setState(no.java.ems.domain.Session.State.valueOf(session.getState().name()));
+            externalSession.setLanguage(fromNull(session.getLanguage()).map(languageToExternal).orSome((no.java.ems.domain.Language) null));
+            externalSession.setExpectedAudience(session.getExpectedAudience());
+            externalSession.setOutline(session.getOutline());
+            externalSession.setEventId(session.getEventId());
+            externalSession.setLead(session.getLead());
+            externalSession.setTimeslot(session.getTimeslot().orSome((Interval) null));
+            externalSession.setRevision(session.getRevision());
+            externalSession.setNotes(session.getNotes());
+            externalSession.setFormat(no.java.ems.domain.Session.Format.valueOf(session.getFormat().name()));
+            externalSession.setPublished(session.isPublished());
+            return externalSession;
+        }
+    }; 
 }
