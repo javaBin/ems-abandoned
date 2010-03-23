@@ -18,8 +18,6 @@ package no.java.ems.server.it;
 import no.java.ems.dao.EventDao;
 import no.java.ems.dao.RoomDao;
 import no.java.ems.dao.SessionDao;
-import no.java.ems.external.v2.EmsV2Client;
-import no.java.ems.external.v2.RESTfulEmsV2Client;
 import no.java.ems.server.DerbyService;
 import no.java.ems.server.EmsSrcEmbedder;
 import no.java.ems.server.URIBuilder;
@@ -31,11 +29,12 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 
 import java.io.File;
 import java.net.URI;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -64,7 +63,7 @@ public abstract class AbstractIntegrationTest {
 
     private static EmsSrcEmbedder embedder;
     protected static URI baseUri;
-    protected static EmsV2Client ems;
+    //protected static EmsV2Client ems;
     protected static URIBuilder uriBuilder;
 
     @BeforeClass
@@ -81,9 +80,9 @@ public abstract class AbstractIntegrationTest {
         embedder.getBean(DerbyService.class).maybeCreateTables(false);
 
         uriBuilder = new URIBuilder(embedder.getBaseUri());
-        ems = new RESTfulEmsV2Client(new InMemoryHttpCache(), null, null);
-        baseUri = uriBuilder.baseURI();
-        ems.login(baseUri);
+        //ems = new RESTfulEmsV2Client(new InMemoryHttpCache(), null, null);
+        baseUri = embedder.getBaseUri();
+        //ems.login(baseUri);
     }
 
     @AfterClass

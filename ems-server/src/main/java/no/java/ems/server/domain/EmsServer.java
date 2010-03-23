@@ -119,7 +119,15 @@ public class EmsServer implements InitializingBean {
 
     public Option<Session> getSession(String eventId, String sessionId) {
         try {
-            return Option.some(sessionDao.getSession(eventId, sessionId));
+            return Option.fromNull(sessionDao.getSession(eventId, sessionId));
+        } catch (EmptyResultDataAccessException e) {
+            return Option.none();
+        }
+    }
+
+    public Option<Session> getSession(String sessionId) {
+        try {
+            return Option.fromNull(sessionDao.getSession(sessionId));
         } catch (EmptyResultDataAccessException e) {
             return Option.none();
         }

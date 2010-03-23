@@ -35,7 +35,13 @@ public class SessionsJavaResource {
     @GET
     @Path("{sessionId}")
     public Object getSession(@PathParam("eventId") String eventId, @PathParam("sessionId") String sessionId) {
-        Option<no.java.ems.domain.Session> option = emsServer.getSession(eventId, sessionId).map(ExternalEmsDomainJavaF.sessionToExternal);
+        Option<no.java.ems.domain.Session> option;
+        if (eventId == null || "null".equals(eventId)) {
+            option = emsServer.getSession(sessionId).map(ExternalEmsDomainJavaF.sessionToExternal);
+        }
+        else {
+            option = emsServer.getSession(eventId, sessionId).map(ExternalEmsDomainJavaF.sessionToExternal);
+        }
         if (option.isSome()) {
             return option.some();
         }
