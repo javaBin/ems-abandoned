@@ -26,7 +26,7 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd"
     default-lazy-init="true">
   
-  <!--<sec:http auto-config="true" realm="EMS" use-expressions="true">
+  <sec:http auto-config="true" realm="EMS" use-expressions="true">
     <sec:intercept-url pattern="/**" access="isAuthenticated()"/>
     <sec:http-basic/>
   </sec:http>
@@ -36,5 +36,5 @@
   <sec:authentication-manager>
     <sec:ldap-authentication-provider server-ref="javabin" user-search-filter="(uid={0})" user-search-base="ou=People,dc=java,dc=no"
           group-search-base="ou=Group,dc=java,dc=no" />
-  </sec:authentication-manager>-->
+  </sec:authentication-manager>
 </beans>
