@@ -55,14 +55,6 @@
       </snapshots>
     </repository>
     <repository>
-      <id>apache-incubating</id>
-      <name>Apache incubating</name>
-      <url>http://people.apache.org/repo/m2-incubating-repository</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
       <id>codehaus-snapshots</id>
       <url>http://snapshots.repository.codehaus.org</url>
       <releases>
@@ -243,6 +235,31 @@
         <version>${version.spring}</version>
       </dependency>
       <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${version.spring}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${version.spring}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-ldap</artifactId>
+        <version>${version.spring-security}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${version.spring-security}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${version.spring-security}</version>
+      </dependency>
+      <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
         <version>2.1</version>
@@ -414,6 +431,7 @@
     <version.derby>10.4.1.3</version.derby>
     <version.solr>1.4.0</version.solr>
     <version.restlet>1.1.2</version.restlet>
-    <version.spring>2.5.6</version.spring>
+    <version.spring>3.0.1.RELEASE</version.spring>
+    <version.spring-security>3.0.2.RELEASE</version.spring-security>
   </properties>
 </project>
