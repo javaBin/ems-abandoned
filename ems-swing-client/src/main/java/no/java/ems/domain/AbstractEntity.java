@@ -32,10 +32,7 @@ import java.net.URI;
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
-public abstract class AbstractEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public abstract class AbstractEntity {
     private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private ResourceHandle handle;
     private int revision;

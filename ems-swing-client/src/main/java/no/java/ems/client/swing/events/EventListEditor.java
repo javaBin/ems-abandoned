@@ -15,11 +15,10 @@
 
 package no.java.ems.client.swing.events;
 
-import no.java.ems.client.swing.EmsClient;
-import no.java.ems.client.swing.Entities;
-import no.java.ems.client.swing.EntityListEditor;
+import no.java.ems.client.swing.*;
 import no.java.ems.client.swing.binding.ListConverter;
 import no.java.ems.domain.Event;
+import no.java.swing.ConfiguredAction;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -28,15 +27,38 @@ import org.jdesktop.swingbinding.JTableBinding;
 import org.joda.time.LocalDate;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
  */
 public class EventListEditor extends EntityListEditor<Event> {
+    private Action openDetailsAction;
 
     public EventListEditor() {
         initialize();
+    }
+
+    @Override
+    public void initActions() {
+        super.initActions();
+        openDetailsAction = new DefaultAction("openDetails") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selected = table.getSelectedRow();
+            if (selected > -1) {
+                EmsTabbedPane tabbedPane = EmsClient.getInstance().getRootPanel().getComponent();
+                Event event = Entities.getInstance().getEvents().get(table.convertRowIndexToModel(selected));
+                if (event.getHandle() != null) {
+                    AbstractEditor editor = tabbedPane.selectEditor(event.getHandle().getURI());
+                    if (editor == null) {
+                        tabbedPane.addSelectedTab(new EventDetailsEditor(event));
+                    }
+                }
+            }
+        }
+    };
     }
 
     @Override
@@ -110,6 +132,7 @@ public class EventListEditor extends EntityListEditor<Event> {
     protected JPopupMenu createPopupMenu() {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(openAction);
+        popupMenu.add(openDetailsAction);
         popupMenu.addSeparator();
         popupMenu.add(newAction);
         popupMenu.addSeparator();

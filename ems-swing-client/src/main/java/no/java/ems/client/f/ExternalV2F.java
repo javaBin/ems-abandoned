@@ -379,11 +379,11 @@ public class ExternalV2F {
         public EventV2 f(Event event) {
             EventV2 e = objectFactory.createEventV2();
             e.setName(event.getName());
-            e.setUuid(e.getUuid());
+            e.setUuid(e.getUuid());            
             if (event.getHandle() != null) {
                 e.setUri(event.getHandle().toString());
             }
-            e.setDate(fromNull(event.getDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
+            e.setDate(fromNull(event.getStartDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
             Java.<Room>ArrayList_List().f(new ArrayList<Room>(event.getRooms())).
                     map(roomV2).
                     foreach(curry(ExternalV2F.<RoomV2>add(), e.getRooms().getRoom()));
@@ -399,7 +399,7 @@ public class ExternalV2F {
             e.setDisplayID(event.getUuid());
             //TODO: this should not be set here... We need to get the links from the response.
             e.setSessionURI(e.getHandle().getURI());
-            e.setDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
+            e.setStartDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
             e.setTags(new ArrayList<String>(event.getTags().getTag()));
             e.setModified(false);
             return e;

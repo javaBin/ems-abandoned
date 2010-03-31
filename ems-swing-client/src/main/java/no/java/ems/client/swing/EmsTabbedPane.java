@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  */
-class EmsTabbedPane extends JTabbedPane {
+public class EmsTabbedPane extends JTabbedPane {
 
     public EmsTabbedPane() {
         setName("root.tabs");

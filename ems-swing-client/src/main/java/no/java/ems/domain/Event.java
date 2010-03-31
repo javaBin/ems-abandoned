@@ -30,8 +30,10 @@ import java.net.URI;
 public class Event extends AbstractEntity implements Comparable<Event> {
 
     private String name;
-    private LocalDate date;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private List<Room> rooms = new ArrayList<Room>();
+    private Venue venue = new Venue("Oslo Spektrum");
     private List<Interval> timeslots = new ArrayList<Interval>();
     private URI sessionURI;
 
@@ -50,12 +52,12 @@ public class Event extends AbstractEntity implements Comparable<Event> {
         firePropertyChange("name", this.name, this.name = name);
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setDate(final LocalDate date) {
-        firePropertyChange("date", this.date, this.date = date);
+    public void setStartDate(final LocalDate startDate) {
+        firePropertyChange("startDate", this.startDate, this.startDate = startDate);
     }
 
     public List<Room> getRooms() {
@@ -78,13 +80,14 @@ public class Event extends AbstractEntity implements Comparable<Event> {
      * Compares based on the events date.
      */
     public int compareTo(final Event other) {
-        return new CompareToBuilder().append(date, other == null ? null : other.getDate()).toComparison();
+        return new CompareToBuilder().append(startDate, other == null ? null : other.getStartDate()).toComparison();
     }
 
     public void sync(final Event other) {
         super.sync(other);
         setName(other.getName());
-        setDate(other.getDate());
+        setStartDate(other.getStartDate());
+        setEndDate(other.getEndDate());
         setRooms(other.getRooms());
         setTimeslots(other.getTimeslots());
     }
@@ -95,6 +98,13 @@ public class Event extends AbstractEntity implements Comparable<Event> {
 
     public void setSessionURI(URI sessionURI) {
         firePropertyChange("sessionURI", this.sessionURI, this.sessionURI = sessionURI);
+    }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        firePropertyChange("endDate", this.endDate, this.endDate = endDate);
     }
 }

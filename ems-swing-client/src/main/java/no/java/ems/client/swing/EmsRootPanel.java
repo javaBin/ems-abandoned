@@ -153,7 +153,7 @@ public class EmsRootPanel implements InitSequence {
         tabs.transferFocus();
     }
 
-    public JTabbedPane getComponent() {
+    public EmsTabbedPane getComponent() {
         return tabs;
     }
     private JMenuBar createMenuBar() {
