@@ -44,8 +44,8 @@ public abstract class DefaultPanel extends JPanel implements InitSequence {
     }
 
     protected void initialize() {
-        getResourceMap().injectComponents(this);
         SwingHelper.initialize(this);
+        getResourceMap().injectComponents(this);
     }
 
     protected JLabel createLabel(final String key, final JComponent component) {
