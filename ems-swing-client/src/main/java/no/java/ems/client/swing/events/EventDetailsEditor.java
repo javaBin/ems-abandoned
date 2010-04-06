@@ -49,31 +49,23 @@ public class EventDetailsEditor extends EntityEditor<Event> {
     @Override
     public void initBindings() {
         super.initBindings();
-        AutoBinding<Event, LocalDate, JXDatePicker, Date> startDateBinding = createDateBinding("startDate", startDateSelector);
-        startDateBinding.setValidator(new Validator<LocalDate>() {
-            @Override
-            public Result validate(LocalDate value) {
-                LocalDate endDate = getEntity().getEndDate();
-                if (endDate != null && value.isAfter(endDate)) {
-                    return new Result(null, "Start date may not be after end Date");
-                }
-                return null;
-            }
-        });
-        getBindingGroup().addBinding(startDateBinding);
-        AutoBinding<Event, LocalDate, JXDatePicker, Date> endDateBinding = createDateBinding("endDate", endDateSelector);
-        endDateBinding.setValidator(new Validator<LocalDate>() {
-            @Override
-            public Result validate(LocalDate value) {
-                LocalDate startDate = getEntity().getStartDate();
-                if (startDate != null && value.isBefore(startDate)) {
-                    return new Result(null, "End date may not be before start Date");
-                }
-                return null;
-            }
-        });
+        getBindingGroup().addBinding(createDateBinding("startDate", startDateSelector));
 
-        getBindingGroup().addBinding(endDateBinding);
+        getBindingGroup().addBinding(createDateBinding("endDate", endDateSelector));
+        getBindingGroup().addBindingListener(new AbstractBindingListener() {
+            @Override
+            public void synced(Binding binding) {
+                super.synced(binding);
+                LocalDate startDate = getEntity().getStartDate();
+                LocalDate endDate = getEntity().getEndDate();
+                if (startDate != null && endDate != null && (startDate.isBefore(endDate) || startDate.isEqual(endDate))) {
+                    timeSlotSelector.firePropertyChange(TimeslotSelector.TIME_SELECTOR_ENABLED, false, true);
+                }
+                else {
+                    timeSlotSelector.firePropertyChange(TimeslotSelector.TIME_SELECTOR_ENABLED, true, false);
+                }
+            }
+        });
     }
 
     private AutoBinding<Event, LocalDate, JXDatePicker, Date> createDateBinding(final String property, final JXDatePicker component) {

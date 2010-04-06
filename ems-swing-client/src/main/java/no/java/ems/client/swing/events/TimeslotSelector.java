@@ -1,6 +1,5 @@
 package no.java.ems.client.swing.events;
 
-import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import no.java.swing.DefaultPanel;
@@ -8,8 +7,6 @@ import no.java.ems.domain.Event;
 import org.joda.time.*;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,6 +25,7 @@ public class TimeslotSelector extends DefaultPanel {
     private final Event event;
     private Action generateTimeSlotsAction;
     private PropertyChangeListener dateListener;
+    public static final String TIME_SELECTOR_ENABLED = "timeSelectorEnabled";
 
     protected TimeslotSelector(Event event) {
         this.event = event;
@@ -64,36 +62,11 @@ public class TimeslotSelector extends DefaultPanel {
         dateListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                syncEnabledState();
+                Boolean enabled = (Boolean) evt.getNewValue();
+                setEnabled(enabled);
             }
         };
-        addAncestorListener(new AncestorListener() {
-            @Override
-            public void ancestorAdded(AncestorEvent event) {
-                TimeslotSelector.this.event.addPropertyChangeListener(dateListener);                
-            }
-
-            @Override
-            public void ancestorRemoved(AncestorEvent event) {
-                TimeslotSelector.this.event.removePropertyChangeListener(dateListener);
-            }
-
-            @Override
-            public void ancestorMoved(AncestorEvent event) {
-            }
-        });
-    }
-
-    private void syncEnabledState() {
-        if (event.getStartDate() != null && event.getEndDate() != null) {
-            setEnabled(true);
-            generateTimeSlotsAction.setEnabled(true);
-        }
-        else {
-            setEnabled(false);
-            generateTimeSlotsAction.setEnabled(false);
-        }
-
+        addPropertyChangeListener(TIME_SELECTOR_ENABLED, dateListener);
     }
 
     @Override
@@ -115,7 +88,7 @@ public class TimeslotSelector extends DefaultPanel {
         LocalTime now = new LocalTime();
         startTimePicker.setSelectedTime(now);
         endTimePicker.setSelectedTime(now);
-        syncEnabledState();
+        setEnabled(false);
     }
 
     @Override
@@ -123,7 +96,7 @@ public class TimeslotSelector extends DefaultPanel {
         super.setEnabled(enabled);
         startTimePicker.setEnabled(enabled);
         endTimePicker.setEnabled(enabled);
-
+        generateTimeSlotsAction.setEnabled(enabled);
     }
 
     private List<Interval> generateTimeSlots() {
