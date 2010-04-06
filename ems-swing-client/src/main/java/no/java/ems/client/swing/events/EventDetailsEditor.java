@@ -4,10 +4,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import no.java.ems.client.swing.EntityEditor;
 import no.java.ems.domain.Event;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.Converter;
+import org.jdesktop.beansbinding.*;
 import org.jdesktop.swingx.JXDatePicker;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDate;
@@ -22,11 +19,11 @@ import java.util.Date;
 public class EventDetailsEditor extends EntityEditor<Event> {
     private JXDatePicker startDateSelector;
     private JXDatePicker endDateSelector;
+    private TimeslotSelector timeSlotSelector;
 
     protected EventDetailsEditor(final Event entity) {
         super(entity, "name");
         initialize();
-        getResourceMap().injectComponents(this);
     }
 
     @Override
@@ -42,23 +39,49 @@ public class EventDetailsEditor extends EntityEditor<Event> {
         super.initComponents();
         startDateSelector = new JXDatePicker();
         startDateSelector.setFormats("dd.MM.yyyy");
+        startDateSelector.setDate(new Date());
         endDateSelector = new JXDatePicker();
         endDateSelector.setFormats("dd.MM.yyyy");
+        endDateSelector.setDate(new Date());
+        timeSlotSelector = new TimeslotSelector(getEntity());
     }
 
     @Override
     public void initBindings() {
         super.initBindings();
-        getBindingGroup().addBinding(createDateBinding("startDate"));
-        getBindingGroup().addBinding(createDateBinding("endDate"));
+        AutoBinding<Event, LocalDate, JXDatePicker, Date> startDateBinding = createDateBinding("startDate", startDateSelector);
+        startDateBinding.setValidator(new Validator<LocalDate>() {
+            @Override
+            public Result validate(LocalDate value) {
+                LocalDate endDate = getEntity().getEndDate();
+                if (endDate != null && value.isAfter(endDate)) {
+                    return new Result(null, "Start date may not be after end Date");
+                }
+                return null;
+            }
+        });
+        getBindingGroup().addBinding(startDateBinding);
+        AutoBinding<Event, LocalDate, JXDatePicker, Date> endDateBinding = createDateBinding("endDate", endDateSelector);
+        endDateBinding.setValidator(new Validator<LocalDate>() {
+            @Override
+            public Result validate(LocalDate value) {
+                LocalDate startDate = getEntity().getStartDate();
+                if (startDate != null && value.isBefore(startDate)) {
+                    return new Result(null, "End date may not be before start Date");
+                }
+                return null;
+            }
+        });
+
+        getBindingGroup().addBinding(endDateBinding);
     }
 
-    private AutoBinding<Event, LocalDate, JXDatePicker, Date> createDateBinding(final String property) {
+    private AutoBinding<Event, LocalDate, JXDatePicker, Date> createDateBinding(final String property, final JXDatePicker component) {
         AutoBinding<Event, LocalDate, JXDatePicker, Date> dateBinding = Bindings.createAutoBinding(
                 AutoBinding.UpdateStrategy.READ_WRITE,
                 getEntity(),
                 BeanProperty.<Event, LocalDate>create(property),
-                startDateSelector,
+                component,
                 BeanProperty.<JXDatePicker, Date>create("date")
         );
         dateBinding.setConverter(new DateConverter());
@@ -76,6 +99,7 @@ public class EventDetailsEditor extends EntityEditor<Event> {
         add(startDateSelector, cc.xy(3, 3));
         add(createLabel("endDate", endDateSelector), cc.xy(1, 5));
         add(endDateSelector, cc.xy(3, 5));
+        add(timeSlotSelector, cc.xyw(1, 7, 3));
     }
 
     private static class DateConverter extends Converter<LocalDate, Date> {
