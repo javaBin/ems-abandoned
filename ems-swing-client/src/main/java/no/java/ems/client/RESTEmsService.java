@@ -120,7 +120,8 @@ public class RESTEmsService {
 
         Option<Event> option = client.getEvent(handle).map(ExternalV2F.event);
         if (option.isSome()) {
-            return option.some();
+            event.sync(option.some());
+            return event;
         }
         return null;
     }
