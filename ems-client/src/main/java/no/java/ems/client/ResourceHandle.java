@@ -23,6 +23,8 @@ import java.net.URI;
 import fj.data.Option;
 import fj.F;
 
+import static fj.data.Option.some;
+
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
@@ -96,6 +98,6 @@ public class ResourceHandle {
     }
 
     public ResourceHandle toUnconditional() {
-        return new ResourceHandle(uri);
+        return new ResourceHandle(uri, some(Tag.ALL));
     }
 }

@@ -70,6 +70,7 @@ public abstract class RESTfulClient {
         Validate.notNull(payload, "Payload may not be null");
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.PUT).
                 challenge(challenge).
+                conditionals(new Conditionals().addIfMatch(!handle.isTagged() ? handle.toUnconditional().getTag().some() : handle.getTag().some())).
                 payload(payload);               
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.OK) {

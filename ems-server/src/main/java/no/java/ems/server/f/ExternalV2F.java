@@ -391,8 +391,10 @@ public class ExternalV2F {
             Event e = new Event(event.getName());            
             e.setDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
             e.setTags(new ArrayList<String>(event.getTags().getTag()));
-            List<Interval> intervalList = List.<IntervalV2>iterableList(event.getTimeslots().getTimeslot()).map(EmsV2F.toInterval);
-            e.setTimeslots(new ArrayList<Interval>(intervalList.toCollection()));
+            if (event.getTimeslots() != null) {
+                List<Interval> intervalList = List.<IntervalV2>iterableList(event.getTimeslots().getTimeslot()).map(EmsV2F.toInterval);
+                e.setTimeslots(new ArrayList<Interval>(intervalList.toCollection()));
+            }
             RoomListV2 listV2 = event.getRooms();
             e.setRooms(new ArrayList<Room>(List.<RoomV2>iterableList(listV2.getRoom()).map(room).toCollection()));
             return e;

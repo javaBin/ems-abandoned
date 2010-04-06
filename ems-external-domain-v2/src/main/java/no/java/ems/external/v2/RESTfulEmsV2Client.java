@@ -116,6 +116,10 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return none();
     }
 
+    public Unit updateEvent(ResourceHandle handle, EventV2 event) {
+        return client.update(handle, createJAXBPayload("event", EventV2.class, event, EVENT));
+    }
+
     public ResourceHandle addEvent(EventV2 event) {
         return client.create(endpoints.get("events").getHandle(), createJAXBPayload("event", EventV2.class, event, EVENT));
     }
@@ -133,15 +137,6 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     public Option<SessionV2> getSession(ResourceHandle handle) {
         Option<Resource> resourceOption = client.read(handle, Collections.singletonList(SESSION));
         return extractObject(resourceOption, SessionV2.class);
-    }
-
-    public SessionListV2 findSessions(ResourceHandle handle, String json) {
-        Option<Resource> resourceOption = client.process(handle, new InputStreamPayload(IOUtils.toInputStream(json), JSON));
-        Option<SessionListV2> option = extractObject(resourceOption, SessionListV2.class);
-        if (option.isSome()) {
-            return option.some();
-        }
-        return new SessionListV2(); //TODO: is this is a good idea?
     }
 
     public ResourceHandle addSession(ResourceHandle handle, SessionV2 session) {
@@ -167,7 +162,7 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     }
 
     public Unit updatePerson(PersonV2 personV2) {
-        return client.update(new ResourceHandle(URI.create(personV2.getUri())), createJAXBPayload("person", PersonV2.class, personV2, PERSON));
+        return client.update(new ResourceHandle(URI.create(personV2.getUri())).toUnconditional(), createJAXBPayload("person", PersonV2.class, personV2, PERSON));
     }
 
     private static class MyRESTfulClient extends RESTfulClient {

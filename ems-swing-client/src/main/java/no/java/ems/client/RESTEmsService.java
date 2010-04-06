@@ -110,13 +110,19 @@ public class RESTEmsService {
 
     public Event saveEvent(Event event) {
         Option<EventV2> eventToSave = Option.some(event).map(ExternalV2F.eventV2);
-        throw new UnsupportedOperationException("Not implemented yet...");
-        /*if (event.getHandle() == null) {
-            ResourceHandle handle = client.addEvent(eventToSave.some());
+        ResourceHandle handle = event.getHandle();
+        if (handle == null) {
+            handle = client.addEvent(eventToSave.some());
         }
         else {
+            client.updateEvent(event.getHandle(), eventToSave.some());
+        }
 
-        }*/
+        Option<Event> option = client.getEvent(handle).map(ExternalV2F.event);
+        if (option.isSome()) {
+            return option.some();
+        }
+        return null;
     }
 
     public void deleteEvent(ResourceHandle id) {

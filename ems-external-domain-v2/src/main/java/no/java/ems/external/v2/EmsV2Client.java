@@ -32,6 +32,8 @@ public interface EmsV2Client {
 
     ResourceHandle addEvent(EventV2 event);
 
+    Unit updateEvent(ResourceHandle handle, EventV2 event);
+
     EventListV2 getEvents();
 
     SessionListV2 getSessions(ResourceHandle handle);
