@@ -384,7 +384,8 @@ public class ExternalV2F {
                 e.setUri(event.getHandle().toString());
             }
             e.setDate(fromNull(event.getStartDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
-            Java.<Room>ArrayList_List().f(new ArrayList<Room>(event.getRooms())).
+            e.setRooms(new RoomListV2());
+            List.iterableList(event.getRooms()).
                     map(roomV2).
                     foreach(curry(ExternalV2F.<RoomV2>add(), e.getRooms().getRoom()));
             e.setTags(convertTags(event));
