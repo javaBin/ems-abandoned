@@ -408,19 +408,19 @@ public class Entities extends HashSet<AbstractEntity> {
             }
             for (Session session : deletedSessions) {
                 setMessage(getString("session.delete", session.getTitle()));
-                service.deleteSession(session.getHandle());
+                service.delete(session.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(session, null));
             }
             for (Event event : deletedEvents) {
                 setMessage(getString("event.delete", event.getName()));
-                service.deleteEvent(event.getHandle());
+                service.delete(event.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(event, null));
             }
             for (Person contact : deletedContacts) {
                 setMessage(getString("contact.delete", contact.getName()));
-                service.deleteContact(contact.getHandle());
+                service.delete(contact.getHandle());
                 setProgress(++processed, 0, count + 1);
                 publish(new AbstractMap.SimpleEntry<AbstractEntity, AbstractEntity>(contact, null));
             }

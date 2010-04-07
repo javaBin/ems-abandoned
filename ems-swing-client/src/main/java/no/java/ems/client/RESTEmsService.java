@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.net.URI;
 import java.io.InputStream;
 
+import org.codehaus.httpcache4j.HTTPMethod;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
 import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
@@ -62,7 +63,7 @@ public class RESTEmsService {
     }
 
     public List<Person> getContacts() {
-        PersonListV2 people = client.getPeople();       
+        PersonListV2 people = client.getPeople();
         Collection<Person> persons = fj.data.List.iterableList(people.getPerson()).map(ExternalV2F.person).toCollection();
         return new ArrayList<Person>(persons);
     }
@@ -78,7 +79,7 @@ public class RESTEmsService {
     public Person saveContact(Person person) {
         Option<PersonV2> option = Option.some(person).map(ExternalV2F.personV2);
         if (person.getHandle() == null) {
-            ResourceHandle handle = client.addPerson(option.some());                       
+            ResourceHandle handle = client.addPerson(option.some());
             person.setHandle(handle);
         }
         else {
@@ -87,13 +88,8 @@ public class RESTEmsService {
         return person;
     }
 
-    public void deleteContact(ResourceHandle person) {
-        //client.removePerson(person.getURI());
-        throw new UnsupportedOperationException("Not implemented yet...");
-    }
-
     public List<Event> getEvents() {
-        EventListV2 either = client.getEvents();        
+        EventListV2 either = client.getEvents();
         Collection<Event> events = fj.data.List.iterableList(either.getEvent()).map(ExternalV2F.event).toCollection();
         return new ArrayList<Event>(events);
     }
@@ -124,10 +120,6 @@ public class RESTEmsService {
             return event;
         }
         return null;
-    }
-
-    public void deleteEvent(ResourceHandle id) {
-        throw new UnsupportedOperationException("Not implemented yet...");
     }
 
     public List<Session> getSessions(Event event) {
@@ -164,9 +156,12 @@ public class RESTEmsService {
         }
         throw new IllegalArgumentException("Unable to save session");
     }
-    
-    public void deleteSession(ResourceHandle handle) {
-        throw new UnsupportedOperationException("Not implemented yet...");
+
+    public void delete(ResourceHandle handle) {
+        HTTPResponse response = cache.doCachedRequest(new HTTPRequest(handle.getURI(), HTTPMethod.DELETE));
+        if (response.getStatus() != Status.NO_CONTENT) {
+            throw new HttpException(handle.getURI(), response.getStatus());
+        }
     }
 
     public InputStream readBinary(Binary binary) {
@@ -193,7 +188,7 @@ public class RESTEmsService {
     public void deleteBinary(URI binaryURI) {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
-    
+
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
