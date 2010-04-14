@@ -14,8 +14,8 @@
   ~   limitations under the License.
   -->
 
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.java.no/ems/external/1"
-            xmlns="http://xmlns.java.no/ems/external/1">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.java.no/ems/external/2"
+            xmlns="http://xmlns.java.no/ems/external/2">
   <!--
    | Try to keep all element names in "lisp-style".
    | That means dashes instead of CamelCase.
