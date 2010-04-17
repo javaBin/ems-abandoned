@@ -4,7 +4,8 @@
 </head>
 <body>
     <form action="${action}" method="get">
-        <input type="text" name="q"/>
+        <p>The query input string uses Lucene syntax.</p>
+        <input type="search" name="q"/>
         <select name="type">
             #foreach($type in $types)
                 <option value="$type">$type</option>

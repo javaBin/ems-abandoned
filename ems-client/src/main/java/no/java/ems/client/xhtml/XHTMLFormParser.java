@@ -65,7 +65,7 @@ public class XHTMLFormParser {
                 if ("input".equals(element.getName().getLocalPart())) {
                     if (name != null) {
                         Attribute typeAttribute = element.getAttributeByName(new QName("type"));
-                        if ("text".equals(typeAttribute.getValue())) {
+                        if ("text".equals(typeAttribute.getValue()) || "search".equals(typeAttribute.getValue())) {
                             form.add(name, new TextElement(reader.getElementText()));
                         }
                     }
