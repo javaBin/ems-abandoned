@@ -13,6 +13,7 @@
   ~   See the License for the specific language governing permissions and
   ~   limitations under the License.
   -->
+<!--TODO: use constretto somehow... -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -25,15 +26,11 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd"
     default-lazy-init="true">
   
-  <sec:http auto-config="true" realm="EMS">
-    <sec:intercept-url pattern="/events/*/sessions" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="GET"/>
-    <sec:intercept-url pattern="/events/*/sessions" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="HEAD"/>
-    <sec:intercept-url pattern="/**" access="ROLE_CONFLUENCE-USERS"/>
-    <sec:http-basic/>
-    <sec:anonymous enabled="true" granted-authority="ROLE_ANON" username="anonymous"/>    
-  </sec:http>
-
-  <!--TODO: use constretto somehow... -->
-  <import resource="applicationContext-dev.xml"/>
-  
+  <sec:authentication-manager>
+    <sec:authentication-provider>
+      <sec:user-service>
+        <sec:user name="user" authorities="ROLE_CONFLUENCE-USERS" password="123"/>
+      </sec:user-service>
+    </sec:authentication-provider>
+  </sec:authentication-manager>
 </beans>
