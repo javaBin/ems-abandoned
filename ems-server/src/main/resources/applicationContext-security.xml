@@ -26,8 +26,8 @@
     default-lazy-init="true">
   
   <sec:http auto-config="true" realm="EMS">
-    <sec:intercept-url pattern="/events/*/sessions" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="GET"/>
-    <sec:intercept-url pattern="/events/*/sessions" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="HEAD"/>
+    <sec:intercept-url pattern="/events/**" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="GET"/>
+    <sec:intercept-url pattern="/events/**" access="ROLE_CONFLUENCE-USERS, ROLE_ANON" method="HEAD"/>
     <sec:intercept-url pattern="/**" access="ROLE_CONFLUENCE-USERS"/>
     <sec:http-basic/>
     <sec:anonymous enabled="true" granted-authority="ROLE_ANON" username="anonymous"/>    
