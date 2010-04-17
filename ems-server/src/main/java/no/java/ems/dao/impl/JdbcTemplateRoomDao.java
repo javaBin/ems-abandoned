@@ -28,6 +28,8 @@ import java.sql.Types;
 import java.util.UUID;
 import java.util.List;
 
+import static fj.data.Option.some;
+
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -82,6 +84,8 @@ public class JdbcTemplateRoomDao extends AbstractDao implements RoomDao {
             Room room = new Room(rs.getString("name"));
             room.setId(rs.getString("id"));
             room.setDescription(rs.getString("description"));
+            room.setLastModified(some(toLocalDateTime(rs.getTimestamp("lastModified")).toDateTime()));
+            room.setModifiedBy(some(rs.getString("modifiedBy")));
             return room;
         }
     }
