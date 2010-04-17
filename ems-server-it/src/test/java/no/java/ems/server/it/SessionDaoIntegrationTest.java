@@ -88,12 +88,14 @@ public class SessionDaoIntegrationTest extends AbstractIntegrationTest {
             assertEquals(12, session.getTimeslot().some().getStart().getDayOfMonth());
             assertNotNull(session.getRoom());
             assertNotNull(session.getRoom().getId());
+            System.out.println("session.getRoom() = " + session.getRoom());
+            System.out.println("room1 = " + room1);
             if (i == 0) {
-                assertTrue(EqualsBuilder.reflectionEquals(room1, session.getRoom()));
+                assertTrue(EqualsBuilder.reflectionEquals(room1, session.getRoom(), new String[] {"lastModified", "modifiedBy"}));
             } else if (i == 1) {
-                assertTrue(EqualsBuilder.reflectionEquals(room2, session.getRoom()));
+                assertTrue(EqualsBuilder.reflectionEquals(room2, session.getRoom(), new String[] {"lastModified", "modifiedBy"}));
             } else if (i == 2) {
-                assertTrue(EqualsBuilder.reflectionEquals(room3, session.getRoom()));
+                assertTrue(EqualsBuilder.reflectionEquals(room3, session.getRoom(), new String[] {"lastModified", "modifiedBy"}));
             }
         }
     }

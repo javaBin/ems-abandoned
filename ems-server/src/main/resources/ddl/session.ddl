@@ -20,6 +20,8 @@ create table session (
   equipment       long varchar,
   feedback        long varchar,
   published       char(1),
+  lastModified    timestamp default CURRENT_TIMESTAMP,
+  modifiedBy varchar(255) not null default 'unknown',
   constraint session_pk primary key(id, revision),
   constraint session_fk_event foreign key(eventId) references event(id),
   constraint session_fk_room foreign key(roomId) references room(id)

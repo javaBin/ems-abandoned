@@ -3,5 +3,7 @@ create table room (
   revision        integer not null,
   name            varchar(255) not null,
   description     varchar(255),
+  lastModified    timestamp default CURRENT_TIMESTAMP,
+  modifiedBy varchar(255) default 'unknown', 
   primary key(id)
 )

@@ -15,14 +15,20 @@
 
 package no.java.ems.server.domain;
 
+import fj.data.Option;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static fj.data.Option.none;
+import static fj.data.Option.some;
 
 /**
  * @author <a href="mailto:yngvars@gmail.no">Yngvar S&oslash;rensen</a>
@@ -36,6 +42,8 @@ public abstract class AbstractEntity implements Serializable {
     private String notes;
     private List<String> tags = new ArrayList<String>();
     private List<Binary> attachments = new ArrayList<Binary>();
+    private Option<DateTime> lastModified = some(new DateTime());
+    private Option<String> modifiedBy = none();
 
     public String getId() {
         return id;
@@ -107,6 +115,22 @@ public abstract class AbstractEntity implements Serializable {
             builder.append(tag);
         }
         return builder.toString();
+    }
+
+    public Option<DateTime> getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Option<DateTime> lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public Option<String> getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(Option<String> modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 
     @Override

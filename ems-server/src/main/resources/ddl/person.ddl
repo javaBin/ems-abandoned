@@ -11,5 +11,7 @@ create table person (
   nationality     varchar(2),
   addresses       long varchar,
   photo           long varchar, -- URI of the photo
+  lastModified    timestamp default CURRENT_TIMESTAMP,
+  modifiedBy varchar(255) default 'unknown',
   primary key(id)
 )

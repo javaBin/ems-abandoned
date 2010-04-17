@@ -22,6 +22,8 @@ import no.java.ems.server.domain.Binary;
 import no.java.ems.server.domain.Language;
 import no.java.ems.server.domain.Session;
 import no.java.ems.server.domain.Speaker;
+
+import static fj.data.Option.some;
 import static no.java.ems.server.f.ExternalV2F.*;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.DataAccessException;
 
+import javax.swing.text.html.Option;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -160,13 +163,15 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
         if (session.getId() == null) {
             session.setId(UUID.randomUUID().toString());
         }
-        sql = "insert into session (revision, title, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES((select count(*) + 1 from session where id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        sql = "insert into session (revision, title, lastModified, modifiedBy, start, durationMinutes, state, roomId, level, format, tags, keywords, language, eventId, lead, body, notes, feedback, expected, outline, equipment, published, id) VALUES((select count(*) + 1 from session where id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(
                 sql,
                 new Object[]{
                         session.getId(),
                         session.getTitle(),
+                        session.getLastModified().map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
+                        session.getModifiedBy().orSome("unknown"),
                         session.getTimeslot().map(intervalGetStart).map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
                         session.getTimeslot().map(intervalToPeriod).map(periodGetMinutes).orSome(0),
                         session.getState().name(),
@@ -190,6 +195,8 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                 new int[]{
                         VARCHAR,     // id
                         VARCHAR,     // title
+                        TIMESTAMP,   // lastmodified
+                        VARCHAR,   // modified by
                         TIMESTAMP,   // start
                         INTEGER,     // durationMinutes
                         VARCHAR,     // state
@@ -291,6 +298,8 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
             session.setExpectedAudience(rs.getString("expected"));
             session.setFeedback(rs.getString("feedback"));
             session.setOutline(rs.getString("outline"));
+            session.setLastModified(some(toLocalDateTime(rs.getTimestamp("lastModified")).toDateTime()));
+            session.setModifiedBy(some(rs.getString("modifiedBy")));
             session.setPublished("y".equalsIgnoreCase(rs.getString("published")));
             String tags = rs.getString("tags");
             if (tags != null) {

@@ -87,11 +87,11 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
     public void saveEvent(Event event) {
         String updateQuery;
         if (event.getId() == null) {
-            updateQuery = "insert into event(revision, name, eventdate, tags, notes, id) values(?, ?, ?, ?, ?, ?)";
+            updateQuery = "insert into event(revision, name, startdate, enddate, lastModified, modifiedBy, tags, notes, id) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             event.setId(UUID.randomUUID().toString());
             event.setRevision(1);
         } else {
-            updateQuery = "update event set revision = ?, name = ?, eventdate = ?, tags = ?, notes = ? where id = ?";
+            updateQuery = "update event set revision = ?, name = ?, startdate = ?, enddate = ?, lastModified = ?, modifiedBy = ?, tags = ?, notes = ? where id = ?";
             event.setRevision(event.getRevision() + 1);
         }
         jdbcTemplate.update(
@@ -100,6 +100,9 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
                         event.getRevision(),
                         event.getName(),
                         toSqlDate(event.getDate()),
+                        toSqlDate(event.getDate()),
+                        event.getLastModified().map(dateTimeToSqlTimestamp).orSome((Timestamp) null),
+                        event.getModifiedBy().orSome("unknown"),                        
                         event.getTagsAsString(DELIMITER),
                         event.getNotes(),
                         event.getId()
@@ -107,7 +110,10 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
                 new int[]{
                         Types.INTEGER,     // revision
                         Types.VARCHAR,     // name
-                        Types.DATE,        // date
+                        Types.DATE,        // start
+                        Types.DATE,        // end
+                        Types.TIMESTAMP,   // timestamp,
+                        Types.VARCHAR,     // text
                         Types.LONGVARCHAR, // tags
                         Types.LONGVARCHAR, // notes
                         Types.VARCHAR      // id
@@ -187,14 +193,15 @@ public class JdbcTemplateEventDao extends AbstractDao implements EventDao {
             event.setId(rs.getString("id"));
             event.setRevision(rs.getInt("revision"));
             event.setName(rs.getString("name"));
-            final Date date = rs.getDate("eventdate");
+            final Date date = rs.getDate("startdate");
             event.setDate(date == null ? null : LocalDate.fromDateFields(date));
             final String tags = rs.getString("tags");
             if (tags != null) {
                 event.setTags(Arrays.asList(StringUtils.split(tags, DELIMITER)));
             }
             event.setNotes(rs.getString("notes"));
-
+            event.setLastModified(some(toLocalDateTime(rs.getTimestamp("lastModified")).toDateTime()));
+            event.setModifiedBy(some(rs.getString("modifiedBy")));
             //noinspection unchecked
             event.setAttachments(jdbcTemplate.query(
                             "select attachementId from event_attachement where eventId = ? order by position",
