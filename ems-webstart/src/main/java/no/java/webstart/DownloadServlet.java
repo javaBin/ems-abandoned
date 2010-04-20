@@ -100,7 +100,7 @@ public class DownloadServlet extends HttpServlet {
         }
     }
 
-    private void specializeJnlpTemplate(HttpServletRequest request, HttpServletResponse resp, String jnlpTemplate) throws Exception {
+    private void specializeJnlpTemplate(HttpServletRequest request, HttpServletResponse response, String jnlpTemplate) throws Exception {
         StringWriter writer = new StringWriter();
         URI baseURI = getBaseURI(request);
         VelocityEngine engine = new VelocityEngine();        
@@ -111,16 +111,28 @@ public class DownloadServlet extends HttpServlet {
         VelocityContext context = new VelocityContext();
         context.put("name", "launch.jnlp");
         context.put("codebase", baseURI + request.getContextPath() + codebase);
-        context.put("emsURI", baseURI + request.getContextPath() + "/ems");
+        URI uri = findURIFromRequest(request);
+        if (uri == null) {
+            uri = URI.create(baseURI + request.getContextPath() + "/ems");            
+        }
+        context.put("emsURI", uri.toString());
         context.put("sessionURI", submitItURI);
         if (engine.evaluate(context, writer, "jnlp", jnlpTemplate)) {
             String jnlp = writer.toString();
             jnlp = jnlp.replace(".jar", ".jar.pack.gz");
-            resp.getWriter().write(jnlp);
+            response.getWriter().write(jnlp);
         }
         else {
             throw new IllegalStateException("Unable to render jnlp");
         }
+    }
+
+    private URI findURIFromRequest(HttpServletRequest request) {
+        URI uri = URI.create(request.getParameter("ems-uri"));
+        if (!uri.isAbsolute()) {
+            uri = null;
+        }
+        return uri;
     }
 
     private URI getBaseURI(HttpServletRequest req) {
