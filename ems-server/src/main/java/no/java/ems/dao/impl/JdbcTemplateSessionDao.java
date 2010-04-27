@@ -89,7 +89,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public List<Session> getSessions(String eventId) {
         //noinspection unchecked
         return jdbcTemplate.query(
-                "select * from session where eventId = ? order by title",
+                "select * from session as S where eventId = ? and revision = (select max(revision) from session where id = S.id) order by title",
                 new Object[]{eventId},
                 new int[]{VARCHAR},
                 new SessionMapper()
@@ -99,7 +99,7 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
     public List<String> getSessionIdsByEventId(String eventId) {
         //noinspection unchecked
         return jdbcTemplate.query(
-                "select id from session where eventid = ? order by title",
+                "select distinct id from session where eventid = ? order by title",
                 new Object[]{eventId},
                 new int[]{VARCHAR},
                 new RowMapper() {
