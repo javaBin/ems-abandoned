@@ -89,6 +89,7 @@ public class ExternalV2F {
             List<SpeakerV2> list = List.iterableList(session.getSpeakers()).map(speaker);
             sessionV2.setSpeakers(objectFactory.createSpeakerListV2());
             sessionV2.getSpeakers().getSpeaker().addAll(list.toCollection());
+            sessionV2.setPublished(session.isPublished());
             return sessionV2;
         }
     };
@@ -122,6 +123,7 @@ public class ExternalV2F {
                 List<Binary> list = List.iterableList(session.getAttachments().getBinary()).map(uriBinary);
                 newSession.setAttachments(new ArrayList<Binary>(list.toCollection()));
             }
+            newSession.setPublished(session.isPublished());
             newSession.setModified(false);
             return newSession;
         }
