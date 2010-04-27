@@ -80,6 +80,7 @@ public class ExternalV2F {
             keywords.getKeyword().addAll(session.getKeywords());
             sessionV2.setKeywords(keywords);
             sessionV2.setTags(convertTags(session));
+            sessionV2.setPublished(session.isPublished());
             sessionV2.setTimeslot(session.getTimeslot().map(EmsV2F.toIntervalV2).orSome((IntervalV2) null));
             sessionV2.setSpeakers(new SpeakerListV2());
             sessionV2.getSpeakers().getSpeaker().addAll(List.iterableList(session.getSpeakers()).map(speakerV2).toCollection());
@@ -111,6 +112,7 @@ public class ExternalV2F {
                 List<Speaker> list = List.iterableList(session.getSpeakers().getSpeaker()).map(speaker);
                 newSession.setSpeakers(new ArrayList<Speaker>(list.toCollection()));
             }
+            newSession.setPublished(session.isPublished());
             return newSession;
         }
     };
