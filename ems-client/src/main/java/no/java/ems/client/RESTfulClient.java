@@ -73,6 +73,7 @@ public abstract class RESTfulClient {
                 conditionals(new Conditionals().addIfMatch(!handle.isTagged() ? handle.toUnconditional().getTag().some() : handle.getTag().some())).
                 payload(payload);               
         HTTPResponse response = cache.doCachedRequest(request);
+        response.consume();
         if (response.getStatus() != Status.OK) {
             throw new HttpException(handle.getURI(), response.getStatus());
         }
