@@ -68,6 +68,7 @@ public class ExternalV2F {
                 sessionV2.setUri(session.getHandle().toString());
             }
             sessionV2.setEventUuid(session.getEventHandle().toString());
+            sessionV2.setEventUri(session.getEventHandle().toString());
             sessionV2.setTitle(session.getTitle());
             sessionV2.setBody(session.getBody());
             sessionV2.setNotes(session.getNotes());
@@ -97,7 +98,7 @@ public class ExternalV2F {
             Session newSession = new Session();
             newSession.setHandle(new ResourceHandle(URI.create(session.getUri())));
             newSession.setDisplayID(session.getUuid());
-            newSession.setEventHandle(new ResourceHandle(URI.create(session.getEventUuid())));
+            newSession.setEventHandle(new ResourceHandle(URI.create(session.getEventUri())));
             newSession.setTitle(session.getTitle());
             newSession.setBody(session.getBody());
             newSession.setNotes(session.getNotes());
@@ -379,9 +380,12 @@ public class ExternalV2F {
         public EventV2 f(Event event) {
             EventV2 e = objectFactory.createEventV2();
             e.setName(event.getName());
-            e.setUuid(e.getUuid());            
+            e.setUuid(event.getDisplayID());
             if (event.getHandle() != null) {
-                e.setUri(event.getHandle().toString());
+                e.setUri(event.getHandle().getURI().toString());
+            }
+            if (event.getSessionURI() != null) {
+                e.setSessionsUri(event.getSessionURI().toString());
             }
             e.setDate(fromNull(event.getStartDate()).map(toXmlGregorianCalendar).orSome((XMLGregorianCalendar) null));
             e.setRooms(new RoomListV2());
@@ -398,8 +402,7 @@ public class ExternalV2F {
             Event e = new Event(event.getName());
             e.setHandle(new ResourceHandle(URI.create(event.getUri())));
             e.setDisplayID(event.getUuid());
-            //TODO: this should not be set here... We need to get the links from the response.
-            e.setSessionURI(e.getHandle().getURI());
+            e.setSessionURI(URI.create(event.getSessionsUri()));
             e.setStartDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
             e.setTags(new ArrayList<String>(event.getTags().getTag()));
             e.setModified(false);

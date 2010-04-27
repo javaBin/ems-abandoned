@@ -137,6 +137,9 @@ public abstract class RESTfulClient {
         if (handle.isTagged()) {
             request = request.conditionals(request.getConditionals().addIfNoneMatch(handle.getTag().some()));
         }
+        else if (handle.isUnconditional()) {
+            request = request.conditionals(request.getConditionals().addIfMatch(handle.getTag().some()));
+        }
         if (types != null) {
             Preferences preferences = new Preferences();
             for (MIMEType type : types) {
@@ -145,7 +148,7 @@ public abstract class RESTfulClient {
             request = request.preferences(preferences);
         }
         HTTPResponse response = cache.doCachedRequest(request);
-        ResourceHandle updatedHandle = new ResourceHandle(handle.getURI(), some(response.getETag()));
+        ResourceHandle updatedHandle = new ResourceHandle(handle.getURI(), Option.fromNull(response.getETag()));
         if (updatedHandle.equals(handle) && response.getStatus() == Status.NOT_MODIFIED) {
             return Option.none();
         }

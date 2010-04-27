@@ -52,7 +52,11 @@ public class ResourceHandle {
     }
 
     public boolean isTagged() {
-        return tag.isSome();
+        return !isUnconditional() && tag.isSome();
+    }
+
+    public boolean isUnconditional() {
+        return tag.isSome() && tag.some().equals(Tag.ALL);
     }
 
     @Override
@@ -94,7 +98,12 @@ public class ResourceHandle {
 
     @Override
     public String toString() {
-        return uri.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("uri").append("=").append(uri);
+        if (isTagged()) {
+            builder.append(" tag").append("=").append(tag.some());
+        }
+        return builder.toString();
     }
 
     public ResourceHandle toUnconditional() {

@@ -55,7 +55,7 @@ public class URIBuilder {
     public URI forObject(AbstractEntity entity) {
         if (entity instanceof Session) {
             Session session = (Session) entity;
-            return events().eventUri(session.getEventId()).session(session.getId());
+            return sessions().session(session.getEventId(), session.getId());
         }
         else if (entity instanceof Person) {
             return people().person(entity.getId());
@@ -73,7 +73,7 @@ public class URIBuilder {
             case person:
                 return people().person(id);
             case session:
-                return events().eventUri(parentId).session(id);
+                return sessions().session(parentId, id);
             default:
                 throw new IllegalArgumentException("unknown type");
         }
@@ -118,10 +118,6 @@ public class URIBuilder {
             public URI get() {
                 return event.build();
             }
-
-            public URI session(String sessionId) {
-                return sessions.clone().segment(sessionId).build();
-            }
         }
     }
 
@@ -137,14 +133,14 @@ public class URIBuilder {
         }
 
         public URI getURI(String query, String type, int offset) {
-            return search.queryParam("q", query == null ? "" : query).
+            return search.clone().queryParam("q", query == null ? "" : query).
                     queryParam("type", type).
                     queryParam("pw", String.valueOf(offset)).
                     build();
         }
 
         public URI form() {
-            return search.segment("form").build();
+            return search.clone().segment("form").build();
         }
     }
 
@@ -160,11 +156,11 @@ public class URIBuilder {
         }
 
         public URI personWithPhoto(String personId) {
-            return people.segment(personId, "photo").build();
+            return people.clone().segment(personId, "photo").build();
         }
 
         public URI person(String personId) {
-            return people.segment(personId).build();
+            return people.clone().segment(personId).build();
         }
     }
 
@@ -176,11 +172,11 @@ public class URIBuilder {
         }
 
         public URI sessions(String eventid) {
-            return builder.segment(eventid, "sessions").build();
+            return builder.clone().segment(eventid, "sessions").build();
         }
 
         public URI session(String eventid, String sessionid) {
-            return builder.segment(eventid, "sessions", sessionid).build();
+            return builder.clone().segment(eventid, "sessions", sessionid).build();
         }
     }
 
@@ -196,7 +192,7 @@ public class URIBuilder {
         }
 
         public URI room(String roomId) {
-            return builder.segment(roomId).build();
+            return builder.clone().segment(roomId).build();
         }
     }
 
@@ -212,7 +208,7 @@ public class URIBuilder {
         }
 
         public URI binary(String binaryId) {
-            return builder.segment(binaryId).build();
+            return builder.clone().segment(binaryId).build();
         }
     }
 }
