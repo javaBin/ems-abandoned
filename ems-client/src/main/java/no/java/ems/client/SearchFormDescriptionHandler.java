@@ -25,4 +25,8 @@ public class SearchFormDescriptionHandler implements Handler {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean needStreamAfterHandle() {
+        return false;
+    }
 }

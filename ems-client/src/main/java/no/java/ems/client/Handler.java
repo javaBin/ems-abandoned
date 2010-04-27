@@ -28,4 +28,6 @@ public interface Handler {
     boolean supports(MIMEType type);
 
     Object handle(InputStream payload);
+
+    boolean needStreamAfterHandle();
 }

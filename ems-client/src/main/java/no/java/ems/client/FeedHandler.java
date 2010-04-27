@@ -24,4 +24,8 @@ public class FeedHandler implements Handler {
         Document<Feed> feed = parser.parse(payload);
         return feed.getRoot();
     }
+
+    public boolean needStreamAfterHandle() {
+        return false;
+    }
 }

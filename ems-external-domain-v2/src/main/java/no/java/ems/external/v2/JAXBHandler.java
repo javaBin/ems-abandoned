@@ -39,6 +39,10 @@ public class JAXBHandler<T> implements Handler {
         }
     }
 
+    public boolean needStreamAfterHandle() {
+        return false;
+    }
+
     public static <T> JAXBHandler<T> create(JAXBContext context, Class<T> type, MIMEType mimeType) throws JAXBException {
         return new JAXBHandler<T>(context, type, mimeType);
     }

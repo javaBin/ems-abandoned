@@ -51,4 +51,8 @@ public class URIListHandler implements Handler{
         }
         return uris;
     }
+
+    public boolean needStreamAfterHandle() {
+        return false;
+    }
 }

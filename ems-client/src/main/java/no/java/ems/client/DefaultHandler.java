@@ -31,4 +31,8 @@ public class DefaultHandler implements Handler {
     public Object handle(InputStream payload) {
         return payload;
     }
+
+    public boolean needStreamAfterHandle() {
+        return true;
+    }
 }

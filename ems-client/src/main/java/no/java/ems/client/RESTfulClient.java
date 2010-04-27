@@ -84,6 +84,7 @@ public abstract class RESTfulClient {
         List<Status> acceptedStatuses = Arrays.asList(Status.OK, Status.NO_CONTENT);
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.DELETE);
         HTTPResponse response = cache.doCachedRequest(request);
+        response.consume();
         if (!acceptedStatuses.contains(response.getStatus())) {
             throw new HttpException(handle.getURI(), response.getStatus());
         }
@@ -95,6 +96,7 @@ public abstract class RESTfulClient {
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);        
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus().isClientError() || response.getStatus().isServerError()) {
+            response.consume();
             throw new HttpException(handle.getURI(), response.getStatus());
         }
         if (response.hasPayload()) {
@@ -109,6 +111,7 @@ public abstract class RESTfulClient {
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.CREATED) {
+            response.consume();
             throw new HttpException(handle.getURI(), response.getStatus());
         }
         if (!response.hasPayload()) {
@@ -128,6 +131,7 @@ public abstract class RESTfulClient {
         if (response.getStatus() != Status.CREATED) {
             throw new HttpException(handle.getURI(), response.getStatus());
         }
+        response.consume();
         return new ResourceHandle(URI.create(response.getHeaders().getFirstHeaderValue("Location")), Option.<Tag>none());
     }
 
@@ -150,6 +154,7 @@ public abstract class RESTfulClient {
         HTTPResponse response = cache.doCachedRequest(request);
         ResourceHandle updatedHandle = new ResourceHandle(handle.getURI(), Option.fromNull(response.getETag()));
         if (updatedHandle.equals(handle) && response.getStatus() == Status.NOT_MODIFIED) {
+            response.consume();
             return Option.none();
         }
         if (response.getStatus() == Status.OK) {
@@ -168,6 +173,10 @@ public abstract class RESTfulClient {
                     } catch (RuntimeException e) {
                         IOUtils.closeQuietly(payload);
                         throw e;
+                    } finally {
+                        if (!handler.needStreamAfterHandle()) {
+                            IOUtils.closeQuietly(payload);
+                        }
                     }
                 }
             }

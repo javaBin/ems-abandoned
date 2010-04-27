@@ -66,6 +66,10 @@ public class EndpointParser implements Handler {
         }
     }
 
+    public boolean needStreamAfterHandle() {
+        return false;
+    }
+
     public static class Endpoint {
         private final URI uri;
 
