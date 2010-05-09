@@ -128,6 +128,7 @@ public abstract class RESTfulClient {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
+        request = request.challenge(challenge);
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus() != Status.CREATED) {
             throw new HttpException(handle.getURI(), response.getStatus());
@@ -183,5 +184,13 @@ public abstract class RESTfulClient {
             }
         }
         return none();
-    }   
+    }
+
+  public Option<Headers> inspect(final ResourceHandle pHandle) {
+    HTTPResponse response = cache.doCachedRequest(new HTTPRequest(pHandle.getURI(), HTTPMethod.HEAD));
+    if (response.getStatus() == Status.OK) {
+      return some(response.getHeaders());
+    }
+    return none();
+  }
 }

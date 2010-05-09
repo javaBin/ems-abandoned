@@ -33,6 +33,7 @@ import no.java.ems.server.f.ExternalV2F;
 import static no.java.ems.server.f.ExternalV2F.eventV2;
 
 import org.apache.commons.lang.Validate;
+import org.codehaus.httpcache4j.LinkDirectiveBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -89,6 +90,7 @@ public class EventResource {
                 map(sessionsURLV2).
                 map(EmsV2F.eventJaxbElement).
                 map(curry(ResourcesF.<EventV2>singleResponseBuilderWithTagChecking(), event, request)).
+                map(curry(sessionsLinkHeader, id)).
                 some();
         return builder.build();
     }
@@ -184,6 +186,15 @@ public class EventResource {
         public EventV2 f(EventV2 eventV2) {
             eventV2.setSessionsUri(uriBuilder.sessions().sessions(eventV2.getUuid()).toString());
             return eventV2;
+        }
+    };
+
+    private F2<String, Response.ResponseBuilder, Response.ResponseBuilder> sessionsLinkHeader = new F2<String, Response.ResponseBuilder, Response.ResponseBuilder>() {
+        public Response.ResponseBuilder f(String eventId, Response.ResponseBuilder responseBuilder) {
+            URI value = uriBuilder.sessions().sessions(eventId);
+            LinkDirectiveBuilder directiveBuilder = LinkDirectiveBuilder.create(value);
+            responseBuilder.header("Link", directiveBuilder.build().toString());
+            return responseBuilder;
         }
     };
 }
