@@ -74,4 +74,32 @@ public class Speaker extends ValueObject {
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(propertyName, new WeakReferencePropertyChangeListener(listener));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        Speaker speaker = (Speaker) o;
+
+        if (personURI != null ? !personURI.equals(speaker.personURI) : speaker.personURI != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (personURI != null ? personURI.hashCode() : 0);
+        return result;
+    }
 }
