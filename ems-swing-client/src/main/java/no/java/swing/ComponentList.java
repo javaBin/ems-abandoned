@@ -42,6 +42,7 @@ import java.util.Map;
  * @author <a href="mailto:kristian.nordal@arktekk.no">Kristian Nordal</a>.
  * @see ComponentFactory
  */
+//TODO: Figure out why editors are not installed for some elements.
 public class ComponentList extends JList {
 
     public static final String EDITOR_REMOVED_EVENT = "editorRemoved";
@@ -203,7 +204,9 @@ public class ComponentList extends JList {
         for (int index = 0; index < model.getSize(); index++) {
             Object value = model.getElementAt(index);
             JComponent editor = editors.get(value);
-            editor.setBounds(getCellBounds(index, index));
+            if (editor != null) {
+                editor.setBounds(getCellBounds(index, index));                
+            }
         }
     }
 
@@ -234,7 +237,10 @@ public class ComponentList extends JList {
             // inherit the preferred size of the editor component
             // this is used to calculate the list size and in doLayout()
             // to correctly set the bounds of the editor components.
-            setPreferredSize(editors.get(value).getPreferredSize());
+            JComponent editor = editors.get(value);
+            if (editor != null) {
+                setPreferredSize(editor.getPreferredSize());                
+            }
             return this;
         }
 
@@ -264,7 +270,10 @@ public class ComponentList extends JList {
             // remove installed editors for any objects no longer in the model
             for (Object value : new HashSet<Object>(editors.keySet())) {
                 if (getIndexInModel(value) == -1) {
-                    remove(editors.remove(value));
+                    JComponent comp = editors.remove(value);
+                    if (comp != null) {
+                        remove(comp);                        
+                    }
                 }
             }
             // install editors for any new objects in the model
