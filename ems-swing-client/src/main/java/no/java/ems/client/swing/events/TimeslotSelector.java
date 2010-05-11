@@ -18,7 +18,9 @@ import java.util.List;
  * @version $Revision: $
  */
 public class TimeslotSelector extends DefaultPanel {
-    private Duration duration = Minutes.minutes(15).toStandardDuration();
+    private static final Duration HOUR_DURATION = Minutes.minutes(60).toStandardDuration();
+    private static final Duration FIFTEEN_MINUTES_DURATION = Minutes.minutes(15).toStandardDuration();
+    private static final Duration THIRTY_MINUTES_DURATION = Minutes.minutes(30).toStandardDuration();
 
     private TimePicker startTimePicker;
     private TimePicker endTimePicker;
@@ -111,8 +113,10 @@ public class TimeslotSelector extends DefaultPanel {
                 DateTime endDateTime = today.toDateTime(endTime);
 
                 while ((actual.isBefore(endDateTime))) {
-                    intervals.add(new Interval(actual, duration));
-                    actual = actual.plus(duration);
+                    intervals.add(new Interval(actual, FIFTEEN_MINUTES_DURATION));
+                    intervals.add(new Interval(actual, HOUR_DURATION));
+                    intervals.add(new Interval(actual, THIRTY_MINUTES_DURATION));
+                    actual = actual.plus(FIFTEEN_MINUTES_DURATION);
                 }
             }
         }
