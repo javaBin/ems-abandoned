@@ -100,7 +100,6 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         }
     }
 
-
     public final F<ResourceHandle, Option<P2<EventV2, Headers>>> getEvent_ = new F<ResourceHandle, Option<P2<EventV2, Headers>>>() {
         public Option<P2<EventV2, Headers>> f(ResourceHandle resourceHandle) {
             return getEvent(resourceHandle);

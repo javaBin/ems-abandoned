@@ -88,14 +88,10 @@ public class RESTEmsService {
          return new ArrayList<Event>(iterableList(client.getEvents().getEvent()).map(ExternalV2F.event).toCollection());
     }
 
-    public final F<ResourceHandle, Option<P2<EventV2, Headers>>> getEvent_ = new F<ResourceHandle, Option<P2<EventV2, Headers>>>() {
-        public Option<P2<EventV2, Headers>> f(ResourceHandle resourceHandle) {
-            return getEvent(resourceHandle);
-        }
-    };
-
-    public Option<P2<EventV2, Headers>> getEvent(ResourceHandle handle) {
-        return client.getEvent(handle);
+    public Event getEvent(ResourceHandle id) {
+        return client.getEvent(id).
+            map(compose(ExternalV2F.event, P2.<EventV2, Headers>__1())).
+            orSome((Event)null);
     }
 
     private <T> F<java.lang.Class<T>, F<Resource, Option<P2<T, Headers>>>> extractObject() {
