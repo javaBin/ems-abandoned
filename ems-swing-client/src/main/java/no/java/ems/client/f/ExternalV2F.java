@@ -15,10 +15,8 @@
 
 package no.java.ems.client.f;
 
-import fj.F;
-import fj.F2;
+import fj.*;
 import static fj.Function.curry;
-import fj.Unit;
 import static fj.Unit.unit;
 import fj.data.Java;
 import fj.data.List;
@@ -32,6 +30,7 @@ import no.java.ems.domain.*;
 import static no.java.ems.external.v2.EmsV2F.toLocalDate;
 import static no.java.ems.external.v2.EmsV2F.toXmlGregorianCalendar;
 import no.java.ems.external.v2.*;
+import org.codehaus.httpcache4j.*;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
@@ -403,18 +402,30 @@ public class ExternalV2F {
         }
     };
 
-    public static final F<EventV2, Event> event = new F<EventV2, Event>() {
-        public Event f(EventV2 event) {
-            Event e = new Event(event.getName());
-            e.setHandle(new ResourceHandle(URI.create(event.getUri())));
-            e.setDisplayID(event.getUuid());
-            e.setSessionURI(URI.create(event.getSessionsUri()));
-            e.setStartDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
-            e.setTags(new ArrayList<String>(event.getTags().getTag()));
-            e.setModified(false);
-            return e;
+    public static final F<P2<EventV2, Headers>, Event> eventFromRequest = new F<P2<EventV2, Headers>, Event>() {
+        public Event f(P2<EventV2, Headers> p2) {
+            // TODO: use the Link header
+            URI sessionUri = null;
+            return eventFromV2(p2._1(), sessionUri);
         }
     };
+
+    public static final F<EventV2, Event> event = new F<EventV2, Event>() {
+        public Event f(EventV2 event) {
+            return eventFromV2(event, null);
+        }
+    };
+
+    private static Event eventFromV2(EventV2 event, URI sessionUri) {
+        Event e = new Event(event.getName());
+        e.setHandle(new ResourceHandle(URI.create(event.getUri())));
+        e.setDisplayID(event.getUuid());
+        e.setSessionURI(sessionUri);
+        e.setStartDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
+        e.setTags(new ArrayList<String>(event.getTags().getTag()));
+        e.setModified(false);
+        return e;
+    }
 
 
     public static final F<Room, RoomV2> roomV2 = new F<Room, RoomV2>() {

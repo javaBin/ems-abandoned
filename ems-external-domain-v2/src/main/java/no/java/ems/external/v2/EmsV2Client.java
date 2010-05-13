@@ -15,20 +15,19 @@
 
 package no.java.ems.external.v2;
 
-import fj.data.Option;
-import fj.Unit;
+import fj.*;
+import fj.data.*;
+import no.java.ems.client.*;
+import org.codehaus.httpcache4j.*;
 
-
-import no.java.ems.client.ResourceHandle;
-
-import java.net.URI;
+import java.net.*;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
 public interface EmsV2Client {
-    Option<EventV2> getEvent(ResourceHandle handle);
+    Option<P2<EventV2, Headers>> getEvent(ResourceHandle handle);
 
     ResourceHandle addEvent(EventV2 event);
 
@@ -51,8 +50,6 @@ public interface EmsV2Client {
     ResourceHandle addPerson(PersonV2 personV1);
 
     Unit updatePerson(PersonV2 personV1);
-
-    
 
     void login(URI endpoint);
 }

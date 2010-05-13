@@ -18,7 +18,8 @@ package no.java.ems.external.v2;
 import fj.F;
 import fj.F2;
 import fj.Unit;
-import fj.data.Either;
+import fj.data.*;
+import static fj.data.List.iterableList;
 import org.joda.time.*;
 
 import javax.xml.bind.JAXBElement;
@@ -164,6 +165,14 @@ public class EmsV2F {
             return objectFactory.createSessions(sessionListV2);
         }
     };
+
+    public static class SessionListV2F {
+        public static final F<SessionListV2, List<SessionV2>> getSession = new F<SessionListV2, List<SessionV2>>() {
+            public List<SessionV2> f(SessionListV2 sessionList) {
+                return iterableList(sessionList.getSession());
+            }
+        };
+    }
 
     // -----------------------------------------------------------------------
     // Random stuff

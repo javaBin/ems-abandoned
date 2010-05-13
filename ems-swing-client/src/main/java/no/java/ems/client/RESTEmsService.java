@@ -15,28 +15,24 @@
 
 package no.java.ems.client;
 
-import no.java.ems.domain.search.ObjectType;
-import no.java.ems.domain.search.SearchResult;
-import no.java.ems.external.v2.*;
-import no.java.ems.domain.*;
-import no.java.ems.client.f.ExternalV2F;
-
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.net.URI;
-import java.io.InputStream;
-
-import org.codehaus.httpcache4j.HTTPMethod;
-import org.codehaus.httpcache4j.cache.HTTPCache;
-import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
-import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
-import org.codehaus.httpcache4j.HTTPRequest;
-import org.codehaus.httpcache4j.HTTPResponse;
-import org.codehaus.httpcache4j.Status;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import fj.*;
 import fj.data.Option;
+import static fj.data.List.*;
+import static fj.Function.*;
+import no.java.ems.client.f.*;
+import no.java.ems.domain.*;
+import no.java.ems.domain.search.*;
+import no.java.ems.external.v2.*;
+import org.apache.commons.httpclient.*;
+import org.codehaus.httpcache4j.*;
+import org.codehaus.httpcache4j.cache.*;
+import org.codehaus.httpcache4j.client.*;
+
+import java.io.*;
+import java.lang.Class;
+import java.net.URI;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -89,37 +85,52 @@ public class RESTEmsService {
     }
 
     public List<Event> getEvents() {
-        EventListV2 either = client.getEvents();
-        Collection<Event> events = fj.data.List.iterableList(either.getEvent()).map(ExternalV2F.event).toCollection();
-        return new ArrayList<Event>(events);
+         return new ArrayList<Event>(iterableList(client.getEvents().getEvent()).map(ExternalV2F.event).toCollection());
     }
 
-    public Event getEvent(ResourceHandle id) {
-        Option<Event> event = client.getEvent(id)
-                .map(ExternalV2F.event);
-
-        if (event.isSome()) {
-            return event.some();
+    public final F<ResourceHandle, Option<P2<EventV2, Headers>>> getEvent_ = new F<ResourceHandle, Option<P2<EventV2, Headers>>>() {
+        public Option<P2<EventV2, Headers>> f(ResourceHandle resourceHandle) {
+            return getEvent(resourceHandle);
         }
-        return null;
+    };
+
+    public Option<P2<EventV2, Headers>> getEvent(ResourceHandle handle) {
+        return client.getEvent(handle);
     }
 
-    public Event saveEvent(Event event) {
-        Option<EventV2> eventToSave = Option.some(event).map(ExternalV2F.eventV2);
+    private <T> F<java.lang.Class<T>, F<Resource, Option<P2<T, Headers>>>> extractObject() {
+        return curry(new F2<Class<T>, Resource, Option<P2<T, Headers>>>() {
+            public Option<P2<T, Headers>> f(Class<T> tClass, final Resource resource) {
+                return resource.getData(tClass).
+                    map(new F<T, P2<T, Headers>>() {
+                        public P2<T, Headers> f(T t) {
+                            return P.p(t, resource.getHeaders());
+                        }
+                    });
+            }
+        });
+     }
+
+    public Event saveEvent(final Event event) {
+        EventV2 eventToSave = ExternalV2F.eventV2.f(event);
         ResourceHandle handle = event.getHandle();
         if (handle == null) {
-            handle = client.addEvent(eventToSave.some());
+            handle = client.addEvent(eventToSave);
         }
         else {
-            client.updateEvent(event.getHandle(), eventToSave.some());
+            client.updateEvent(event.getHandle(), eventToSave);
         }
 
-        Option<Event> option = client.getEvent(handle).map(ExternalV2F.event);
-        if (option.isSome()) {
-            event.sync(option.some());
-            return event;
-        }
-        return null;
+        Option<Event> updatedEvent = client.getEvent(handle).map(ExternalV2F.eventFromRequest);
+
+        updatedEvent.foreach(new Effect<Event>() {
+            @Override
+            public void e(Event e) {
+                event.sync(e);
+            }
+        });
+
+        return updatedEvent.orSome((Event) null);
     }
 
     public List<Session> getSessions(Event event) {
@@ -129,11 +140,7 @@ public class RESTEmsService {
     }
 
     public Session getSession(ResourceHandle uri) {
-        Option<Session> option = client.getSession(uri).map(ExternalV2F.session);
-        if (option.isSome()) {
-            return option.some();
-        }
-        return null;
+        return client.getSession(uri).map(ExternalV2F.session).orSome((Session)null);
     }
 
     public Session saveSession(Session session) {
