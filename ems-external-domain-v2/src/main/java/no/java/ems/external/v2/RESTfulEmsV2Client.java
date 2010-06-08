@@ -20,6 +20,8 @@ import static fj.Function.curry;
 import fj.data.*;
 import static fj.data.Option.*;
 import no.java.ems.client.*;
+import no.java.ems.client.xhtml.Form;
+import org.apache.abdera.model.Feed;
 import org.apache.commons.io.*;
 import org.codehaus.httpcache4j.*;
 import org.codehaus.httpcache4j.cache.*;
@@ -55,6 +57,8 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     private static final MIMEType ROOM_LIST = MIMEType.valueOf(MIMETypes.ROOM_LIST_MIME_TYPE);
     private static final MIMEType ROOM = MIMEType.valueOf(MIMETypes.ROOM_MIME_TYPE);
     private static final MIMEType ENDPOINT = MIMEType.valueOf(MIMETypes.ENDPOINT_MIME_TYPE);
+    private static final MIMEType ATOM = new MIMEType("application/atom+xml");
+    private static final MIMEType XHTML = MIMEType.valueOf("application/xhtml+xml");
 
     public RESTfulEmsV2Client(HTTPCache cache) {
         this(cache, null, null);
@@ -203,6 +207,31 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return client.update(new ResourceHandle(URI.create(personV2.getUri())).toUnconditional(), createJAXBPayload("person", PersonV2.class, personV2, PERSON));
     }
 
+    public Form searchForm() {
+        EndpointParser.Endpoint endpoint = endpoints.get("search");
+        Option<Resource> option = client.read(endpoint.getHandle(), Collections.singletonList(XHTML));
+        if (option.isSome()) {
+            return option.some().getData(Form.class).some();
+        }
+        throw new IllegalStateException("Unable to get search form");
+    }
+
+    public Feed search(Form form) {
+        if (form.getMethod() == HTTPMethod.GET) {
+            Option<Resource> resource = client.read(new ResourceHandle(form.constructURI()), Collections.singletonList(ATOM));
+            if (resource.isSome()) {
+               return resource.some().getData(Feed.class).some();
+            }            
+        }
+        else {
+            Option<Resource> resource = client.process(new ResourceHandle(form.getAction()), form.toPayload());
+            if (resource.isSome()) {
+               return resource.some().getData(Feed.class).some();
+            }
+        }
+        throw new IllegalStateException("Unable to get a search result for the form");
+    }
+
     private static class MyRESTfulClient extends RESTfulClient {
         public MyRESTfulClient(HTTPCache cache, JAXBContext context, String username, String password) throws JAXBException {
             super(cache, username, password);
@@ -217,6 +246,7 @@ public class RESTfulEmsV2Client implements EmsV2Client {
             registerHandler(new URIListHandler());
             registerHandler(new EndpointParser());
             registerHandler(new DefaultHandler());
+            registerHandler(new AbderaHandler());
         }
     }
 }

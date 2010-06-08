@@ -11,6 +11,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -18,10 +19,12 @@ import java.util.*;
  * @version $Revision: $
  */
 public class XHTMLFormParser {
+    private final URI defaultURI;
     private final InputStream payload;
     private final static XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public XHTMLFormParser(InputStream payload) {
+    public XHTMLFormParser(URI uri, InputStream payload) {
+        defaultURI = uri;
         this.payload = payload;
     }
 
@@ -49,13 +52,18 @@ public class XHTMLFormParser {
 
     private Form parseForm(StartElement formElement, XMLEventReader reader) throws XMLStreamException {
         Attribute method = formElement.getAttributeByName(new QName("method"));
+        Attribute action = formElement.getAttributeByName(new QName("action"));
+        URI uri = defaultURI;
+        if (action != null) {
+            uri = URI.create(action.getValue());
+        }
         Form form;
         if (method == null) {
-            form = new Form("search");
+            form = new Form("search", uri);
         }
         else {
             String methodValue = method.getValue().toUpperCase();
-            form = new Form(findId(formElement), HTTPMethod.valueOf(methodValue));
+            form = new Form(findId(formElement), HTTPMethod.valueOf(methodValue), uri);
         }
         while(reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
@@ -66,13 +74,13 @@ public class XHTMLFormParser {
                     if (name != null) {
                         Attribute typeAttribute = element.getAttributeByName(new QName("type"));
                         if ("text".equals(typeAttribute.getValue()) || "search".equals(typeAttribute.getValue())) {
-                            form.add(name, new TextElement(reader.getElementText()));
+                            form.add(new TextElement(name, reader.getElementText()));
                         }
                     }
                 }
                 else if ("select".equals(element.getName().getLocalPart())) {
                     if (name != null) {
-                        form.add(name, parseSelect(reader));
+                        form.add(parseSelect(name, reader));
                     }                    
                 }
             }
@@ -95,8 +103,9 @@ public class XHTMLFormParser {
         return name;
     }
 
-    private Options parseSelect(XMLEventReader reader) throws XMLStreamException {
+    private Options parseSelect(String name, XMLEventReader reader) throws XMLStreamException {
         Map<String, String> options = new LinkedHashMap<String, String>();
+        List<String> selected = new ArrayList<String>();
         while(reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (event.isStartElement()) {
@@ -104,6 +113,10 @@ public class XHTMLFormParser {
                 if ("option".equals(element.getName().getLocalPart())) {
                     Attribute valueAttribute = element.getAttributeByName(new QName("value"));
                     options.put(valueAttribute.getValue(), reader.getElementText());
+                    Attribute selectedAttrbute = element.getAttributeByName(new QName("selected"));
+                    if ("selected".equals(selectedAttrbute.getValue())) {
+                        selected.add(valueAttribute.getValue());
+                    }
                 }
             }
             else if (event.isEndElement()) {
@@ -113,6 +126,6 @@ public class XHTMLFormParser {
                 }
             }
         }
-        return new Options(options);
+        return new Options(name, options, selected);
     }
 }

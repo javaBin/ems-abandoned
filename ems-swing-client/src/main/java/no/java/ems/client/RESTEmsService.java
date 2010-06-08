@@ -20,9 +20,14 @@ import fj.data.Option;
 import static fj.data.List.*;
 import static fj.Function.*;
 import no.java.ems.client.f.*;
+import no.java.ems.client.xhtml.Form;
+import no.java.ems.client.xhtml.Options;
+import no.java.ems.client.xhtml.TextElement;
 import no.java.ems.domain.*;
 import no.java.ems.domain.search.*;
 import no.java.ems.external.v2.*;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.*;
 import org.codehaus.httpcache4j.*;
 import org.codehaus.httpcache4j.cache.*;
@@ -31,6 +36,7 @@ import org.codehaus.httpcache4j.client.*;
 import java.io.*;
 import java.lang.Class;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 
@@ -202,10 +208,29 @@ public class RESTEmsService {
     }
 
     public List<SearchResult> search(String query, ObjectType type) {
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        for (int i = 0; i < 10; i++) {
-            list.add(new SearchResult(URI.create("" + i), "Title" + i, type, "Summary" + i));
-        }
-        return list;
+        List<SearchResult> result = new ArrayList<SearchResult>();
+        Form form = client.searchForm();
+        TextElement search = form.getTextElement("q");
+        Options options = form.getOptions("type");
+        search.setValue(query);
+        options.addSelection(type.name());
+        Feed feed = client.search(form);
+        List<Entry> entries = feed.getEntries();
+        fj.data.List<SearchResult> list = fj.data.List.iterableList(entries).map(toSearchResult());
+        result.addAll(list.toCollection());
+        return result;
+    }
+
+    private F<Entry, SearchResult> toSearchResult() {
+        return new F<Entry, SearchResult>() {
+            @Override
+            public SearchResult f(Entry entry) {
+                try {
+                    return new SearchResult(entry.getEditLink().getHref().toURI(), entry.getTitle(), entry.getSummary());
+                } catch (URISyntaxException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        };
     }
 }

@@ -18,6 +18,8 @@ package no.java.ems.external.v2;
 import fj.*;
 import fj.data.*;
 import no.java.ems.client.*;
+import no.java.ems.client.xhtml.Form;
+import org.apache.abdera.model.Feed;
 import org.codehaus.httpcache4j.*;
 
 import java.net.*;
@@ -52,4 +54,8 @@ public interface EmsV2Client {
     Unit updatePerson(PersonV2 personV1);
 
     void login(URI endpoint);
+
+    Form searchForm();
+
+    Feed search(Form form);
 }

@@ -9,13 +9,11 @@ import java.net.URI;
 public class SearchResult {
     private URI uri;
     private String title;
-    private ObjectType objectType;
     private String summary;
 
-    public SearchResult(URI uri, String title, ObjectType objectType, String summary) {
+    public SearchResult(URI uri, String title, String summary) {
         this.uri = uri;
         this.title = title;
-        this.objectType = objectType;
         this.summary = summary;
     }
 
@@ -26,11 +24,7 @@ public class SearchResult {
     public String getTitle() {
         return title;
     }
-
-    public ObjectType getObjectType() {
-        return objectType;
-    }
-
+    
     public String getSummary() {
         return summary;
     }
