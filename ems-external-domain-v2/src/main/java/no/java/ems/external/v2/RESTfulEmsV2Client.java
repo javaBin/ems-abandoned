@@ -21,6 +21,7 @@ import fj.data.*;
 import static fj.data.Option.*;
 import no.java.ems.client.*;
 import no.java.ems.client.xhtml.Form;
+import no.java.ems.client.xhtml.XHTMLFormParser;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.io.*;
 import org.codehaus.httpcache4j.*;
@@ -29,6 +30,7 @@ import org.codehaus.httpcache4j.payload.*;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.*;
+import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.lang.Class;
 import java.net.*;
@@ -211,7 +213,16 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         EndpointParser.Endpoint endpoint = endpoints.get("search");
         Option<Resource> option = client.read(endpoint.getHandle(), Collections.singletonList(XHTML));
         if (option.isSome()) {
-            return option.some().getData(Form.class).some();
+            Option<InputStream> data = option.some().getData(InputStream.class);
+            if (data.isSome()) {
+                InputStream inputStream = data.some();
+                XHTMLFormParser parser = new XHTMLFormParser(endpoint.getURI(), inputStream);
+                try {
+                    return parser.parse().get(0);
+                } catch (XMLStreamException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
         }
         throw new IllegalStateException("Unable to get search form");
     }
