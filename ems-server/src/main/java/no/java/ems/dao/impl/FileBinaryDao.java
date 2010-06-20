@@ -15,23 +15,17 @@
 
 package no.java.ems.dao.impl;
 
-import no.java.ems.dao.BinaryDao;
-import no.java.ems.server.domain.Binary;
-import no.java.ems.server.domain.UriBinary;
-import no.java.ems.server.domain.EmsServerConfiguration;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import fj.data.*;
+import static fj.data.Either.*;
+import no.java.ems.dao.*;
+import no.java.ems.server.domain.*;
+import org.apache.commons.io.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
+import java.io.*;
 import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings({"unchecked"})
 @Component
@@ -44,11 +38,11 @@ public class FileBinaryDao implements BinaryDao {
         this.binaryStorageDirectory = configuration.getBinaryStorageDirectory();
     }
 
-    public Binary getBinary(final String id) {
+    public Either<String, Binary> getBinary(final String id) {
         try {
             File infoFile = new File(binaryStorageDirectory, id + ".info");
             if (!infoFile.canRead()) {
-                return null;
+                return left("Missing info file: " + infoFile.getAbsolutePath());
             }
 
             List<String> lines = FileUtils.readLines(infoFile, "UTF-8");
@@ -56,15 +50,13 @@ public class FileBinaryDao implements BinaryDao {
             String mimeType = lines.get(1);
             File file = new File(binaryStorageDirectory, id);
             if (!file.exists()) {
-                return null;
+                return left("Missing date file: " + file.getAbsolutePath());
             }
-            return new UriBinary(id, fileName, mimeType, file.length(), file.toURI());
 
+            return right((Binary)new UriBinary(id, fileName, mimeType, file.length(), file.toURI()));
         } catch (IOException e) {
-            //todo: binary failed to be read... ?? What should happen?
-            e.printStackTrace();
+            return left("Unable to read binary: id=" + id);
         }
-        return null;
     }
 
     public File getBinaryAsFile(final String id) {

@@ -25,5 +25,4 @@ abstract public class TestHelper {
             return file;
         }
     }
-
 }

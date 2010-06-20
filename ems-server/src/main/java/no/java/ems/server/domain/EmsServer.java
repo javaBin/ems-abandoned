@@ -15,34 +15,22 @@
 
 package no.java.ems.server.domain;
 
-import fj.F;
-import fj.F2;
-import static fj.Function.curry;
-import fj.Unit;
-import fj.data.Java;
+import fj.*;
+import static fj.Function.*;
+import fj.data.*;
 import fj.data.List;
-import static fj.data.List.iterableList;
-import fj.data.Option;
-import no.java.ems.dao.BinaryDao;
-import no.java.ems.dao.EventDao;
-import no.java.ems.dao.PersonDao;
-import no.java.ems.dao.SessionDao;
-import no.java.ems.server.domain.AbstractEntity;
-import no.java.ems.server.domain.Binary;
-import no.java.ems.server.domain.Event;
-import no.java.ems.server.domain.Person;
-import no.java.ems.server.domain.Session;
-import no.java.ems.server.search.SearchService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.joda.time.LocalDate;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
+import static fj.data.List.*;
+import no.java.ems.dao.*;
+import no.java.ems.server.search.*;
+import org.apache.commons.logging.*;
+import org.joda.time.*;
+import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.dao.*;
+import org.springframework.stereotype.*;
 
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -125,6 +113,9 @@ public class EmsServer implements InitializingBean {
         }
     }
 
+    /**
+     * @deprecated
+     */
     public Option<Session> getSession(String sessionId) {
         try {
             return Option.fromNull(sessionDao.getSession(sessionId));

@@ -15,32 +15,23 @@
 
 package no.java.ems.dao.impl;
 
-import no.java.ems.dao.BinaryDao;
-import no.java.ems.dao.RoomDao;
-import no.java.ems.dao.SessionDao;
-import no.java.ems.server.domain.Binary;
-import no.java.ems.server.domain.Language;
-import no.java.ems.server.domain.Session;
-import no.java.ems.server.domain.Speaker;
-
-import static fj.data.Option.some;
-import static no.java.ems.server.f.ExternalV2F.*;
-import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
-import org.springframework.dao.DataAccessException;
-
-import javax.swing.text.html.Option;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import fj.data.*;
+import static fj.data.Either.*;
+import static fj.data.List.*;
+import static fj.data.Option.*;
 import static java.sql.Types.*;
-import java.util.Arrays;
-import java.util.Collections;
+import no.java.ems.dao.*;
+import no.java.ems.server.domain.*;
+import static no.java.ems.server.f.ExternalV2F.*;
+import org.joda.time.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.dao.*;
+import org.springframework.jdbc.core.*;
+import org.springframework.stereotype.*;
+
+import java.sql.*;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
@@ -324,7 +315,13 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                                     }
                                     String photoId = rs.getString("photo");
                                     if (photoId != null) {
-                                        speaker.setPhoto(binaryDao.getBinary(photoId));
+                                        Either<String, Binary> photo = binaryDao.getBinary(photoId);
+                                        if(photo.isLeft()){
+                                            System.out.println(photo.left().value());
+                                        }
+                                        else {
+                                            speaker.setPhoto(photo.right().value());
+                                        }
                                     }
                                     return speaker;
                                 }
@@ -332,17 +329,21 @@ public class JdbcTemplateSessionDao extends AbstractDao implements SessionDao {
                     )
             );
             //noinspection unchecked
-            session.setAttachments(
-                    jdbcTemplate.query(
-                            "select attachementId from session_attachement where sessionId = ? order by position",
-                            new Object[]{session.getId()},
-                            new RowMapper() {
-                                public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-                                    return binaryDao.getBinary(rs.getString("attachementId"));
-                                }
-                            }
-                    )
-            );
+            fj.data.List<Either<String, Binary>> attachments = iterableList(jdbcTemplate.query(
+                "select attachementId from session_attachement where sessionId = ? order by position",
+                new Object[]{session.getId()},
+                new RowMapper() {
+                    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return binaryDao.getBinary(rs.getString("attachementId"));
+                    }
+                }
+            ));
+
+            for (String error : lefts(attachments)) {
+                System.out.println("Error loading EMS: " + error);
+            }
+
+            session.setAttachments(new ArrayList<Binary>(Either.rights(attachments).toCollection()));
             return session;
         }
     }

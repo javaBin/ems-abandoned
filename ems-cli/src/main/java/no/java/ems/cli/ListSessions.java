@@ -15,10 +15,11 @@
 
 package no.java.ems.cli;
 
+import fj.data.*;
 import static no.java.ems.cli.PrintUtil.print;
 
 import no.java.ems.client.ResourceHandle;
-import no.java.ems.external.v2.SessionV2;
+import no.java.ems.external.v2.*;
 import org.apache.commons.cli.Options;
 
 import java.util.List;
@@ -49,9 +50,13 @@ public class ListSessions extends AbstractCli {
             return;
         }
 
-        List<SessionV2> sessions = getEms().getSessions(getDefaultEventHandle()).getSession();
+        Either<Exception,SessionListV2> either = getEms().getSessions(getDefaultEventHandle());
 
-        for (SessionV2 session : sessions) {
+        if(either.isLeft()){
+            throw either.left().value();
+        }
+
+        for (SessionV2 session : either.right().value().getSession()) {
             print(getCommandLine(), session);
         }
     }

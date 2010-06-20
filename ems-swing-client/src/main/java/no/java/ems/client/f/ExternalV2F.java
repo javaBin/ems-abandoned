@@ -18,7 +18,6 @@ package no.java.ems.client.f;
 import fj.*;
 import static fj.Function.curry;
 import static fj.Unit.unit;
-import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
@@ -402,31 +401,22 @@ public class ExternalV2F {
         }
     };
 
-    public static final F<P2<EventV2, Headers>, Event> eventFromRequest = new F<P2<EventV2, Headers>, Event>() {
-        public Event f(P2<EventV2, Headers> p2) {
-            // TODO: use the Link header
-            URI sessionUri = null;
-            return eventFromV2(p2._1(), sessionUri);
-        }
-    };
-
     public static final F<EventV2, Event> event = new F<EventV2, Event>() {
-        public Event f(EventV2 event) {
-            return eventFromV2(event, null);
+        public Event f(EventV2 eventV2) {
+            return event(eventV2);
         }
     };
 
-    private static Event eventFromV2(EventV2 event, URI sessionUri) {
+    private static Event event(EventV2 event) {
         Event e = new Event(event.getName());
         e.setHandle(new ResourceHandle(URI.create(event.getUri())));
         e.setDisplayID(event.getUuid());
-        e.setSessionURI(sessionUri);
+        e.setSessionURI(URI.create(event.getSessionsUri()));
         e.setStartDate(fromNull(event.getDate()).map(toLocalDate).orSome((LocalDate) null));
         e.setTags(new ArrayList<String>(event.getTags().getTag()));
         e.setModified(false);
         return e;
     }
-
 
     public static final F<Room, RoomV2> roomV2 = new F<Room, RoomV2>() {
         public RoomV2 f(Room room) {

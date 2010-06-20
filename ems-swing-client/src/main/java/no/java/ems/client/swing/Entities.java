@@ -16,6 +16,7 @@
 package no.java.ems.client.swing;
 
 import no.java.ems.client.RESTEmsService;
+import static no.java.ems.client.RESTEmsService.throwLeft;
 import no.java.ems.client.ResourceHandle;
 import no.java.ems.domain.*;
 import no.java.swing.ApplicationTask;
@@ -29,6 +30,9 @@ import org.jdesktop.observablecollections.ObservableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:yngvars@gmail.com">Yngvar S&oslash;rensen</a>
@@ -249,7 +253,7 @@ public class Entities extends HashSet<AbstractEntity> {
         }
 
         protected List<Person> doInBackground() throws Exception {
-            return EmsClient.getInstance().getClientService().getContacts();
+            return throwLeft(EmsClient.getInstance().getClientService().getContacts());
         }
 
         @Override

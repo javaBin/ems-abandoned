@@ -15,6 +15,7 @@
 
 package no.java.ems.server.resources.v2;
 
+import fj.data.*;
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.server.domain.Binary;
 
@@ -23,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response.*;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -48,10 +50,17 @@ public class BinaryResource {
     @GET
     @Path("{binaryId}")
     public Response getBinary(@PathParam("binaryId") String binaryId) {
-        Binary binary = binaryDao.getBinary(binaryId);
-        Response.ResponseBuilder builder = Response.ok(binary.getDataStream(), MediaType.valueOf(binary.getMimeType()));
-        builder.header("Content-Disposition", "inline; filename=" + binary.getFileName());
-        return builder.build();
+        Either<String,Binary> either = binaryDao.getBinary(binaryId);
+        if(either.isRight()) {
+            Binary binary = either.right().value();
+            Response.ResponseBuilder builder = Response.ok(binary.getDataStream(), MediaType.valueOf(binary.getMimeType()));
+            builder.header("Content-Disposition", "inline; filename=" + binary.getFileName());
+            return builder.build();
+        }
+        else {
+            System.out.println(either.left().value());
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
     @POST

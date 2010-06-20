@@ -16,9 +16,8 @@
 package no.java.ems.client;
 
 import fj.*;
-import fj.data.Option;
+import fj.data.*;
 import static fj.data.List.*;
-import static fj.Function.*;
 import no.java.ems.client.f.*;
 import no.java.ems.client.xhtml.Form;
 import no.java.ems.client.xhtml.Options;
@@ -34,7 +33,6 @@ import org.codehaus.httpcache4j.cache.*;
 import org.codehaus.httpcache4j.client.*;
 
 import java.io.*;
-import java.lang.Class;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -64,18 +62,17 @@ public class RESTEmsService {
         this(baseURI, null, null);
     }
 
-    public List<Person> getContacts() {
-        PersonListV2 people = client.getPeople();
-        Collection<Person> persons = fj.data.List.iterableList(people.getPerson()).map(ExternalV2F.person).toCollection();
-        return new ArrayList<Person>(persons);
+    public Either<Exception, List<Person>> getContacts() {
+        return client.getPeople().right().map(new F<PersonListV2, List<Person>>() {
+            @Override
+            public List<Person> f(PersonListV2 personListV2) {
+                return new ArrayList<Person>(iterableList(personListV2.getPerson()).map(ExternalV2F.person).toCollection());
+            }
+        });
     }
 
     public Person getContact(ResourceHandle id) {
-        Option<Person> person = client.getPerson(id).map(ExternalV2F.person);
-        if (person.isSome()) {
-            return person.some();
-        }
-        return null;
+        return Option.join(client.getPerson(id).right().toOption()).map(ExternalV2F.person).orSome((Person)null);
     }
 
     public Person saveContact(Person person) {
@@ -90,28 +87,15 @@ public class RESTEmsService {
         return person;
     }
 
-    public List<Event> getEvents() {
-         return new ArrayList<Event>(iterableList(client.getEvents().getEvent()).map(ExternalV2F.event).toCollection());
+    public List<Event> getEvents() throws Exception {
+        return new ArrayList<Event>(iterableList(throwLeft(client.getEvents()).getEvent()).map(ExternalV2F.event).toCollection());
     }
 
     public Event getEvent(ResourceHandle id) {
-        return client.getEvent(id).
-            map(compose(ExternalV2F.event, P2.<EventV2, Headers>__1())).
+        return Option.join(client.getEvent(id).right().toOption()).
+            map(ExternalV2F.event).
             orSome((Event)null);
     }
-
-    private <T> F<java.lang.Class<T>, F<Resource, Option<P2<T, Headers>>>> extractObject() {
-        return curry(new F2<Class<T>, Resource, Option<P2<T, Headers>>>() {
-            public Option<P2<T, Headers>> f(Class<T> tClass, final Resource resource) {
-                return resource.getData(tClass).
-                    map(new F<T, P2<T, Headers>>() {
-                        public P2<T, Headers> f(T t) {
-                            return P.p(t, resource.getHeaders());
-                        }
-                    });
-            }
-        });
-     }
 
     public Event saveEvent(final Event event) {
         EventV2 eventToSave = ExternalV2F.eventV2.f(event);
@@ -123,7 +107,8 @@ public class RESTEmsService {
             client.updateEvent(event.getHandle(), eventToSave);
         }
 
-        Option<Event> updatedEvent = client.getEvent(handle).map(ExternalV2F.eventFromRequest);
+        Option<Event> updatedEvent = Option.join(client.getEvent(handle).right().toOption()).
+            map(ExternalV2F.event);
 
         updatedEvent.foreach(new Effect<Event>() {
             @Override
@@ -135,35 +120,39 @@ public class RESTEmsService {
         return updatedEvent.orSome((Event) null);
     }
 
-    public List<Session> getSessions(Event event) {
-        SessionListV2 sessions = client.getSessions(new ResourceHandle(event.getSessionURI()));
-        Collection<Session> list = fj.data.List.iterableList(sessions.getSession()).map(ExternalV2F.session).toCollection();
+    public List<Session> getSessions(Event event) throws Exception {
+        SessionListV2 sessions = throwLeft(client.getSessions(new ResourceHandle(event.getSessionURI())));
+        Collection<Session> list = iterableList(sessions.getSession()).map(ExternalV2F.session).toCollection();
         return new ArrayList<Session>(list);
     }
 
-    public Session getSession(ResourceHandle uri) {
-        return client.getSession(uri).map(ExternalV2F.session).orSome((Session)null);
+    public static <T> T throwLeft(Either<Exception, T> either) throws Exception {
+        if(either.isLeft()) {
+            throw either.left().value();
+        }
+
+        return either.right().value();
     }
 
-    public Session saveSession(Session session) {
-        Option<SessionV2> option = Option.some(session).map(ExternalV2F.sessionV2);
-        if (option.isSome()) {
-            if (session.getHandle() == null) {
-                ResourceHandle handle = client.addSession(session.getEventHandle(), option.some());
-                session.setHandle(handle);
-                return session;
-            }
-            else {
-                client.updateSession(session.getHandle(), option.some());
-                option = client.getSession(session.getHandle().toUnconditional());
-                Option<Session> sessionOption = option.map(ExternalV2F.session);
-                if (sessionOption.isSome()) {
-                    session.sync(sessionOption.some());
-                }
-                return session;
-            }
+    public Session getSession(ResourceHandle uri) throws Exception {
+        return throwLeft(client.getSession(uri)).map(ExternalV2F.session).orSome((Session)null);
+    }
+
+    public Session saveSession(Session session) throws Exception {
+        SessionV2 sessionV2 = ExternalV2F.sessionV2.f(session);
+        if (session.getHandle() == null) {
+            ResourceHandle handle = client.addSession(session.getEventHandle(), sessionV2);
+            session.setHandle(handle);
+            return session;
         }
-        throw new IllegalArgumentException("Unable to save session");
+        else {
+            client.updateSession(session.getHandle(), sessionV2);
+            Option<Session> sessionOption = throwLeft(client.getSession(session.getHandle().toUnconditional())).map(ExternalV2F.session);
+            if (sessionOption.isSome()) {
+                session.sync(sessionOption.some());
+            }
+            return session;
+        }
     }
 
     public void delete(ResourceHandle handle) {

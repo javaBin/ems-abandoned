@@ -15,7 +15,8 @@
 
 package no.java.ems.cli;
 
-import no.java.ems.external.v2.EventV2;
+import fj.data.*;
+import no.java.ems.external.v2.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -32,7 +33,13 @@ public class ListEvents extends AbstractCli {
 
     public void work() throws Exception {
         System.err.println("Events: ");
-        for (EventV2 event : getEms().getEvents().getEvent()) {
+        Either<Exception, EventListV2> either = getEms().getEvents();
+
+        if (either.isLeft()) {
+            throw either.left().value();
+        }
+
+        for (EventV2 event : either.right().value().getEvent()) {
             System.err.println(event.getUuid() + ":" + event.getName());
         }
     }

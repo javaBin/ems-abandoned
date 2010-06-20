@@ -15,11 +15,9 @@
 
 package no.java.ems.cli;
 
-import fj.*;
 import fj.data.Option;
 import no.java.ems.external.v2.*;
 import org.apache.commons.cli.*;
-import org.codehaus.httpcache4j.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -41,14 +39,14 @@ public class GetEvent extends AbstractCli {
     }
 
     public void work() throws Exception {
-        Option<P2<EventV2, Headers>> option = getEms().getEvent(getDefaultEventHandle());
+        Option<EventV2> option = Option.join(getEms().getEvent(getDefaultEventHandle()).right().toOption());
 
         if (option.isNone()) {
             System.err.println("No such event.");
             return;
         }
 
-        EventV2 event = option.some()._1();
+        EventV2 event = option.some();
 
         System.err.println("Id: " + event.getUuid());
         System.err.println("Name: " + event.getName());

@@ -15,12 +15,13 @@
 
 package no.java.ems.cli;
 
+import fj.data.*;
 import fj.data.Option;
-import no.java.ems.client.ResourceHandle;
-import no.java.ems.external.v2.SessionV2;
-import org.apache.commons.cli.Options;
+import no.java.ems.client.*;
+import no.java.ems.external.v2.*;
+import org.apache.commons.cli.*;
 
-import java.net.URI;
+import java.net.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -45,7 +46,13 @@ public class GetSession extends AbstractCli {
 
     public void work() throws Exception {
         URI sessionId = getOptionAsURI(OPTION_SESSION_URI);
-        Option<SessionV2> option = getEms().getSession(new ResourceHandle(sessionId));
+        Either<Exception, Option<SessionV2>> either = getEms().getSession(new ResourceHandle(sessionId));
+
+        if (either.isLeft()) {
+            throw either.left().value();
+        }
+
+        Option<SessionV2> option = either.right().value();
 
         if (option.isNone()) {
             System.err.println("No such session.");

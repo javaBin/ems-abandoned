@@ -15,8 +15,9 @@
 
 package no.java.ems.cli;
 
+import fj.data.*;
 import no.java.ems.client.ResourceHandle;
-import no.java.ems.external.v2.SessionV2;
+import no.java.ems.external.v2.*;
 import org.apache.commons.cli.Options;
 
 /**
@@ -41,7 +42,13 @@ public class GetSessions extends AbstractCli {
 
     public void work() throws Exception {
 
-        for (SessionV2 session : getEms().getSessions(getDefaultEventHandle()).getSession()) {
+        Either<Exception,SessionListV2> either = getEms().getSessions(getDefaultEventHandle());
+
+        if(either.isLeft()){
+            throw either.left().value();
+        }
+
+        for (SessionV2 session : either.right().value().getSession()) {
             PrintUtil.print(getCommandLine(), session);
         }
     }

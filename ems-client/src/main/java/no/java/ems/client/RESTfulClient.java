@@ -15,22 +15,24 @@
 
 package no.java.ems.client;
 
+import fj.*;
+import fj.data.*;
+import static fj.data.Either.*;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.codehaus.httpcache4j.payload.Payload;
 import org.codehaus.httpcache4j.*;
 import org.apache.commons.lang.Validate;
-import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import fj.Unit;
 import org.codehaus.httpcache4j.preference.Preferences;
 
 import static fj.Unit.unit;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.net.URI;
+import java.util.List;
 
 
 /**
@@ -91,10 +93,10 @@ public abstract class RESTfulClient {
         }
     }
 
-    public Option<Resource> process(ResourceHandle handle, Payload payload) {
+    public Either<Exception, Option<Resource>> process(ResourceHandle handle, Payload payload) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
-        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);        
+        HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
         HTTPResponse response = cache.doCachedRequest(request);
         if (response.getStatus().isClientError() || response.getStatus().isServerError()) {
             response.consume();
@@ -103,10 +105,10 @@ public abstract class RESTfulClient {
         if (response.hasPayload()) {
             return handle(handle, response);
         }
-        return Option.none();
+        return left(new Exception("No payload"));
     }
 
-    public Option<Resource> createAndRead(ResourceHandle handle, Payload payload, List<MIMEType> types) {
+    public Either<Exception, Option<Resource>> createAndRead(ResourceHandle handle, Payload payload, List<MIMEType> types) {
         Validate.notNull(handle, "Handle may not be null");
         Validate.notNull(payload, "Payload may not be null");
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.POST).payload(payload);
@@ -137,7 +139,7 @@ public abstract class RESTfulClient {
         return new ResourceHandle(URI.create(response.getHeaders().getFirstHeaderValue("Location")), Option.<Tag>none());
     }
 
-    public Option<Resource> read(ResourceHandle handle, List<MIMEType> types) {
+    public Either<Exception, Option<Resource>> read(ResourceHandle handle, List<MIMEType> types) {
         Validate.notNull(handle, "Handle may not be null");
         HTTPRequest request = new HTTPRequest(handle.getURI(), HTTPMethod.GET);
         if (handle.isTagged()) {
@@ -157,7 +159,7 @@ public abstract class RESTfulClient {
         ResourceHandle updatedHandle = new ResourceHandle(handle.getURI(), Option.fromNull(response.getETag()));
         if (updatedHandle.equals(handle) && response.getStatus() == Status.NOT_MODIFIED) {
             response.consume();
-            return Option.none();
+            return right(Option.<Resource>none());
         }
         if (response.getStatus() == Status.OK) {
             return handle(updatedHandle, response);
@@ -165,16 +167,16 @@ public abstract class RESTfulClient {
         throw new HttpException(handle.getURI(), response.getStatus());
     }
 
-    protected Option<Resource> handle(ResourceHandle handle, HTTPResponse response) {
+    protected Either<Exception, Option<Resource>> handle(ResourceHandle handle, HTTPResponse response) {
         if (response.hasPayload()) {
             for (Handler handler : getHandlers()) {
                 if (handler.supports(response.getPayload().getMimeType())) {
                     InputStream payload = response.getPayload().getInputStream();
                     try {
-                        return Option.<Resource>some(new DefaultResource(handle, response.getHeaders(), handler.handle(payload)));
+                        return right(Option.<Resource>some((Resource)new DefaultResource(handle, response.getHeaders(), handler.handle(payload))));
                     } catch (RuntimeException e) {
                         IOUtils.closeQuietly(payload);
-                        throw e;
+                        return left((Exception)e);
                     } finally {
                         if (!handler.needStreamAfterHandle()) {
                             IOUtils.closeQuietly(payload);
@@ -183,7 +185,8 @@ public abstract class RESTfulClient {
                 }
             }
         }
-        return none();
+
+        return left(new Exception("No suitable handler."));
     }
 
   public Option<Headers> inspect(final ResourceHandle pHandle) {

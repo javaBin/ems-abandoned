@@ -409,7 +409,6 @@ public class ExternalV2F {
 
     public static final F<Room, RoomV2> roomV2 = new F<Room, RoomV2>() {
         public RoomV2 f(Room room) {
-            System.out.println("ExternalV2F.roomV2");
             RoomV2 roomV2 = new RoomV2();
             roomV2.setUuid(room.getId());            
             roomV2.setName(room.getName());
@@ -460,7 +459,6 @@ public class ExternalV2F {
     private static <A> F2<java.util.List<A>, A, Unit> add() {
         return new F2<java.util.List<A>, A, Unit>() {
             public Unit f(java.util.List<A> list, A a) {
-                System.out.println("ExternalV2F.add");
                 list.add(a);
                 return unit();
             }

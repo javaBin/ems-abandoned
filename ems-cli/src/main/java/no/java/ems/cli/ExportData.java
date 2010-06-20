@@ -15,16 +15,14 @@
 
 package no.java.ems.cli;
 
-import no.java.ems.client.ResourceHandle;
-import org.apache.commons.cli.Options;
+import fj.data.*;
+import no.java.ems.client.*;
+import no.java.ems.external.v2.*;
+import org.apache.commons.cli.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.net.URI;
+import java.io.*;
+import java.net.*;
 import java.util.List;
-
-import no.java.ems.external.v2.SessionV2;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -58,7 +56,13 @@ public class ExportData extends AbstractCli {
         URI sessionsURI = getOptionAsURI(OPTION_SESSIONS_URI);
         dir = new File(getCommandLine().getOptionValue(OPTION_DIRECTORY));
 
-        List<SessionV2> sessions = getEms().getSessions(new ResourceHandle(sessionsURI)).getSession();
+        Either<Exception, SessionListV2> either = getEms().getSessions(new ResourceHandle(sessionsURI));
+
+        if (either.isLeft()) {
+            throw either.left().value();
+        }
+
+        List<SessionV2> sessions = either.right().value().getSession();
 
         OutputStream outputStream = null;
         try {

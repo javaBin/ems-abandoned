@@ -16,9 +16,8 @@
 package no.java.ems.external.v2;
 
 import fj.*;
-import static fj.Function.curry;
 import fj.data.*;
-import static fj.data.Option.*;
+import static fj.data.Either.*;
 import no.java.ems.client.*;
 import no.java.ems.client.xhtml.Form;
 import no.java.ems.client.xhtml.XHTMLFormParser;
@@ -62,6 +61,25 @@ public class RESTfulEmsV2Client implements EmsV2Client {
     private static final MIMEType ATOM = new MIMEType("application/atom+xml");
     private static final MIMEType XHTML = MIMEType.valueOf("application/xhtml+xml");
 
+    private P1<EventListV2> eventListV2P1 = new P1<EventListV2>() {
+        @Override
+        public EventListV2 _1() {
+            return new EventListV2();
+        }
+    };
+    private P1<SessionListV2> sessionListV2P1 = new P1<SessionListV2>() {
+        @Override
+        public SessionListV2 _1() {
+            return new SessionListV2();
+        }
+    };
+    private P1<PersonListV2> personListV2P1 = new P1<PersonListV2>() {
+        @Override
+        public PersonListV2 _1() {
+            return new PersonListV2();
+        }
+    };
+
     public RESTfulEmsV2Client(HTTPCache cache) {
         this(cache, null, null);
     }
@@ -83,15 +101,17 @@ public class RESTfulEmsV2Client implements EmsV2Client {
      * @param endpoint the uri of the "2" webservice, e.g http://localhost:3000/ems/2
      */
     public void login(URI endpoint) {
-        Option<Resource> endpoints = client.read(new ResourceHandle(endpoint), Collections.singletonList(ENDPOINT));
-        if (endpoints.isSome()) {
-            Resource resource = endpoints.some();
-            Option<Map> data = resource.getData(Map.class);
-            if (data.isSome()) {
-                Map<String, EndpointParser.Endpoint> map = data.some();
-                this.endpoints.putAll(map);                
+        Either<Exception, Option<Resource>> endpoints = client.read(new ResourceHandle(endpoint), Collections.singletonList(ENDPOINT));
+
+        Option.join(endpoints.right().toOption()).foreach(new Effect<Resource>() {
+            public void e(Resource resource) {
+                Option<Map> data = resource.getData(Map.class);
+                if (data.isSome()) {
+                    Map<String, EndpointParser.Endpoint> map = data.some();
+                    RESTfulEmsV2Client.this.endpoints.putAll(map);
+                }
             }
-        }
+        });
     }
 
     private <A> Payload createJAXBPayload(String tag, Class<A> type, A object, MIMEType mimeType) {
@@ -106,36 +126,26 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         }
     }
 
-    public final F<ResourceHandle, Option<P2<EventV2, Headers>>> getEvent_ = new F<ResourceHandle, Option<P2<EventV2, Headers>>>() {
-        public Option<P2<EventV2, Headers>> f(ResourceHandle resourceHandle) {
+    public final F<ResourceHandle, Either<Exception, Option<EventV2>>> getEvent_ = new F<ResourceHandle, Either<Exception, Option<EventV2>>>() {
+        public Either<Exception, Option<EventV2>> f(ResourceHandle resourceHandle) {
             return getEvent(resourceHandle);
         }
     };
 
-    public Option<P2<EventV2, Headers>> getEvent(ResourceHandle handle) {
-        return client.read(handle, Collections.singletonList(EVENT)).
-            bind(this.<EventV2>extractObject().f(EventV2.class));
+    public Either<Exception, Option<EventV2>> getEvent(ResourceHandle handle) {
+        return bindRight(client.read(handle, Collections.singletonList(EVENT)), this.<EventV2>getData().f(EventV2.class));
     }
 
-    private <T> F<Class<T>, F<Resource, Option<P2<T, Headers>>>> extractObject() {
-        return curry(new F2<Class<T>, Resource, Option<P2<T, Headers>>>() {
-            public Option<P2<T, Headers>> f(Class<T> tClass, final Resource resource) {
-                return resource.getData(tClass).
-                    map(new F<T, P2<T, Headers>>() {
-                        public P2<T, Headers> f(T t) {
-                            return P.p(t, resource.getHeaders());
-                        }
-                    });
+    private <T> F<Class<T>, F<Resource, Option<T>>> getData() {
+        return new F<Class<T>, F<Resource, Option<T>>>() {
+            public F<Resource, Option<T>> f(final Class<T> klass) {
+                return new F<Resource, Option<T>>() {
+                    public Option<T> f(Resource resource) {
+                        return resource.getData(klass);
+                    }
+                };
             }
-        });
-     }
-
-    private <T> Option<T> extractObject(Option<Resource> resourceOption, Class<T> type) {
-        if (resourceOption.isSome()) {
-            Resource resource = resourceOption.some();
-            return resource.getData(type);
-        }
-        return none();
+        };
     }
 
     public Unit updateEvent(ResourceHandle handle, EventV2 event) {
@@ -146,29 +156,26 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return client.create(endpoints.get("events").getHandle(), createJAXBPayload("event", EventV2.class, event, EVENT));
     }
 
-    public EventListV2 getEvents() {
-        Option<Resource> resourceOption = client.read(endpoints.get("events").getHandle(), Collections.singletonList(EVENT_LIST));
-        return extractObject(resourceOption, EventListV2.class).some();
+    public Either<Exception, EventListV2> getEvents() {
+        return bindRightOrValue(client.read(endpoints.get("events").getHandle(), Collections.singletonList(EVENT_LIST)), this.<EventListV2>getData().f(EventListV2.class), eventListV2P1);
     }
 
-    public SessionListV2 getSessions(ResourceHandle handle) {
-        Option<Resource> resourceOption = client.read(handle, Collections.singletonList(SESSION_LIST));
-        return extractObject(resourceOption, SessionListV2.class).some();
+    public Either<Exception, SessionListV2> getSessions(ResourceHandle handle) {
+        return bindRightOrValue(client.read(handle, Collections.singletonList(SESSION_LIST)), this.<SessionListV2>getData().f(SessionListV2.class), sessionListV2P1);
     }
 
-    public F<ResourceHandle, SessionListV2> getSessions_ = new F<ResourceHandle, SessionListV2>() {
-        public SessionListV2 f(ResourceHandle resourceHandle) {
+    public F<ResourceHandle, Either<Exception, SessionListV2>> getSessions_ = new F<ResourceHandle, Either<Exception, SessionListV2>>() {
+        public Either<Exception, SessionListV2> f(ResourceHandle resourceHandle) {
             return getSessions(resourceHandle);
         }
     };
 
-    public Option<SessionV2> getSession(ResourceHandle handle) {
-        Option<Resource> resourceOption = client.read(handle, Collections.singletonList(SESSION));
-        return extractObject(resourceOption, SessionV2.class);
+    public Either<Exception, Option<SessionV2>> getSession(ResourceHandle handle) {
+        return bindRight(client.read(handle, Collections.singletonList(SESSION)), this.<SessionV2>getData().f(SessionV2.class));
     }
 
-    public final F<ResourceHandle, Option<SessionV2>> getSession_ = new F<ResourceHandle, Option<SessionV2>>() {
-        public Option<SessionV2> f(ResourceHandle resourceHandle) {
+    public final F<ResourceHandle, Either<Exception, Option<SessionV2>>> getSession_ = new F<ResourceHandle, Either<Exception, Option<SessionV2>>>() {
+        public Either<Exception, Option<SessionV2>> f(ResourceHandle resourceHandle) {
             return getSession(resourceHandle);
         }
     };
@@ -191,14 +198,12 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return client.update(handle, createJAXBPayload("session", SessionV2.class, session, SESSION));
     }
 
-    public PersonListV2 getPeople() {
-        Option<Resource> resourceOption = client.read(endpoints.get("people").getHandle(), Collections.singletonList(PERSON_LIST));
-        return extractObject(resourceOption, PersonListV2.class).some();
+    public Either<Exception, PersonListV2> getPeople() {
+        return bindRightOrValue(client.read(endpoints.get("people").getHandle(), Collections.singletonList(PERSON_LIST)), this.<PersonListV2>getData().f(PersonListV2.class), personListV2P1);
     }
 
-    public Option<PersonV2> getPerson(ResourceHandle handle) {
-        Option<Resource> resourceOption = client.read(handle, Collections.singletonList(PERSON));
-        return extractObject(resourceOption, PersonV2.class);
+    public Either<Exception, Option<PersonV2>> getPerson(ResourceHandle handle) {
+        return bindRight(client.read(handle, Collections.singletonList(PERSON)), this.<PersonV2>getData().f(PersonV2.class));
     }
 
     public ResourceHandle addPerson(PersonV2 personV2) {
@@ -259,5 +264,21 @@ public class RESTfulEmsV2Client implements EmsV2Client {
             registerHandler(new DefaultHandler());
             registerHandler(new AbderaHandler());
         }
+    }
+
+    private <T> Either<Exception, T> bindRightOrValue(Either<Exception, Option<Resource>> either, F<Resource, Option<T>> f, P1<T> p1) {
+        if(either.isLeft()) {
+            return left(either.left().value());
+        }
+
+        return right(either.right().value().bind(f).orSome(p1));
+    }
+
+    private <T> Either<Exception, Option<T>> bindRight(Either<Exception, Option<Resource>> either, F<Resource, Option<T>> f) {
+        if(either.isLeft()) {
+            return left(either.left().value());
+        }
+
+        return right(either.right().value().bind(f));
     }
 }

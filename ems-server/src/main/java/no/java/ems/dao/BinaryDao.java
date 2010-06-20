@@ -16,6 +16,7 @@
 
 package no.java.ems.dao;
 
+import fj.data.*;
 import no.java.ems.server.domain.Binary;
 
 import java.io.InputStream;
@@ -29,7 +30,7 @@ public interface BinaryDao {
      * @param id the id of the binary
      * @return a binary if found, null if not.
      */
-    Binary getBinary(String id);
+    Either<String, Binary> getBinary(String id);
 
     File getBinaryAsFile(String id);
 
@@ -42,9 +43,5 @@ public interface BinaryDao {
      */
     Binary createBinary(InputStream inputStream, String filename, String mimetype);
 
-    /**
-     * 
-     * @param id
-     */
     boolean deleteBinary(String id);
 }

@@ -15,6 +15,7 @@
 
 package no.java.ems.dao.impl;
 
+import fj.data.*;
 import no.java.ems.dao.BinaryDao;
 import no.java.ems.dao.PersonDao;
 import no.java.ems.server.domain.Binary;
@@ -33,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author <a href="mailto:erlend@hamnaberg.net">Erlend Hamnaberg</a>
@@ -170,7 +172,13 @@ public class JdbcTemplatePersonDao implements PersonDao {
             person.setEmailAddresses(emailAddresses);
             String photoId = resultSet.getString("photo");
             if (photoId != null) {
-                person.setPhoto(binaryDao.getBinary(photoId));
+                Either<String,Binary> photo = binaryDao.getBinary(photoId);
+                if(photo.isLeft()) {
+                    System.out.println(photo.left().value());
+                }
+                else {
+                    person.setPhoto(photo.right().value());
+                }
             }
             //noinspection unchecked
             person.setAttachments(

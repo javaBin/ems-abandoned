@@ -29,25 +29,25 @@ import java.net.*;
  * @version $Revision: #5 $ $Date: 2008/09/15 $
  */
 public interface EmsV2Client {
-    Option<P2<EventV2, Headers>> getEvent(ResourceHandle handle);
+    Either<Exception, Option<EventV2>> getEvent(ResourceHandle handle);
 
     ResourceHandle addEvent(EventV2 event);
 
     Unit updateEvent(ResourceHandle handle, EventV2 event);
 
-    EventListV2 getEvents();
+    Either<Exception, EventListV2> getEvents();
 
-    SessionListV2 getSessions(ResourceHandle handle);
+    Either<Exception, SessionListV2> getSessions(ResourceHandle handle);
 
-    Option<SessionV2> getSession(ResourceHandle handle);    
+    Either<Exception, Option<SessionV2>> getSession(ResourceHandle handle);
 
     ResourceHandle addSession(ResourceHandle eventHandle, SessionV2 session);
 
     Unit updateSession(ResourceHandle handle, SessionV2 session);
 
-    PersonListV2 getPeople();
+    Either<Exception, PersonListV2> getPeople();
 
-    Option<PersonV2> getPerson(ResourceHandle handle);
+    Either<Exception, Option<PersonV2>> getPerson(ResourceHandle handle);
 
     ResourceHandle addPerson(PersonV2 personV1);
 
