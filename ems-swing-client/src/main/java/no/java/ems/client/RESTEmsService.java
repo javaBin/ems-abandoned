@@ -25,6 +25,7 @@ import no.java.ems.client.xhtml.TextElement;
 import no.java.ems.domain.*;
 import no.java.ems.domain.search.*;
 import no.java.ems.external.v2.*;
+import org.apache.abdera.model.Category;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.*;
@@ -222,7 +223,9 @@ public class RESTEmsService {
             @Override
             public SearchResult f(Entry entry) {
                 try {
-                    return new SearchResult(entry.getEditLink().getHref().toURI(), entry.getTitle(), entry.getSummary());
+                    List<Category> categories = entry.getCategories("http://java.no/categories/ems/type");
+                    Category type = categories.get(0);
+                    return new SearchResult(ObjectType.valueOf(type.getTerm()), entry.getEditLink().getHref().toURI(), entry.getTitle(), entry.getSummary());
                 } catch (URISyntaxException e) {
                     throw new IllegalStateException(e);
                 }

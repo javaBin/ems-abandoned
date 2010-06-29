@@ -34,8 +34,10 @@ public class SearchPanel extends AbstractEditor implements InitSequence {
     private SearchTable searchTable;
     private SearchField searchField;
     private SearchPanel.SearchAction searchAction;
+    private final EmsClient client;
 
-    public SearchPanel() {
+    public SearchPanel(EmsClient client) {
+        this.client = client;
         setTitle(getString("title"));
         setIcon(getResourceMap().getIcon(getFullResourceKey("icon")));
         SwingHelper.initialize(this);
@@ -52,7 +54,7 @@ public class SearchPanel extends AbstractEditor implements InitSequence {
 
     @Override
     public void initComponents() {
-        searchTable = new SearchTable();
+        searchTable = new SearchTable(client);
         searchField = new SearchField(searchAction);
     }
 
@@ -97,21 +99,6 @@ public class SearchPanel extends AbstractEditor implements InitSequence {
         protected java.util.List<SearchResult> doInBackground() throws Exception {
             return clientService.search(query, type);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame jFrame = new JFrame("foo");
-                JComponent contentPane = new SearchPanel().getComponent();
-                jFrame.setContentPane(contentPane);
-                jFrame.setLocationRelativeTo(null);
-                jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                jFrame.setSize(contentPane.getPreferredSize());
-                jFrame.setVisible(true);
-            }
-        });
     }
 
     private class SearchAction extends DefaultAction {

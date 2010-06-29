@@ -175,7 +175,15 @@ public class SearchResource {
         summary.setValue(hit.getSummary());
         entry.setSummary(summary);
         entry.setOtherLinks(Arrays.asList(createLink("edit", hit.getURI(), findMimeType(hit.getType()))));
+        entry.setCategories(Arrays.asList(createTypeCategory(hit.getType())));
         return entry;
+    }
+
+    private Category createTypeCategory(ObjectType type) {
+        Category cat = new Category();
+        cat.setScheme("http://java.no/categories/ems/type");
+        cat.setTerm(type.name());
+        return cat;
     }
 
     private String findMimeType(ObjectType type) {

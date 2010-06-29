@@ -2,6 +2,7 @@ package no.java.ems.client.swing;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import no.java.ems.client.RESTEmsService;
 import no.java.ems.client.swing.contacts.ContactEditor;
 import no.java.ems.client.swing.contacts.ContactListEditor;
 import no.java.ems.client.swing.events.EventEditor;
@@ -11,6 +12,7 @@ import no.java.ems.client.swing.sessions.SessionEditor;
 import no.java.ems.domain.AbstractEntity;
 import no.java.ems.domain.Person;
 import no.java.ems.domain.Session;
+import no.java.ems.domain.search.ObjectType;
 import no.java.swing.*;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.Validate;
@@ -70,7 +72,6 @@ public class EmsRootPanel implements InitSequence {
         tabs.addSelectedTab(editor);
     }
 
-
     public void close(final AbstractEntity entity) {
         for (int index = tabs.getTabCount() - 1; index >= 0; index--) {
             Component component = tabs.getComponentAt(index);
@@ -112,7 +113,7 @@ public class EmsRootPanel implements InitSequence {
     public void initComponents() {
         contactListEditor = new ContactListEditor();
         eventListEditor = new EventListEditor();
-        searchComponent = new SearchPanel();
+        searchComponent = new SearchPanel(client);
         statusBar = new StatusBar();
         tabs = new EmsTabbedPane();
         tabs.addTab(searchComponent);
@@ -389,5 +390,5 @@ public class EmsRootPanel implements InitSequence {
                 }
             }
         }
-    }    
+    }
 }
