@@ -3,7 +3,7 @@
     <title>Ems Search form</title>
 </head>
 <body>
-    <form action="${action}" method="get">
+    <form id="search" action="${action}" method="get">
         <p>The query input string uses Lucene syntax.</p>
         <input type="search" name="q"/>
         <select name="type">

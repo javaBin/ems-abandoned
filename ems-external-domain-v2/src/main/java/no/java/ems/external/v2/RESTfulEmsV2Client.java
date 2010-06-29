@@ -246,8 +246,8 @@ public class RESTfulEmsV2Client implements EmsV2Client {
             registerHandler(JAXBHandler.create(context, RoomListV2.class, ROOM_LIST));
             registerHandler(new URIListHandler());
             registerHandler(new EndpointParser());
-            registerHandler(new DefaultHandler());
             registerHandler(new AbderaHandler());
+            registerHandler(new DefaultHandler());
         }
     }
     private <T> Either<Exception, T> bindRightOrValue(Either<Exception, Option<Resource>> either, F<Resource, Option<T>> f, P1<T> p1) {

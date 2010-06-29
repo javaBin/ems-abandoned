@@ -8,6 +8,7 @@ import no.java.ems.client.swing.AbstractEditor;
 import no.java.ems.client.swing.EmsClient;
 import no.java.ems.domain.search.ObjectType;
 import no.java.ems.domain.search.SearchResult;
+import no.java.swing.DefaultPanel;
 import no.java.swing.InitSequence;
 import no.java.swing.SwingHelper;
 import org.jdesktop.application.Task;
@@ -32,6 +33,7 @@ import java.util.List;
 public class SearchPanel extends AbstractEditor implements InitSequence {
     private SearchTable searchTable;
     private SearchField searchField;
+    private SearchPanel.SearchAction searchAction;
 
     public SearchPanel() {
         setTitle(getString("title"));
@@ -45,30 +47,13 @@ public class SearchPanel extends AbstractEditor implements InitSequence {
 
     @Override
     public void initActions() {
+        searchAction = new SearchAction();
     }
 
     @Override
     public void initComponents() {
         searchTable = new SearchTable();
-        searchField = new SearchField(new DefaultAction("search") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("AAAAAAAAAAAAAAAAA");
-                SearchTask task = new SearchTask(
-                        EmsClient.getInstance().getClientService(),
-                        searchField.getSearchText(),
-                        searchField.getType());
-                task.addTaskListener(new TaskListener.Adapter<List<SearchResult>, Void>() {
-                    @Override
-                    public void succeeded(TaskEvent<List<SearchResult>> event) {
-                        List<SearchResult> value = event.getValue();
-                        searchTable.setModel(value == null ? Collections.<SearchResult>emptyList() : value);
-                    }
-                });
-                getTaskService().execute(task);
-            }
-        });
-
+        searchField = new SearchField(searchAction);
     }
 
     @Override
@@ -127,5 +112,27 @@ public class SearchPanel extends AbstractEditor implements InitSequence {
                 jFrame.setVisible(true);
             }
         });
+    }
+
+    private class SearchAction extends DefaultAction {
+        public SearchAction() {
+            super("search");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SearchTask task = new SearchTask(
+                    EmsClient.getInstance().getClientService(),
+                    searchField.getSearchText(),
+                    searchField.getType());
+            task.addTaskListener(new TaskListener.Adapter<List<SearchResult>, Void>() {
+                @Override
+                public void succeeded(TaskEvent<List<SearchResult>> event) {
+                    List<SearchResult> value = event.getValue();
+                    searchTable.setModel(value == null ? Collections.<SearchResult>emptyList() : value);
+                }
+            });
+            getTaskService().execute(task);
+        }
     }
 }
