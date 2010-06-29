@@ -20,7 +20,6 @@ import fj.data.*;
 import no.java.ems.client.*;
 import no.java.ems.client.xhtml.Form;
 import org.apache.abdera.model.Feed;
-import org.codehaus.httpcache4j.*;
 
 import java.net.*;
 
@@ -55,7 +54,7 @@ public interface EmsV2Client {
 
     void login(URI endpoint);
 
-    Form searchForm();
+    Either<Exception, Option<Form>> getSearchForm();
 
-    Feed search(Form form);
+    Either<Exception, Option<Feed>> search(Form form);
 }

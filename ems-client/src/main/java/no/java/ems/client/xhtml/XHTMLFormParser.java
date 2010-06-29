@@ -28,24 +28,29 @@ public class XHTMLFormParser {
         this.payload = payload;
     }
 
-    public List<Form> parse() throws XMLStreamException {
-        XMLEventReader reader = factory.createXMLEventReader(payload);
-        List<Form> forms = new ArrayList<Form>();
+    public List<Form> parse() {
+        List<Form> forms = null;
         try {
-            while(reader.hasNext()) {
-                XMLEvent event = reader.nextEvent();
-                if (event.isStartElement()) {
-                    StartElement start = event.asStartElement();
-                    if ("form".equals(start.getName().getLocalPart())) {
-                        forms.add(parseForm(start, reader));
+            XMLEventReader reader = factory.createXMLEventReader(payload);
+            forms = new ArrayList<Form>();
+            try {
+                while(reader.hasNext()) {
+                    XMLEvent event = reader.nextEvent();
+                    if (event.isStartElement()) {
+                        StartElement start = event.asStartElement();
+                        if ("form".equals(start.getName().getLocalPart())) {
+                            forms.add(parseForm(start, reader));
+                        }
                     }
                 }
+            } finally {
+                reader.close();
             }
-        } finally {
-            reader.close();            
-        }
-        if (forms.isEmpty()) {
-            throw new XMLStreamException("Payload did not contain a form, unable to parse");
+            if (forms.isEmpty()) {
+                throw new IllegalStateException("Payload did not contain a form, unable to parse");
+            }
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
         }
         return Collections.unmodifiableList(forms);
     }

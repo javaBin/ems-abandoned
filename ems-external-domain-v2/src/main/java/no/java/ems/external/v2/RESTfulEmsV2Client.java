@@ -29,7 +29,6 @@ import org.codehaus.httpcache4j.payload.*;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.*;
-import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.lang.Class;
 import java.net.*;
@@ -214,41 +213,27 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         return client.update(new ResourceHandle(URI.create(personV2.getUri())).toUnconditional(), createJAXBPayload("person", PersonV2.class, personV2, PERSON));
     }
 
-    public Form searchForm() {
-        EndpointParser.Endpoint endpoint = endpoints.get("search");
-        Option<Resource> option = client.read(endpoint.getHandle(), Collections.singletonList(XHTML));
-        if (option.isSome()) {
-            Option<InputStream> data = option.some().getData(InputStream.class);
-            if (data.isSome()) {
-                InputStream inputStream = data.some();
-                XHTMLFormParser parser = new XHTMLFormParser(endpoint.getURI(), inputStream);
-                try {
-                    return parser.parse().get(0);
-                } catch (XMLStreamException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            }
+    public Either<Exception, Option<Form>> getSearchForm() {
+        final EndpointParser.Endpoint endpoint = endpoints.get("search");
+        Either<Exception, Option<InputStream>> result = bindRight(client.read(endpoint.getHandle(), Collections.singletonList(XHTML)), this.<InputStream>getData().f(InputStream.class));
+        if (result.isRight()) {
+            return result.right().map(flatMap(parseForm(endpoint)));
         }
         throw new IllegalStateException("Unable to get search form");
     }
 
-    public Feed search(Form form) {
+    public Either<Exception, Option<Feed>> search(Form form) {
+        F<Resource, Option<Feed>> feedF = this.<Feed>getData().f(Feed.class);
         if (form.getMethod() == HTTPMethod.GET) {
-            Option<Resource> resource = client.read(new ResourceHandle(form.constructURI()), Collections.singletonList(ATOM));
-            if (resource.isSome()) {
-               return resource.some().getData(Feed.class).some();
-            }            
+            return bindRight(client.read(new ResourceHandle(form.constructURI()), Collections.singletonList(ATOM)), feedF);
         }
         else {
-            Option<Resource> resource = client.process(new ResourceHandle(form.getAction()), form.toPayload());
-            if (resource.isSome()) {
-               return resource.some().getData(Feed.class).some();
-            }
+            return bindRight(client.process(new ResourceHandle(form.getAction()), form.toPayload()), feedF);
         }
-        throw new IllegalStateException("Unable to get a search result for the form");
     }
 
     private static class MyRESTfulClient extends RESTfulClient {
+
         public MyRESTfulClient(HTTPCache cache, JAXBContext context, String username, String password) throws JAXBException {
             super(cache, username, password);
             registerHandler(JAXBHandler.create(context, PersonV2.class, PERSON));
@@ -265,7 +250,6 @@ public class RESTfulEmsV2Client implements EmsV2Client {
             registerHandler(new AbderaHandler());
         }
     }
-
     private <T> Either<Exception, T> bindRightOrValue(Either<Exception, Option<Resource>> either, F<Resource, Option<T>> f, P1<T> p1) {
         if(either.isLeft()) {
             return left(either.left().value());
@@ -280,5 +264,22 @@ public class RESTfulEmsV2Client implements EmsV2Client {
         }
 
         return right(either.right().value().bind(f));
+    }
+
+    private F<InputStream, Form> parseForm(final EndpointParser.Endpoint endpoint) {
+        return new F<InputStream, Form>() {
+            public Form f(InputStream inputStream) {
+                XHTMLFormParser parser = new XHTMLFormParser(endpoint.getURI(), inputStream);
+                return parser.parse().get(0);
+            }
+        };
+    }
+
+    private static <A, B> F<Option<A>, Option<B>> flatMap(final F<A,B> f) {
+        return new F<Option<A>, Option<B>>() {
+            public Option<B> f(Option<A> aOption) {
+                return aOption.map(f);
+            }
+        };
     }
 }

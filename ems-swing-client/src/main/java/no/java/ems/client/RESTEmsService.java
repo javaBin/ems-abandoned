@@ -198,7 +198,7 @@ public class RESTEmsService {
 
     public List<SearchResult> search(String query, ObjectType type) {
         List<SearchResult> result = new ArrayList<SearchResult>();
-        Form form = client.searchForm();
+        Form form = client.getSearchForm();
         TextElement search = form.getTextElement("q");
         Options options = form.getOptions("type");
         search.setValue(query);
