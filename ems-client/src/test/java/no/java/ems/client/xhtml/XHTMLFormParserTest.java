@@ -18,7 +18,7 @@ public class XHTMLFormParserTest {
     public void testParseCorrectForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(stream);
+        XHTMLFormParser parser = new XHTMLFormParser(null, stream);
         List<Form> form = parser.parse();
         assertForms(form, 2);
     }
@@ -27,7 +27,7 @@ public class XHTMLFormParserTest {
     public void testParseCorrectNestedForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(stream);
+        XHTMLFormParser parser = new XHTMLFormParser(null, stream);
         List<Form> form = parser.parse();
         assertForms(form, 2);
     }
@@ -42,11 +42,11 @@ public class XHTMLFormParserTest {
         assertNotNull("Query form not available", form.getTextElement("q"));
     }
 
-    @Test(expected = XMLStreamException.class)
+    @Test(expected = IllegalStateException.class)
     public void testParseWithNoForm() throws XMLStreamException {
         InputStream stream = getClass().getResourceAsStream("/search-form-failed.xhtml");
         assertNotNull("No from available", stream);
-        XHTMLFormParser parser = new XHTMLFormParser(stream);
+        XHTMLFormParser parser = new XHTMLFormParser(null, stream);
         parser.parse();
     }
 }

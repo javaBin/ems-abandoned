@@ -118,8 +118,8 @@ public class XHTMLFormParser {
                 if ("option".equals(element.getName().getLocalPart())) {
                     Attribute valueAttribute = element.getAttributeByName(new QName("value"));
                     options.put(valueAttribute.getValue(), reader.getElementText());
-                    Attribute selectedAttrbute = element.getAttributeByName(new QName("selected"));
-                    if ("selected".equals(selectedAttrbute.getValue())) {
+                    Attribute selectedAttribute = element.getAttributeByName(new QName("selected"));
+                    if (selectedAttribute != null && "selected".equals(selectedAttribute.getValue())) {
                         selected.add(valueAttribute.getValue());
                     }
                 }
