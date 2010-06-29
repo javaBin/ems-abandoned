@@ -28,6 +28,7 @@ import no.java.ems.external.v2.*;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.*;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.httpcache4j.*;
 import org.codehaus.httpcache4j.cache.*;
 import org.codehaus.httpcache4j.client.*;
@@ -196,17 +197,23 @@ public class RESTEmsService {
         throw new UnsupportedOperationException("Not implemented yet...");
     }
 
-    public List<SearchResult> search(String query, ObjectType type) {
-        List<SearchResult> result = new ArrayList<SearchResult>();
-        Form form = client.getSearchForm();
-        TextElement search = form.getTextElement("q");
-        Options options = form.getOptions("type");
-        search.setValue(query);
-        options.addSelection(type.name());
-        Feed feed = client.search(form);
-        List<Entry> entries = feed.getEntries();
-        fj.data.List<SearchResult> list = fj.data.List.iterableList(entries).map(toSearchResult());
-        result.addAll(list.toCollection());
+    public List<SearchResult> search(final String query, final ObjectType type) throws Exception {
+        final List<SearchResult> result = new ArrayList<SearchResult>();
+        Either<Exception, Option<Form>> searchForm = client.getSearchForm();
+        Option<Form> option = throwLeft(searchForm);
+        option = option.map(populateFormF(query, type));
+        if (option.isSome()) {
+            Form form = option.some();
+            Option<Feed> feedOption = throwLeft(client.search(form));
+            feedOption.foreach(new Effect<Feed>() {
+                @Override
+                public void e(Feed feed) {
+                    List<Entry> entries = feed.getEntries();
+                    fj.data.List<SearchResult> list = fj.data.List.iterableList(entries).map(toSearchResult());
+                    result.addAll(list.toCollection());                    
+                }
+            });
+        }
         return result;
     }
 
@@ -219,6 +226,19 @@ public class RESTEmsService {
                 } catch (URISyntaxException e) {
                     throw new IllegalStateException(e);
                 }
+            }
+        };
+    }
+
+    private F<Form, Form> populateFormF(final String query, final ObjectType type) {
+        return new F<Form, Form>() {
+            @Override
+            public Form f(Form form) {
+                TextElement search = form.getTextElement("q");
+                Options options = form.getOptions("type");
+                search.setValue(query);
+                options.addSelection(type.name());
+                return form;
             }
         };
     }
