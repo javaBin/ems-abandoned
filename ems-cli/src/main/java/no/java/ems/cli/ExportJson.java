@@ -1,4 +1,4 @@
-package no.java.ems;
+package no.java.ems.cli;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
