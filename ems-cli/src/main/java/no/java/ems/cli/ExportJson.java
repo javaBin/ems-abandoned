@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.*;
@@ -18,6 +19,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -29,10 +31,13 @@ public class ExportJson {
 
     public static void main(String[] args) throws IOException {
         EmsService service = new RestEmsService(args[0]);
+        if (args.length == 3) {
+            service.setCredentials(args[1], args[2]);
+        }
         File tempDir = new File("/tmp/ems");
         tempDir.mkdirs();
         exportContacts(tempDir, service.getContacts());
-        exportEvents(tempDir, service.getEvents());
+        exportEvents(tempDir, service);
     }
 
     private static void exportContacts(File targetDirectory, List<Person> contacts) throws IOException {
@@ -51,16 +56,9 @@ public class ExportJson {
                 String language = contact.getLanguage() != null ? contact.getLanguage().getIsoCode() : "no";
                 object.put("language", language);
                 Binary photo = contact.getPhoto();
-                if (photo != null) {
-                    File f = new File(targetDirectory, photo.getFileName());
-                    if (f.exists()) {
-                        object.put("photo", f.getAbsolutePath());
-                    }
-                    else {
-                        ByteStreams.copy(photo.getDataStream(), Files.newOutputStreamSupplier(f));
-                        while (!f.exists());
-                        object.put("photo", f.getAbsolutePath());
-                    }
+                File f = downloadBinary(targetDirectory, photo);
+                if (f != null && f.exists()) {
+                    object.put("photo", f.getAbsolutePath());
                 }
                 List<EmailAddress> emails = contact.getEmailAddresses();
                 ArrayNode emailAddresses = mapper.createArrayNode();
@@ -77,9 +75,10 @@ public class ExportJson {
 
     }
 
-    private static void exportEvents(File targetDirectory, List<Event> events) throws IOException {
+    private static void exportEvents(File targetDirectory, EmsService service) throws IOException {
         File file = new File(targetDirectory, "events.json");
         ArrayNode arrayNode = mapper.createArrayNode();
+        List<Event> events = service.getEvents();
         if (events.isEmpty()) {
             System.err.println("No events found. aborting!");
         }
@@ -109,6 +108,9 @@ public class ExportJson {
                         return n;
                     }
                 }));
+                File eventDir = new File(targetDirectory, event.getId());
+                eventDir.mkdirs();
+                exportSessions(eventDir, service.getSessions(event.getId()));
             }
             ObjectNode root = mapper.createObjectNode();
             root.put("events", arrayNode);
@@ -118,7 +120,99 @@ public class ExportJson {
 
     }
 
+    private static void exportSessions(final File targetDirectory, List<Session> sessions) throws IOException {
+        File file = new File(targetDirectory, "sessions.json");
+        ArrayNode arrayNode = mapper.createArrayNode();
+        if (sessions.isEmpty()) {
+            System.err.println("No events found. aborting!");
+        }
+        else {
+            System.err.println(String.format("Found %s sessions", sessions.size()));
+            for (Session session : sessions) {
+                ObjectNode object = arrayNode.addObject();
+                object.put("id", session.getId());
+                object.put("eventId", session.getEventId());
+                object.put("title", session.getTitle());
+                if (session.getBody() != null) {
+                    object.put("body", session.getBody());
+                }
+                if (session.getEquipment() != null) {
+                    object.put("equipment", session.getEquipment());
+                }
+                if (session.getExpectedAudience() != null) {
+                    object.put("audience", session.getExpectedAudience());
+                }
+                if (session.getOutline() != null) {
+                    object.put("outline", session.getOutline());
+                }
+                if (session.getLead() != null) {
+                    object.put("summary", session.getLead());
+                }
+                if (session.getTimeslot() != null) {
+                    ObjectNode ts = mapper.createObjectNode();
+                    ts.put("start", session.getTimeslot().getStart().toString(format));
+                    ts.put("end", session.getTimeslot().getEnd().toString(format));
+                    object.put("slot", ts);
+                }
+                object.put("format", session.getFormat().name().toLowerCase().replace("_", "-"));
+                object.put("state", session.getState().name().toLowerCase().replace("_", "-"));
+                object.put("level", session.getLevel().name().toLowerCase().replace("_", "-"));
+                object.put("published", session.isPublished());
+                object.put("locale", session.getLanguage() != null ? session.getLanguage().getIsoCode() : "no");
+                object.put("tags", session.getTagsAsString(","));
+                object.put("keywords", session.getKeywordsAsString(","));
+                List<Binary> att = session.getAttachements();
+                for (Binary binary : att) {
+                    downloadBinary(targetDirectory, binary);
+                }
+                if (session.getRoom() != null) {
+                    object.put("room", session.getRoom().getName());
+                }
+                object.put("speakers", makeArrayFrom(session.getSpeakers(), new Function<Speaker, JsonNode>() {
+                    public JsonNode apply(Speaker input) {
+                        ObjectNode n = mapper.createObjectNode();
+                        n.put("id", input.getPersonId());
+                        n.put("name", input.getName());
+                        n.put("bio", input.getDescription());
+                        File photo = downloadBinary(targetDirectory, input.getPhoto());
+                        if (photo != null && photo.exists()) {
+                            n.put("photo", input.getPhoto().getFileName());
+                        }
+                        return n;
+                    }
+                }));
+            }
+            ObjectNode root = mapper.createObjectNode();
+            root.put("events", arrayNode);
+            mapper.writeValue(Files.newWriter(file, Charsets.UTF_8), root);
+            System.out.println(String.format("Wrote file %s", file.getAbsolutePath()));
+        }
+
+    }
     private static <A> JsonNode makeArrayFrom(List<A> list, Function<A, JsonNode> f) {
         return mapper.createArrayNode().addAll(Lists.transform(list, f));
+    }
+
+    private static File downloadBinary(File targetDirectory, Binary binary) {
+        if (binary != null) {
+            File f = new File(targetDirectory, binary.getFileName());
+            if (f.exists()) {
+                return f;
+            }
+            else {
+                System.err.println(String.format("Downloading binary with length %s(%s MB) to %s", binary.getSize(), binary.getSize() / 8 / 1000 / 1000.0, f));
+                InputStream is = binary.getDataStream();
+                try {
+                    long copied = ByteStreams.copy(is, Files.newOutputStreamSupplier(f));
+                    System.err.println(String.format("Wrote %s bytes", copied));
+                    return f;
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } finally {
+                    Closeables.closeQuietly(is);
+                }
+            }
+        }
+        return null;
     }
 }
