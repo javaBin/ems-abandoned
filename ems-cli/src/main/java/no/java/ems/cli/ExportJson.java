@@ -34,10 +34,10 @@ public class ExportJson {
 
     public static void main(String[] args) throws IOException {
         EmsService service = new RestEmsService(args[0]);
-        if (args.length == 3) {
+        if (args.length >= 3) {
             service.setCredentials(args[1], args[2]);
         }
-        File directory = args.length == 4 ? new File(args[3]) : new File("/tmp/ems");
+        File directory = args.length >= 4 ? new File(args[3]) : new File("/tmp/ems");
         directory.mkdirs();
         exportContacts(directory, service.getContacts());
         exportEvents(directory, service);
