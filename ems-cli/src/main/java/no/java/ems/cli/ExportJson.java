@@ -20,6 +20,8 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,16 +228,27 @@ public class ExportJson {
                 return f;
             }
             else {
-                System.err.println(String.format("Downloading binary with length %s(%s MB) to %s", binary.getSize(), binary.getSize() / 8 / 1000 / 1000.0, f));
-                InputStream is = binary.getDataStream();
-                try {
-                    long copied = ByteStreams.copy(is, Files.newOutputStreamSupplier(f));
-                    System.err.println(String.format("Wrote %s bytes", copied));
-                    return f;
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } finally {
-                    Closeables.closeQuietly(is);
+                if (binary instanceof UriBinary) {
+                    URI uri = ((UriBinary) binary).getUri();
+                    try {
+                        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+                        conn.connect();
+                        int code = conn.getResponseCode();
+                        if (code == 200) {
+                            System.err.println(String.format("Downloading binary with length %s(%s MB) to %s", binary.getSize(), binary.getSize() / 8 / 1000 / 1000.0, f));
+                            InputStream is = conn.getInputStream();
+                            try {
+                                long copied = ByteStreams.copy(is, Files.newOutputStreamSupplier(f));
+                                System.err.println(String.format("Wrote %s bytes", copied));
+                                return f;
+                            } finally {
+                                Closeables.closeQuietly(is);
+                                conn.disconnect();
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 }
             }
         }
