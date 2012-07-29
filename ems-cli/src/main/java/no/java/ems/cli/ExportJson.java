@@ -20,7 +20,10 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Erlend Hamnaberg<erlend.hamnaberg@arktekk.no>
@@ -34,10 +37,10 @@ public class ExportJson {
         if (args.length == 3) {
             service.setCredentials(args[1], args[2]);
         }
-        File tempDir = new File("/tmp/ems");
-        tempDir.mkdirs();
-        exportContacts(tempDir, service.getContacts());
-        exportEvents(tempDir, service);
+        File directory = args.length == 4 ? new File(args[3]) : new File("/tmp/ems");
+        directory.mkdirs();
+        exportContacts(directory, service.getContacts());
+        exportEvents(directory, service);
     }
 
     private static void exportContacts(File targetDirectory, List<Person> contacts) throws IOException {
@@ -79,6 +82,8 @@ public class ExportJson {
         File file = new File(targetDirectory, "events.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         List<Event> events = service.getEvents();
+        final Map<Interval, String> intervals = new HashMap<Interval, String>();
+        final Map<String, String> rooms = new HashMap<String, String>();
         if (events.isEmpty()) {
             System.err.println("No events found. aborting!");
         }
@@ -96,6 +101,9 @@ public class ExportJson {
                 object.put("rooms", makeArrayFrom(event.getRooms(), new Function<Room, JsonNode>() {
                     public JsonNode apply(Room input) {
                         ObjectNode n = mapper.createObjectNode();
+                        String id = UUID.randomUUID().toString();
+                        rooms.put(input.getName(), id);
+                        n.put("id", id);
                         n.put("name", input.getName());
                         return n;
                     }
@@ -103,24 +111,38 @@ public class ExportJson {
                 object.put("slots", makeArrayFrom(event.getTimeslots(), new Function<Interval, JsonNode>() {
                     public JsonNode apply(Interval input) {
                         ObjectNode n = mapper.createObjectNode();
+                        String id = UUID.randomUUID().toString();
+                        intervals.put(input, id);
+                        n.put("id", id);
                         n.put("start", input.getStart().toString(format));
                         n.put("end", input.getEnd().toString(format));
                         return n;
                     }
                 }));
-                File eventDir = new File(targetDirectory, event.getId());
-                eventDir.mkdirs();
-                exportSessions(eventDir, service.getSessions(event.getId()));
             }
             ObjectNode root = mapper.createObjectNode();
             root.put("events", arrayNode);
             mapper.writeValue(Files.newWriter(file, Charsets.UTF_8), root);
             System.out.println(String.format("Wrote file %s", file.getAbsolutePath()));
+
+            for (Event event : events) {
+                File eventDir = new File(targetDirectory, event.getId());
+                eventDir.mkdirs();
+                exportSessions(
+                        eventDir,
+                        intervals,
+                        rooms,
+                        service.getSessions(event.getId())
+                );
+            }
         }
 
     }
 
-    private static void exportSessions(final File targetDirectory, List<Session> sessions) throws IOException {
+    private static void exportSessions(final File targetDirectory,
+                                       Map<Interval, String> intervals,
+                                       Map<String, String> rooms,
+                                       List<Session> sessions) throws IOException {
         File file = new File(targetDirectory, "sessions.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         if (sessions.isEmpty()) {
@@ -149,10 +171,10 @@ public class ExportJson {
                     object.put("summary", session.getLead());
                 }
                 if (session.getTimeslot() != null) {
-                    ObjectNode ts = mapper.createObjectNode();
-                    ts.put("start", session.getTimeslot().getStart().toString(format));
-                    ts.put("end", session.getTimeslot().getEnd().toString(format));
-                    object.put("slot", ts);
+                    String id = intervals.get(session.getTimeslot());
+                    if (id != null) {
+                        object.put("slot", id);
+                    }
                 }
                 object.put("format", session.getFormat().name().toLowerCase().replace("_", "-"));
                 object.put("state", session.getState().name().toLowerCase().replace("_", "-"));
@@ -166,7 +188,11 @@ public class ExportJson {
                     downloadBinary(targetDirectory, binary);
                 }
                 if (session.getRoom() != null) {
-                    object.put("room", session.getRoom().getName());
+                    String room = session.getRoom().getName();
+                    String id = rooms.get(room);
+                    if (id != null) {
+                        object.put("room", id);
+                    }
                 }
                 object.put("speakers", makeArrayFrom(session.getSpeakers(), new Function<Speaker, JsonNode>() {
                     public JsonNode apply(Speaker input) {
