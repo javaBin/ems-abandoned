@@ -211,7 +211,7 @@ public class ExportJson {
                 }));
             }
             ObjectNode root = mapper.createObjectNode();
-            root.put("events", arrayNode);
+            root.put("sessions", arrayNode);
             mapper.writeValue(Files.newWriter(file, Charsets.UTF_8), root);
             System.out.println(String.format("Wrote file %s", file.getAbsolutePath()));
         }
