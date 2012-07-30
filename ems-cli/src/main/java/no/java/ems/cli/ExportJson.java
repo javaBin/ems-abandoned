@@ -148,7 +148,7 @@ public class ExportJson {
         File file = new File(targetDirectory, "sessions.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         if (sessions.isEmpty()) {
-            System.err.println("No events found. aborting!");
+            System.err.println("No sessions found. aborting!");
         }
         else {
             System.err.println(String.format("Found %s sessions", sessions.size()));
@@ -185,9 +185,16 @@ public class ExportJson {
                 object.put("locale", session.getLanguage() != null ? session.getLanguage().getIsoCode() : "no");
                 object.put("tags", session.getTagsAsString(","));
                 object.put("keywords", session.getKeywordsAsString(","));
-                List<Binary> att = session.getAttachements();
-                for (Binary binary : att) {
-                    downloadBinary(targetDirectory, binary);
+                List<Binary> attachements = session.getAttachements();
+                for (Binary binary : attachements) {
+                    ArrayNode attachments = mapper.createArrayNode();
+                    File att = downloadBinary(targetDirectory, binary);
+                    if (att != null && att.exists()) {
+                        attachments.add(att.getAbsolutePath());
+                    }
+                    if (attachments.size() > 0) {
+                        object.put("attachments", attachments);
+                    }
                 }
                 if (session.getRoom() != null) {
                     String room = session.getRoom().getName();
@@ -204,7 +211,7 @@ public class ExportJson {
                         n.put("bio", input.getDescription());
                         File photo = downloadBinary(targetDirectory, input.getPhoto());
                         if (photo != null && photo.exists()) {
-                            n.put("photo", input.getPhoto().getFileName());
+                            n.put("photo", photo.getAbsolutePath());
                         }
                         return n;
                     }
