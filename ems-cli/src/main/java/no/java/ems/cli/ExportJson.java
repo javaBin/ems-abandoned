@@ -40,7 +40,7 @@ public final class ExportJson extends AbstractCli {
 
     @Override
     protected void work() throws Exception {
-        String fileString = getCommandLine().getOptionValue("file");
+        String fileString = getCommandLine().getOptionValue("dir");
         File directory = fileString != null ? new File(fileString) : new File("/tmp/ems");
         directory.mkdirs();
         exportContacts(directory, getEms().getContacts());
