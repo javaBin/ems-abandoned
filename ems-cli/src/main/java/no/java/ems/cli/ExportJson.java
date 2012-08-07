@@ -6,9 +6,9 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Files;
-import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.*;
 import no.java.ems.service.EmsService;
+import org.apache.commons.cli.Options;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -30,22 +30,39 @@ import java.util.UUID;
 /**
  * @author Erlend Hamnaberg<erlend.hamnaberg@arktekk.no>
  */
-public class ExportJson {
+public final class ExportJson extends AbstractCli {
     private static final DateTimeFormatter format = ISODateTimeFormat.basicDateTimeNoMillis();
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static void main(String[] args) throws IOException {
-        EmsService service = new RestEmsService(args[0]);
-        if (args.length >= 3) {
-            service.setCredentials(args[1], args[2]);
-        }
-        File directory = args.length >= 4 ? new File(args[3]) : new File("/tmp/ems");
-        directory.mkdirs();
-        exportContacts(directory, service.getContacts());
-        exportEvents(directory, service);
+    public ExportJson() {
+        super("export-json");
     }
 
-    private static void exportContacts(File targetDirectory, List<Person> contacts) throws IOException {
+    @Override
+    protected void work() throws Exception {
+        String fileString = getCommandLine().getOptionValue("file");
+        File directory = fileString != null ? new File(fileString) : new File("/tmp/ems");
+        directory.mkdirs();
+        exportContacts(directory, getEms().getContacts());
+        exportEvents(directory, getEms());
+    }
+
+    @Override
+    protected Options addOptions(Options defaultOptions) {
+        defaultOptions.addOption(null, "dir", true, "Export directory, This defaults to '/tmp/ems' if not set.");
+        return defaultOptions;
+    }
+
+    @Override
+    protected String getDefaultEventId() {
+        return null;
+    }
+
+    public static void main(String[] args) throws Exception {
+        new ExportJson().doMain(args);
+    }
+
+    private void exportContacts(File targetDirectory, List<Person> contacts) throws IOException {
         File file = new File(targetDirectory, "contacts.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         if (contacts.isEmpty()) {
@@ -80,7 +97,7 @@ public class ExportJson {
 
     }
 
-    private static void exportEvents(File targetDirectory, EmsService service) throws IOException {
+    private void exportEvents(File targetDirectory, EmsService service) throws IOException {
         File file = new File(targetDirectory, "events.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         List<Event> events = service.getEvents();
@@ -141,7 +158,7 @@ public class ExportJson {
 
     }
 
-    private static void exportSessions(final File targetDirectory,
+    private void exportSessions(final File targetDirectory,
                                        Map<Interval, String> intervals,
                                        Map<String, String> rooms,
                                        List<Session> sessions) throws IOException {
@@ -224,11 +241,11 @@ public class ExportJson {
         }
 
     }
-    private static <A> JsonNode makeArrayFrom(List<A> list, Function<A, JsonNode> f) {
+    private <A> JsonNode makeArrayFrom(List<A> list, Function<A, JsonNode> f) {
         return mapper.createArrayNode().addAll(Lists.transform(list, f));
     }
 
-    private static File downloadBinary(File targetDirectory, Binary binary) {
+    private File downloadBinary(File targetDirectory, Binary binary) {
         if (binary != null) {
             File f = new File(targetDirectory, binary.getFileName());
             if (f.exists()) {

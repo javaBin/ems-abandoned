@@ -124,6 +124,10 @@
               <name>search</name>
               <mainClass>no.java.ems.cli.Search</mainClass>
             </program>
+            <program>
+              <name>export-json</name>
+              <mainClass>no.java.ems.cli.ExportJson</mainClass>
+            </program>
           </programs>
         </configuration>
       </plugin>
