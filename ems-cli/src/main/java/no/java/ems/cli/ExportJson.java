@@ -43,7 +43,6 @@ public final class ExportJson extends AbstractCli {
         String fileString = getCommandLine().getOptionValue("dir");
         File directory = fileString != null ? new File(fileString) : new File("/tmp/ems");
         directory.mkdirs();
-        exportContacts(directory, getEms().getContacts());
         exportEvents(directory, getEms());
     }
 
@@ -62,42 +61,16 @@ public final class ExportJson extends AbstractCli {
         new ExportJson().doMain(args);
     }
 
-    private void exportContacts(File targetDirectory, List<Person> contacts) throws IOException {
-        File file = new File(targetDirectory, "contacts.json");
-        ArrayNode arrayNode = mapper.createArrayNode();
-        if (contacts.isEmpty()) {
-            System.err.println("No contacts found. aborting!");
+    private Map<String, Person> mapify(List<Person> contacts) {
+        Map<String, Person> map = new HashMap<String, Person>();
+        for (Person contact : contacts) {
+            map.put(contact.getId(), contact);
         }
-        else {
-            System.err.println(String.format("Found %s contacts", contacts.size()));
-            for (Person contact : contacts) {
-                ObjectNode object = arrayNode.addObject();
-                object.put("id", contact.getId());
-                object.put("name", contact.getName());
-                object.put("bio", contact.getDescription());
-                String language = contact.getLanguage() != null ? contact.getLanguage().getIsoCode() : "no";
-                object.put("language", language);
-                Binary photo = contact.getPhoto();
-                File f = downloadBinary(targetDirectory, photo);
-                if (f != null && f.exists()) {
-                    object.put("photo", f.getAbsolutePath());
-                }
-                List<EmailAddress> emails = contact.getEmailAddresses();
-                ArrayNode emailAddresses = mapper.createArrayNode();
-                for (EmailAddress email : emails) {
-                    emailAddresses.add(email.getEmailAddress());
-                }
-                object.put("emails", emailAddresses);
-            }
-            ObjectNode root = mapper.createObjectNode();
-            root.put("contacts", arrayNode);
-            mapper.writeValue(Files.newWriter(file, Charsets.UTF_8), root);
-            System.out.println(String.format("Wrote file %s", file.getAbsolutePath()));
-        }
-
+        return map;
     }
 
     private void exportEvents(File targetDirectory, EmsService service) throws IOException {
+        Map<String, Person> contacts = mapify(getEms().getContacts());
         File file = new File(targetDirectory, "events.json");
         ArrayNode arrayNode = mapper.createArrayNode();
         List<Event> events = service.getEvents();
@@ -149,16 +122,19 @@ public final class ExportJson extends AbstractCli {
                 eventDir.mkdirs();
                 exportSessions(
                         eventDir,
+                        contacts,
                         intervals,
                         rooms,
                         service.getSessions(event.getId())
                 );
+                System.out.println("Done exporting " + event.getName());
             }
         }
 
     }
 
     private void exportSessions(final File targetDirectory,
+                                       final Map<String, Person> contacts,
                                        Map<Interval, String> intervals,
                                        Map<String, String> rooms,
                                        List<Session> sessions) throws IOException {
@@ -205,7 +181,7 @@ public final class ExportJson extends AbstractCli {
                 List<Binary> attachements = session.getAttachements();
                 for (Binary binary : attachements) {
                     ArrayNode attachments = mapper.createArrayNode();
-                    File att = downloadBinary(targetDirectory, binary);
+                    File att = downloadBinary(new File(targetDirectory, session.getId()), binary);
                     if (att != null && att.exists()) {
                         attachments.add(att.getAbsolutePath());
                     }
@@ -222,10 +198,18 @@ public final class ExportJson extends AbstractCli {
                 }
                 object.put("speakers", makeArrayFrom(session.getSpeakers(), new Function<Speaker, JsonNode>() {
                     public JsonNode apply(Speaker input) {
+                        Person contact = contacts.get(input.getPersonId());
                         ObjectNode n = mapper.createObjectNode();
                         n.put("id", input.getPersonId());
                         n.put("name", input.getName());
+                        if (!contact.getEmailAddresses().isEmpty()) {
+                            int size = contact.getEmailAddresses().size();
+                            n.put("email", contact.getEmailAddresses().get(size - 1).getEmailAddress());
+                        }
                         n.put("bio", input.getDescription());
+                        ArrayNode tags = mapper.createArrayNode();
+                        tags.add("import_2013");
+                        n.put("tags", tags);
                         File photo = downloadBinary(targetDirectory, input.getPhoto());
                         if (photo != null && photo.exists()) {
                             n.put("photo", photo.getAbsolutePath());
@@ -263,6 +247,9 @@ public final class ExportJson extends AbstractCli {
     }
 
     private File downloadBinary(File targetDirectory, Binary binary) {
+        if (!targetDirectory.exists() && !targetDirectory.mkdirs()) {
+            throw new IllegalArgumentException("Failed to create " + targetDirectory);
+        }
         if (binary != null) {
             File f = new File(targetDirectory, binary.getFileName());
             if (f.exists()) {
