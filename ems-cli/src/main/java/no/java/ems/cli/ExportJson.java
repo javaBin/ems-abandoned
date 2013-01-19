@@ -206,6 +206,10 @@ public final class ExportJson extends AbstractCli {
                             int size = contact.getEmailAddresses().size();
                             n.put("email", contact.getEmailAddresses().get(size - 1).getEmailAddress());
                         }
+                        else {
+                            System.out.println("No email for speaker: " + input.getName());
+                            n.put("email", "dummy@example.com");
+                        }
                         n.put("bio", input.getDescription());
                         ArrayNode tags = mapper.createArrayNode();
                         tags.add("import_2013");
