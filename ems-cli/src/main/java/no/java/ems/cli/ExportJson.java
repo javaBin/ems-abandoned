@@ -195,11 +195,11 @@ public final class ExportJson extends AbstractCli {
                         object.put("slot", id);
                     }
                 }
-                object.put("format", session.getFormat().name().toLowerCase().replace("_", "-"));
+                object.put("format", getFormat(session.getFormat()));
                 object.put("state", session.getState().name().toLowerCase().replace("_", "-"));
                 object.put("level", session.getLevel().name().toLowerCase().replace("_", "-"));
                 object.put("published", session.isPublished());
-                object.put("locale", session.getLanguage() != null ? session.getLanguage().getIsoCode() : "no");
+                object.put("lang", session.getLanguage() != null ? session.getLanguage().getIsoCode() : "no");
                 object.put("tags", session.getTagsAsString(","));
                 object.put("keywords", session.getKeywordsAsString(","));
                 List<Binary> attachements = session.getAttachements();
@@ -241,6 +241,23 @@ public final class ExportJson extends AbstractCli {
         }
 
     }
+
+    private String getFormat(Session.Format format) {
+        switch (format) {
+            case Presentation:
+                return "presentation";
+            case BoF:
+                return "bof";
+            case PanelDebate:
+                return "panel";
+            case Quickie:
+                return "lightning-talk";
+            case Course:
+            default:
+                throw new IllegalArgumentException("No format mapping for this" + format);
+        }
+    }
+
     private <A> JsonNode makeArrayFrom(List<A> list, Function<A, JsonNode> f) {
         return mapper.createArrayNode().addAll(Lists.transform(list, f));
     }
